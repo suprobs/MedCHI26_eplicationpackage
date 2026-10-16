@@ -120,6 +120,9 @@ namespace EFSM.Devices
         // en el modo movement.type = "attach" (soltar y pegar, sin recorrido).
         public AttachSpec attach_on_complete;
 
+        // Trayectoria (poses inicial y final) fijada por el autor; opcional.
+        public TrajectorySpec trajectory;
+
         // Marca informativa: geometría creada/rehecha por el usuario en la authoring
         // tool (no proviene directamente del manual). No cambia el build; queda en el
         // spec para trazabilidad y para el manifest de integridad de escena.
@@ -186,8 +189,43 @@ namespace EFSM.Devices
     {
         public string mode;      // center | edge | explicit
         public string edge;      // front | back | left | right | top | bottom (mode=edge)
-        public float[] offset_m; // (mode=explicit) offset del pivote respecto al centro
+        // (mode=explicit) posición del eje en el marco de DeviceRoot, en metros. Es lo
+        // que escribe la herramienta de autoría al calcular el pivote a partir de las
+        // poses inicial y final de la trayectoria.
+        public float[] local_position;
+        public float[] offset_m; // (mode=explicit, alternativa) offset del pivote respecto al centro, ejes del componente
         public string note;
+
+        public bool HasLocalPosition => local_position != null && local_position.Length == 3;
+        public Vector3 LocalPosition => HasLocalPosition
+            ? new Vector3(local_position[0], local_position[1], local_position[2])
+            : Vector3.zero;
+    }
+
+    /// <summary>
+    /// Poses inicial y final de la trayectoria definidas por el autor en la
+    /// herramienta (marco de DeviceRoot). El builder usa end_pose para colocar un
+    /// componente que se pega a otro (attach_on_complete.snap_to_end_pose).
+    /// </summary>
+    [Serializable]
+    public class TrajectorySpec
+    {
+        public string view_plane;    // side_ZY | front_XY
+        public PoseSpec start_pose;
+        public PoseSpec end_pose;
+        public string provenance;
+    }
+
+    [Serializable]
+    public class PoseSpec
+    {
+        public float[] local_position;
+        public float angle_deg;
+
+        public bool HasPosition => local_position != null && local_position.Length == 3;
+        public Vector3 Position => HasPosition
+            ? new Vector3(local_position[0], local_position[1], local_position[2])
+            : Vector3.zero;
     }
 
     [Serializable]
@@ -229,8 +267,9 @@ namespace EFSM.Devices
         // Id (del device_spec) del componente al que este objeto se pega al
         // completar el gesto. GenericDeviceBuilder lo resuelve a un Transform.
         public string target_id;
-        // Si true, al pegarse se coloca en la pose final capturada por el usuario
-        // (o en el offset local por defecto); si false, se queda donde esté.
+        // Si true, al pegarse se coloca en la pose final de su trayectoria
+        // (trajectory.end_pose) o, si no la tiene, en el origen del target;
+        // si false, se queda donde esté.
         public bool snap_to_end_pose = true;
         public string provenance;
     }

@@ -6,9 +6,10 @@
 // QUÉ HACE
 //   Se añade a un componente móvil (p. ej. la cápsula o la taza) y, cuando el
 //   gesto se completa, lo REPARENTA bajo el componente 'target' y lo deja fijo
-//   ahí (deja de poder agarrarse/moverse). Modela el 'attach_to' del pipeline:
-//     · nespresso_capsule -> capsule_container
-//     · cup               -> drip_grid
+//   ahí (deja de poder agarrarse/moverse). Modela attach_on_complete del
+//   device_spec (p. ej. capsule -> capsule_compartment, cup -> drip_tray).
+//   GenericDeviceBuilder rellena 'target' y, si el componente tiene trayectoria,
+//   localPositionOffset/localEulerOffset con su pose final (end_pose).
 //
 //   Uso mínimo (lo que pediste): añade el componente, arrastra al campo 'target'
 //   el GameObject del componente al que debe pegarse, y listo.

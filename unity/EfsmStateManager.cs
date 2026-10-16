@@ -441,6 +441,16 @@ namespace EFSM
         /// notifiquen una accion intentada. Valida la transicion y su guarda, aplica el
         /// cambio de dimension y, si la accion corresponde a alguno de los pasos activos
         /// (incluida una rama), confirma ese camino.
+        ///
+        /// Una Interaction puede disparar Transitions de VARIAS maquinas (modelo
+        /// conceptual: Interaction "triggers" Transitions). Ejemplo: el boton Espresso
+        /// enciende la maquina (machine_leds, paso 1) y, ya caliente, prepara el cafe
+        /// (machine_cup, paso 7). Por eso la accion se ofrece primero a la maquina del
+        /// componente que la origina y despues al resto: se disparan todas las
+        /// transiciones con esa accion cuyo 'from' coincide con el estado actual y cuya
+        /// guarda se cumple. Las guardas se evaluan contra el snapshot ANTERIOR a
+        /// aplicar cualquier cambio. Si alguna transicion se dispara, las guardas que
+        /// fallen en otras maquinas no se notifican como error.
         /// </summary>
         public void TriggerAction(string machineId, string action)
         {
@@ -458,39 +468,85 @@ namespace EFSM
                 return;
             }
 
-            var currentDimValues = _snapshot.TryGetValue(machineId, out var dims) ? dims : new Dictionary<string, string>();
+            // Maquina de origen primero; despues el resto en el orden del EFSM.
+            var ordered = new List<MachineEntry> { machine };
+            ordered.AddRange(loader.Data.machines.Where(m => m != null && m.id != machineId));
 
-            var transition = machine.transitions.FirstOrDefault(t =>
-                t.action == action &&
-                currentDimValues.TryGetValue(t.dimension, out var current) &&
-                current == t.from);
-
-            if (transition == null)
+            var fired = new List<KeyValuePair<string, TransitionDef>>();
+            TransitionDef blocked = null;
+            foreach (var m in ordered)
             {
-                Debug.LogWarning($"[EfsmStateManager] Sin transicion valida para accion '{action}' en '{machineId}' desde el estado actual.");
+                if (m.transitions == null) continue;
+                if (!_snapshot.TryGetValue(m.id, out var dims)) continue;
+
+                var t = m.transitions.FirstOrDefault(tr =>
+                    tr != null && tr.action == action &&
+                    dims.TryGetValue(tr.dimension, out var current) && current == tr.from);
+                if (t == null) continue;
+
+                if (!string.IsNullOrEmpty(t.guard) && !GuardEvaluator.Evaluate(t.guard, _snapshot))
+                {
+                    if (blocked == null) blocked = t;
+                    continue;
+                }
+                fired.Add(new KeyValuePair<string, TransitionDef>(m.id, t));
+            }
+
+            if (fired.Count == 0)
+            {
+                if (blocked != null)
+                {
+                    Debug.LogWarning($"[EfsmStateManager] Guarda no satisfecha para '{blocked.id}': {blocked.guard}");
+                    OnGuardFailed?.Invoke(blocked.guard);
+                    OnUnexpectedAction?.Invoke(CurrentStep, action, "guard_not_satisfied");
+                    if (errorFeedbackText != null) errorFeedbackText.text = "Accion no disponible todavia.";
+                }
+                else
+                {
+                    Debug.LogWarning($"[EfsmStateManager] Sin transicion valida para accion '{action}' desde el estado actual " +
+                                     $"(origen '{machineId}').");
+                }
                 return;
             }
 
-            if (!string.IsNullOrEmpty(transition.guard) && !GuardEvaluator.Evaluate(transition.guard, _snapshot))
+            foreach (var f in fired)
             {
-                Debug.LogWarning($"[EfsmStateManager] Guarda no satisfecha para '{transition.id}': {transition.guard}");
-                OnGuardFailed?.Invoke(transition.guard);
-                OnUnexpectedAction?.Invoke(CurrentStep, action, "guard_not_satisfied");
-                if (errorFeedbackText != null) errorFeedbackText.text = "Accion no disponible todavia.";
-                return;
+                var t = f.Value;
+                if (_binders.TryGetValue(f.Key, out var binder))
+                {
+                    binder.SetDimensionValue(t.dimension, t.to);
+                }
+                else
+                {
+                    // Maquina sin objeto en escena: se actualiza el snapshot directamente.
+                    if (!_snapshot.TryGetValue(f.Key, out var dims))
+                        _snapshot[f.Key] = dims = new Dictionary<string, string>();
+                    dims.TryGetValue(t.dimension, out var prev);
+                    dims[t.dimension] = t.to;
+                    OnMachineStateChanged?.Invoke(f.Key, prev, t.to);
+                    UpdateComponentStateText();
+                    ScheduleStateTimeout(f.Key);
+                }
+
+                if (!string.IsNullOrEmpty(t.emits))
+                    OnSignalEmitted?.Invoke(t.emits);
+
+                if (f.Key != machineId)
+                    Debug.Log($"[EfsmStateManager] Accion '{action}' (origen '{machineId}') dispara '{t.id}' en '{f.Key}'.");
             }
 
-            if (_binders.TryGetValue(machineId, out var binder))
-                binder.SetDimensionValue(transition.dimension, transition.to);
+            // ¿Alguna transicion disparada corresponde a un paso activo (rama incluida)?
+            StepDef matched = null;
+            TransitionDef matchedT = null;
+            foreach (var st in _activeSteps)
+            {
+                var hit = fired.FirstOrDefault(f => StepAccepts(st, f.Value.id));
+                if (hit.Value != null) { matched = st; matchedT = hit.Value; break; }
+            }
 
-            if (!string.IsNullOrEmpty(transition.emits))
-                OnSignalEmitted?.Invoke(transition.emits);
-
-            // ¿La transicion corresponde a alguno de los pasos activos (rama incluida)?
-            var matched = _activeSteps.FirstOrDefault(st => StepAccepts(st, transition.id));
             if (matched != null)
             {
-                Debug.Log($"[EfsmStateManager] Paso {matched.order} completado: {transition.action}" +
+                Debug.Log($"[EfsmStateManager] Paso {matched.order} completado: {matchedT.action} ({matchedT.id})" +
                           (_activeSteps.Count > 1 ? "  (camino elegido en bifurcacion)" : ""));
                 CommitStep(matched);
             }
@@ -498,7 +554,7 @@ namespace EFSM
             {
                 // Transicion valida a nivel de maquina pero no es lo que el punto actual
                 // del procedimiento esperaba (ningun candidato la acepta).
-                Debug.LogWarning($"[EfsmStateManager] Accion '{action}' aplicada en '{machineId}' pero no corresponde a ningun paso activo.");
+                Debug.LogWarning($"[EfsmStateManager] Accion '{action}' aplicada pero no corresponde a ningun paso activo.");
                 OnUnexpectedAction?.Invoke(CurrentStep, action, "out_of_order");
             }
         }

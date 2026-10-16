@@ -134,7 +134,7 @@ namespace EFSM.Devices
                                      $"'{c.attach_on_complete.target_id}' no existe en el spec. No se cablea el pegado.");
                     continue;
                 }
-                ConfigureStickToTarget(src.gameObject, c, tgt);
+                ConfigureStickToTarget(src.gameObject, c, tgt, deviceRoot);
                 attached++;
             }
 
@@ -158,7 +158,11 @@ namespace EFSM.Devices
         private GameObject BuildComponent(ComponentSpec c, Transform deviceRoot)
         {
             Vector3 dims = c.representation.Dimensions;
+            // pivotOffset: desplazamiento del pivote respecto al centro del volumen,
+            // en el marco de DeviceRoot. localPivotOffset: el mismo vector en los ejes
+            // del propio componente (difiere si placement trae rotación inicial).
             Vector3 pivotOffset = ComputePivotOffset(c, dims);
+            Vector3 localPivotOffset = Quaternion.Inverse(c.placement.LocalRotation) * pivotOffset;
 
             // Raíz del componente. Con pivote desplazado, la raíz ES el pivote
             // (convención: el pivote de bisagras/deslizantes en su eje físico)
@@ -183,7 +187,7 @@ namespace EFSM.Devices
             {
                 GameObject visual = CreateVisual(c, dims);
                 visual.transform.SetParent(root.transform, false);
-                visual.transform.localPosition = -pivotOffset;
+                visual.transform.localPosition = -localPivotOffset;
                 visual.transform.localRotation = Quaternion.identity;
             }
 
@@ -192,7 +196,7 @@ namespace EFSM.Devices
             // escáner: se toca para colocar el documento) conserva su visual
             // pero su collider actúa como volumen de disparo.
             BoxCollider box = root.AddComponent<BoxCollider>();
-            box.center = -pivotOffset;
+            box.center = -localPivotOffset;
             box.size = dims;
             box.isTrigger = isTriggerVolume || isPress;
 
@@ -257,12 +261,23 @@ namespace EFSM.Devices
         // El pegado (attach) también puede acompañar a un movimiento con recorrido
         // (deslizar y pegar): si el componente es grabbable Y trae attach_on_complete,
         // la 2ª pasada añade igualmente el EfsmStickToTarget encima del mover.
-        private static void ConfigureStickToTarget(GameObject root, ComponentSpec c, Transform target)
+        private static void ConfigureStickToTarget(GameObject root, ComponentSpec c, Transform target, Transform deviceRoot)
         {
             EfsmStickToTarget stick = root.GetComponent<EfsmStickToTarget>();
             if (stick == null) stick = root.AddComponent<EfsmStickToTarget>();
             stick.target = target;
             stick.snapToTargetPose = c.attach_on_complete.snap_to_end_pose;
+
+            // Pose al pegarse: la pose final de la trayectoria que fijó el autor
+            // (marco de DeviceRoot), expresada relativa al target. Sin trayectoria,
+            // el objeto se coloca en el origen del target (offset cero).
+            if (stick.snapToTargetPose && c.trajectory?.end_pose != null && c.trajectory.end_pose.HasPosition)
+            {
+                Vector3 endWorld = deviceRoot.TransformPoint(c.trajectory.end_pose.Position);
+                stick.localPositionOffset = target.InverseTransformPoint(endWorld);
+                Quaternion endRot = deviceRoot.rotation * c.placement.LocalRotation;
+                stick.localEulerOffset = (Quaternion.Inverse(target.rotation) * endRot).eulerAngles;
+            }
 
             // Modo de disparo: si el objeto tiene ConstrainedMover (deslizar y pegar),
             // se pega al completar el recorrido; si no (soltar y pegar), queda en
@@ -328,14 +343,26 @@ namespace EFSM.Devices
         }
 
         // --------------------------------------------------------------------
+        /// <summary>
+        /// Desplazamiento del pivote respecto al centro del volumen visible, en el
+        /// marco de DeviceRoot. Con rotación inicial nula coincide con los ejes del
+        /// componente (caso de las instancias del estudio).
+        /// </summary>
         private static Vector3 ComputePivotOffset(ComponentSpec c, Vector3 dims)
         {
             PivotSpec p = c.placement.pivot;
             if (p == null || p.mode == "center" || string.IsNullOrEmpty(p.mode))
                 return Vector3.zero;
 
+            Quaternion rot = c.placement.LocalRotation;
+
+            // Pivote calculado por la herramienta a partir de las poses de la
+            // trayectoria: posición absoluta del eje en DeviceRoot.
+            if (p.mode == "explicit" && p.HasLocalPosition)
+                return p.LocalPosition - c.placement.LocalPosition;
+
             if (p.mode == "explicit" && p.offset_m != null && p.offset_m.Length == 3)
-                return new Vector3(p.offset_m[0], p.offset_m[1], p.offset_m[2]);
+                return rot * new Vector3(p.offset_m[0], p.offset_m[1], p.offset_m[2]);
 
             if (p.mode == "edge")
             {
@@ -343,12 +370,12 @@ namespace EFSM.Devices
                 // dispositivo (hacia el usuario), +x = derecha, +y = arriba.
                 switch (p.edge)
                 {
-                    case "front":  return new Vector3(0, 0,  dims.z * 0.5f);
-                    case "back":   return new Vector3(0, 0, -dims.z * 0.5f);
-                    case "left":   return new Vector3(-dims.x * 0.5f, 0, 0);
-                    case "right":  return new Vector3( dims.x * 0.5f, 0, 0);
-                    case "top":    return new Vector3(0,  dims.y * 0.5f, 0);
-                    case "bottom": return new Vector3(0, -dims.y * 0.5f, 0);
+                    case "front":  return rot * new Vector3(0, 0,  dims.z * 0.5f);
+                    case "back":   return rot * new Vector3(0, 0, -dims.z * 0.5f);
+                    case "left":   return rot * new Vector3(-dims.x * 0.5f, 0, 0);
+                    case "right":  return rot * new Vector3( dims.x * 0.5f, 0, 0);
+                    case "top":    return rot * new Vector3(0,  dims.y * 0.5f, 0);
+                    case "bottom": return rot * new Vector3(0, -dims.y * 0.5f, 0);
                 }
             }
             Debug.LogWarning($"[GenericDeviceBuilder] '{c.id}': pivot '{p.mode}/{p.edge}' no reconocido; uso centro.");

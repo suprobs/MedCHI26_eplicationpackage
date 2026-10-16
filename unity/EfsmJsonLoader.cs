@@ -262,6 +262,10 @@ namespace EFSM
     /// con soporte de "and" / "or" / "neq". No implementa lt/gt/lte/gte porque
     /// ningún componente de esta simulación usa dimensiones numéricas — ampliar
     /// aquí si un futuro dispositivo las necesita.
+    ///
+    /// Precedencia: "and" liga más fuerte que "or" (A or B and C = A or (B and C)),
+    /// igual que la herramienta de autoría y validation/validate_instance.py.
+    /// Por eso se separa primero por " or " y después por " and ".
     /// </summary>
     public static class GuardEvaluator
     {
@@ -269,13 +273,13 @@ namespace EFSM
         {
             if (string.IsNullOrWhiteSpace(expr)) return true;
 
-            if (expr.Contains(" and "))
-                return expr.Split(new[] { " and " }, StringSplitOptions.None)
-                    .All(e => Evaluate(e.Trim(), snapshot));
-
             if (expr.Contains(" or "))
                 return expr.Split(new[] { " or " }, StringSplitOptions.None)
                     .Any(e => Evaluate(e.Trim(), snapshot));
+
+            if (expr.Contains(" and "))
+                return expr.Split(new[] { " and " }, StringSplitOptions.None)
+                    .All(e => Evaluate(e.Trim(), snapshot));
 
             var neq = expr.Contains(" neq ");
             var parts = expr.Split(new[] { neq ? " neq " : " eq " }, StringSplitOptions.None);
@@ -285,7 +289,7 @@ namespace EFSM
             if (lhs.Length != 2) return false;
             var machineId = lhs[0];
             var dimension = lhs[1];
-            var expected = parts[1].Trim();
+            var expected = parts[1].Trim().Trim('"', '\'');
 
             if (!snapshot.TryGetValue(machineId, out var dims)) return false;
             if (!dims.TryGetValue(dimension, out var actual)) return false;

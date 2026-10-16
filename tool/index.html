@@ -6407,68 +6407,6 @@ function resetV3(){ cfg.lastV3ok=false; document.getElementById('cfg-v3').innerH
   if(typeof renderFigCheck==='function') renderFigCheck();
 }
 
-/* ── Grounding check: how much of the instance comes from the manual ─────────
-   Every value of the device specification carries a provenance tag. We classify
-   the provenance fields that describe a component (existence, placement, movement)
-   into five sources and flag the instance as WEAKLY GROUNDED when the share of
-   values not taken from the manual and not decided by the author exceeds
-   GROUNDING_THRESHOLD. The threshold is a visible parameter, not a measured
-   constant: it is a design choice of the method and can be changed here.
-   Author decisions are counted in the denominator but not as inferred, because
-   the author has reviewed them; they are reported separately. The check is
-   informational: it never blocks V3. */
-var GROUNDING_THRESHOLD = 0.30;
-var GROUNDING_FIELDS = ['existence','placement','movement'];
-function provSource(tag){
-  var t=String(tag||'').toLowerCase();
-  if(!t) return null;
-  if(/^user_decision|^user_created/.test(t)) return 'author';
-  if(/^library_match/.test(t)) return 'library';
-  if(/inferred|heuristic|archetype|semantic_default/.test(t)) return 'inferred'; /* incl. target_manual:inferred_trajectory */
-  if(/^target_manual/.test(t)) return 'manual';
-  if(/^default$/.test(t)) return 'default';
-  return 'inferred'; /* unknown tags are treated conservatively */
-}
-function computeGrounding(comps){
-  var counts={manual:0,inferred:0,library:0,author:0,default:0}, total=0, byComp=[];
-  (comps||[]).forEach(function(c){
-    var p=c.provenance||{}, notManual=[];
-    GROUNDING_FIELDS.forEach(function(f){
-      if(!(f in p)) return;
-      var s=provSource(p[f]); if(!s) return;
-      counts[s]++; total++;
-      if(s==='inferred'||s==='library'||s==='default') notManual.push(f+': '+p[f]);
-    });
-    if(notManual.length) byComp.push({id:c.id, fields:notManual});
-  });
-  var notFromManual = counts.inferred + counts.library + counts.default;
-  var ratio = total ? notFromManual/total : 0;
-  return { threshold: GROUNDING_THRESHOLD,
-    fields_counted: GROUNDING_FIELDS.slice(),
-    total_values: total,
-    counts: counts,
-    inferred_share: Math.round(ratio*1000)/1000,
-    weakly_grounded: ratio > GROUNDING_THRESHOLD,
-    note: 'Share of provenance values (existence/placement/movement) that come from inference, the reference library or defaults rather than from the target manual or an author decision. Above the threshold the instance is weakly grounded in its manual and needs closer expert review.',
-    not_from_manual: byComp };
-}
-function groundingHtml(g){
-  if(!g) return '';
-  var pct=Math.round(g.inferred_share*100), thr=Math.round(g.threshold*100), c=g.counts;
-  var head = g.weakly_grounded
-    ? '<strong>Weakly grounded in its manual:</strong> '+pct+'% of the values are inferred, taken from the library or defaulted (threshold '+thr+'%). Review the parts listed below before using this instance.'
-    : '<strong>Grounded in its manual:</strong> '+pct+'% of the values are inferred, taken from the library or defaulted (threshold '+thr+'%).';
-  var split = 'Manual '+c.manual+' · author '+c.author+' · inferred '+c.inferred+' · library '+c.library+' · default '+c.default+' (of '+g.total_values+' values).';
-  var list = (g.weakly_grounded && g.not_from_manual.length)
-    ? '<details style="margin-top:6px"><summary style="cursor:pointer">Values not taken from the manual ('+g.not_from_manual.length+' parts)</summary><ul>'+
-      g.not_from_manual.map(function(x){return '<li><strong>'+x.id+'</strong>: '+x.fields.join('; ')+'</li>';}).join('')+'</ul></details>'
-    : '';
-  var style = g.weakly_grounded
-    ? 'background:var(--orange-f);border:1px solid var(--orange);color:var(--orange)'
-    : 'background:var(--bg);border:1px solid var(--border);color:var(--text-2)';
-  return '<div style="'+style+';padding:12px 16px;border-radius:var(--r-md);margin-top:12px;font-size:13px;line-height:1.55">'+head+'<div style="font-size:12px;margin-top:4px">'+split+'</div>'+list+'</div>';
-}
-
 /* ── Device Spec v1.0 (same schema consumed by GenericDeviceBuilder) ── */
 function buildDeviceSpec(){
   var dm = resultJson.device_meta||resultJson.meta||{};
@@ -6561,10 +6499,8 @@ function buildDeviceSpec(){
         color_hint:def.col||[0.62,0.60,0.55] },
       placement:{ local_position:def.pos, local_rotation_euler:def.rot||[0,0,0], pivot:def.pivot||{mode:'center'} },
       movement:{ type:'static' },
-      /* Every entry of excluded_components was extracted from the target manual by the
-         EFSM prompt, so its existence comes from the manual even when it has no catalog
-         entry. (Previously tagged archetype_inference, which inflated the inferred share.) */
-      provenance:{ existence: 'target_manual:'+(dm.source_manual||'M01').split(' ')[0],
+      provenance:{ existence: haveCatalog ? 'target_manual:'+(dm.source_manual||'M01').split(' ')[0]
+                                          : 'archetype_inference',
         placement:def.prov||(haveCatalog?'semantic_default':'archetype_fallback'),
         inclusion:'device_roster_static',
         excluded_from_procedure: ex.reason||null } });
@@ -6631,7 +6567,6 @@ function buildDeviceSpec(){
     device: device,
     device_root:{ world_position_hint:[0,0.9,0.7], note:'Table height, ~70 cm in front of the user. DeviceRoot with no scale.' },
     scene_integrity: scene_integrity,
-    grounding: computeGrounding(comps),
     components: comps };
   try{ captureLearnedArchetype(result); }catch(e){}
   return result;
@@ -6903,25 +6838,42 @@ function runV3(){
       }
     }
   });
-  var t2m = {}; resultJson.machines.forEach(function(m){m.transitions.forEach(function(t){t2m[t.id]=m.id;});});
+  var t2m = {}, tById = {}; resultJson.machines.forEach(function(m){m.transitions.forEach(function(t){t2m[t.id]=m.id; tById[t.id]=t;});});
   var proc = resultJson.procedures.find(function(p){return p.id===cfg.procId;});
-  // Index of interactive machines included in the spec, tolerant of the 'machine_' prefix.
-  function normMach(x){ return String(x||'').replace(/^machine_/,''); }
-  var interactive = {}; spec.components.forEach(function(c){ if(c.interactive){ interactive[c.machine_id]=true; interactive[normMach(c.machine_id)]=true; } });
-  function stepMachines(s){
-    var refs = s.transition_ref ? [s.transition_ref] : (s.accepted_transition_refs||[]);
-    var ms = {}; refs.forEach(function(r){ if(t2m[r]) ms[t2m[r]]=true; }); return Object.keys(ms);
-  }
+  /* The Unity builder rejects an interactive component without a state machine. */
+  spec.components.forEach(function(c){
+    if(c.interactive && !c.machine_id)
+      errs.push(c.id+": is interactive but has no state machine, so the Unity builder rejects it. Set its movement to 'static' or link it to a component with behaviour");
+  });
+  /* C5: every step has a transition triggered by an Interaction. An action is
+     triggered when an interactive component binds it (press_action, action_at_max,
+     action_at_min); the runtime offers it to every machine, so the binding may sit
+     on another component (e.g. the Espresso button turns the machine on and later
+     brews the coffee). A transition fired by a state timeout (e.g. heating 25 s)
+     needs no interaction. */
+  var boundActions = {};
+  spec.components.forEach(function(c){
+    if(!c.interactive) return; var b=c.efsm_binding||{};
+    ['press_action','action_at_max','action_at_min'].forEach(function(k){ if(b[k]) boundActions[b[k]]=c.id; });
+  });
+  var timedTrans = {};
+  resultJson.machines.forEach(function(m){
+    (m.states||[]).forEach(function(s){
+      var to=s.timeout; if(!to||!to.after_ms||!to.to_state) return;
+      var tgt=(m.states||[]).find(function(x){return x.id===to.to_state;}); if(!tgt) return;
+      var dv=s.dimension_values||{}, tv=tgt.dimension_values||{};
+      (m.transitions||[]).forEach(function(t){ if(String(dv[t.dimension])===String(t.from)&&String(tv[t.dimension])===String(t.to)) timedTrans[t.id]=true; });
+    });
+  });
   proc.steps.forEach(function(s){
     if(s.external_step) return;
-    var ms = stepMachines(s);
-    if(!ms.length) return;
-    // The step is covered if AT LEAST ONE of its machines is included and interactive
-    // (for accepted_transition_refs, a single interactive option is enough, e.g. Espresso or Lungo).
-    var covered = ms.some(function(m){ return interactive[m] || interactive[normMach(m)]; });
+    var refs = [s.transition_ref].concat(s.accepted_transition_refs||[]).filter(Boolean);
+    if(!refs.length) return;
+    // A single triggered option is enough (e.g. Espresso or Lungo).
+    var covered = refs.some(function(r){ var t=tById[r]; return t && (boundActions[t.action] || timedTrans[r]); });
     if(!covered){
-      var label = ms.map(normMach).join(' or ');
-      errs.push('Step '+s.order+": needs an interactive component whose machine is '"+label+"' included in the spec (check its box or verify its movement isn't 'static')");
+      var acts = refs.map(function(r){ return tById[r]?tById[r].action:r; }).join(' or ');
+      errs.push('Step '+s.order+": no interactive component triggers '"+acts+"' and it is not fired by a state timeout (C5). Bind the action to an interactive component (check its box or verify its movement isn't 'static')");
     }
   });
   var box = document.getElementById('cfg-v3');
@@ -6937,8 +6889,6 @@ function runV3(){
   else { box.innerHTML = aliasHtml + '<div class="cfg-v3-ok">V3 OK — spec consistent with the EFSM. Artifacts ready to download.</div>'; cfg.lastV3ok=true;
     document.getElementById('cfg-downloads').style.display='block'; document.getElementById('cfg-next').disabled=false;
     if(typeof renderLearnedNote==='function') renderLearnedNote(); }
-  /* Grounding check (informational, never blocks V3). */
-  box.innerHTML += groundingHtml(spec.grounding);
 }
 
 /* ── Descargas ── */
@@ -7205,7 +7155,7 @@ function dossierState(){
     {id:'tablas',  label:'F2 Tables',ok:tablasOk, detail: tablasOk?((parsedComps?parsedComps.length:0)+' components · '+(typeof parsedProcs!=='undefined'?parsedProcs.length:0)+' procedures'):'Components / Procedures Table missing'},
     {id:'objetivo',label:'Target', ok:objetivo, detail: objetivo?((typeof simMode!=='undefined'&&simMode==='error'&&typeof parsedErrors!=='undefined'&&parsedErrors[selectedError])?parsedErrors[selectedError].name:(typeof parsedProcs!=='undefined'&&parsedProcs[selectedProc]?parsedProcs[selectedProc].name:'—')):'Not selected'},
     {id:'efsm',    label:'EFSM',     ok:efsm, detail: efsm?(((resultJson.meta&&resultJson.meta.device_type)||(resultJson.device_meta&&resultJson.device_meta.device_type)||'device')+' · '+((resultJson.machines||[]).length)+' machines · '+((resultJson.procedures||[]).length)+' procedures'):'EFSM JSON pending'},
-    {id:'spec',    label:'Spec · V3',ok:specOk, detail: specOk?('device_spec for '+cfg.procId+' — V3 green'+((cfg.lastSpec&&cfg.lastSpec.grounding)?(' · '+Math.round(cfg.lastSpec.grounding.inferred_share*100)+'% inferred'+(cfg.lastSpec.grounding.weakly_grounded?' (weakly grounded)':'')):'')):'device_spec.json not validated'},
+    {id:'spec',    label:'Spec · V3',ok:specOk, detail: specOk?('device_spec for '+cfg.procId+' — V3 green'):'device_spec.json not validated'},
     {id:'guia',    label:'Guide',     ok:!!window.__guiaGenerada, detail: window.__guiaGenerada?'Implementation guide generated':'Generated once the dossier is complete'}
   ];
 }
@@ -7389,7 +7339,7 @@ function dlGuia(){
   }
   md+='\n**Remove the keyboard driver in user sessions.**\n\n';
   md+='## 8. Final verification\nClean start → happy path → deliberate error (ITS escalation to simplified instruction) → "Procedure completed" → log `its_log_*.json` in `Application.persistentDataPath`.\n\n';
-  md+='## 9. Phase 7 log (fill in during assembly)\n| Metric | Value |\n|---|---|\n| EFSM iterations until V3 green | |\n| V3 attempts (failures → cause) | |\n| Inferred share of provenance values (threshold '+Math.round(((spec.grounding||{}).threshold||GROUNDING_THRESHOLD)*100)+'%) | '+(spec.grounding?(Math.round(spec.grounding.inferred_share*100)+'% — '+(spec.grounding.weakly_grounded?'WEAKLY GROUNDED':'grounded')+' (manual '+spec.grounding.counts.manual+', author '+spec.grounding.counts.author+', inferred '+spec.grounding.counts.inferred+', library '+spec.grounding.counts.library+', default '+spec.grounding.counts.default+')'):'n/a')+' |\n| fallback_events reviewed by expert | |\n| Time not measured — record number of work sessions | |\n';
+  md+='## 9. Phase 7 log (fill in during assembly)\n| Metric | Value |\n|---|---|\n| EFSM iterations until V3 green | |\n| V3 attempts (failures → cause) | |\n| Fields with archetype_inference provenance | |\n| fallback_events reviewed by expert | |\n| Time not measured — record number of work sessions | |\n';
   var libmx=(typeof libGuideMetrics==='function')?libGuideMetrics():'';
   if(libmx) md+=libmx;
   cfgDl('IMPLEMENTATION_GUIDE_'+cfg.procId+'_v1.md', md, 'text/markdown');
