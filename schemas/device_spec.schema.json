@@ -1,0 +1,276 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "device_spec.schema.json",
+  "title": "Device specification (3D representation and interactions), spec_version 1.0",
+  "description": "Representation and Interaction part of a model instance (Fig. 1 of the paper): one entry per component of the device, with its primitive geometry, placement, movement and binding to the actions of the behavioural specification. Read by GenericDeviceBuilder in Unity. Units: metres and degrees. Consistency with the EFSM (C5, bindings, attach targets) is checked by validation/validate_instance.py.",
+  "type": "object",
+  "required": ["spec_version", "device", "components"],
+  "properties": {
+    "spec_version": { "const": "1.0" },
+    "device": {
+      "type": "object",
+      "required": ["id", "physical_dimensions_mm"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "display_name": { "type": "string" },
+        "source_manual": { "type": "string" },
+        "efsm_ref": { "type": "string" },
+        "selection_ref": { "type": "string" },
+        "physical_dimensions_mm": {
+          "description": "[W, H, D] of the whole device in millimetres, from the manual.",
+          "$ref": "#/$defs/vec3"
+        },
+        "layout_source": { "type": "string" }
+      }
+    },
+    "device_root": {
+      "description": "Unscaled anchor under which all geometry is built.",
+      "type": "object",
+      "properties": {
+        "world_position_hint": { "$ref": "#/$defs/vec3" },
+        "note": { "type": "string" }
+      }
+    },
+    "scene_integrity": {
+      "description": "Whole-device check: every component in the manual is in the scene, either interactive or static.",
+      "type": "object",
+      "properties": {
+        "build_from_manual": { "type": "boolean" },
+        "policy": { "type": "string" },
+        "total_known_components": { "type": "integer", "minimum": 0 },
+        "components_in_scene": { "type": "integer", "minimum": 0 },
+        "interactive_count": { "type": "integer", "minimum": 0 },
+        "static_count": { "type": "integer", "minimum": 0 },
+        "missing_from_scene": {
+          "description": "Must be empty for export.",
+          "type": "array",
+          "maxItems": 0
+        },
+        "hidden_by_user": { "type": "array", "items": { "type": "string" } },
+        "user_created": { "type": "array", "items": { "type": "string" } },
+        "provenance_archetype_fallback": { "type": "array", "items": { "type": "string" } },
+        "figure_check": {
+          "description": "The author confirms that the built roster matches the manual's overview figure.",
+          "type": "object",
+          "properties": {
+            "required": { "type": "boolean" },
+            "status": { "enum": ["pending", "confirmed"] },
+            "reference": { "type": "string" },
+            "confirmed_by": { "type": ["string", "null"] },
+            "confirmed_at": { "type": ["string", "null"] },
+            "note": { "type": "string" }
+          }
+        },
+        "roster": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "in_scene", "interactive"],
+            "properties": {
+              "id": { "$ref": "#/$defs/id" },
+              "name": { "type": "string" },
+              "in_scene": { "type": "boolean" },
+              "interactive": { "type": "boolean" },
+              "role": { "type": "string" },
+              "hidden_by_user": { "type": "boolean" },
+              "existence_provenance": { "$ref": "#/$defs/provenanceTag" },
+              "placement_provenance": { "$ref": "#/$defs/provenanceTag" },
+              "placement_rough": { "type": "boolean" }
+            }
+          }
+        }
+      }
+    },
+    "grounding": {
+      "description": "Optional. Share of existence/placement/movement values not taken from the manual; flagged when above the threshold. Informational, never blocks export.",
+      "type": "object",
+      "properties": {
+        "threshold": { "type": "number", "minimum": 0, "maximum": 1 },
+        "total_values": { "type": "integer", "minimum": 0 },
+        "counts": { "type": "object", "additionalProperties": { "type": "integer" } },
+        "inferred_share": { "type": "number", "minimum": 0, "maximum": 1 },
+        "weakly_grounded": { "type": "boolean" },
+        "not_from_manual": { "type": "array" }
+      }
+    },
+    "components": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/component" }
+    }
+  },
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[A-Za-z0-9_\\-]+$" },
+    "vec3": {
+      "type": "array",
+      "items": { "type": "number" },
+      "minItems": 3,
+      "maxItems": 3
+    },
+    "axis": {
+      "description": "Local axis of the movement. 'invert' negates it.",
+      "enum": ["right", "up", "forward"]
+    },
+    "provenanceTag": {
+      "description": "Where a value comes from: target_manual:<detail> (manual), library / library_match:<entry> (previously validated instances), inferred / inferred_from_efsm / heuristic (inference), user_decision / user_created:<detail> (author), archetype_* / default (generic presets).",
+      "type": "string",
+      "minLength": 1
+    },
+    "representation": {
+      "description": "Representation: primitive block, flat trigger volume (buttons, LEDs) or external mesh.",
+      "type": "object",
+      "required": ["kind", "dimensions_m"],
+      "properties": {
+        "kind": { "enum": ["primitive", "trigger_volume", "mesh"] },
+        "primitive": { "enum": ["cube", "cylinder", "sphere", "capsule", null] },
+        "dimensions_m": { "$ref": "#/$defs/vec3" },
+        "mesh_override": { "type": ["string", "null"], "description": "Path or id of a mesh that replaces the primitive." },
+        "flat_icon": { "type": "boolean" },
+        "color_hint": { "$ref": "#/$defs/vec3" }
+      }
+    },
+    "pivot": {
+      "type": "object",
+      "required": ["mode"],
+      "properties": {
+        "mode": { "enum": ["center", "edge", "explicit"] },
+        "edge": { "enum": ["front", "back"] },
+        "local_position": { "$ref": "#/$defs/vec3" }
+      },
+      "allOf": [
+        { "if": { "properties": { "mode": { "const": "explicit" } } }, "then": { "required": ["local_position"] } }
+      ]
+    },
+    "placement": {
+      "type": "object",
+      "required": ["local_position", "pivot"],
+      "properties": {
+        "local_position": { "$ref": "#/$defs/vec3", "description": "Relative to DeviceRoot, in metres." },
+        "local_rotation_euler": { "$ref": "#/$defs/vec3" },
+        "pivot": { "$ref": "#/$defs/pivot" }
+      }
+    },
+    "range": {
+      "type": "object",
+      "required": ["min", "max", "units"],
+      "properties": {
+        "min": { "type": "number" },
+        "max": { "type": "number" },
+        "units": { "enum": ["degrees", "meters"] }
+      }
+    },
+    "movement": {
+      "description": "Interaction kind: static, press, attach, hinge (rotation between two angles) or slide_linear (translation along one axis).",
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": { "enum": ["static", "press", "attach", "hinge", "slide_linear"] },
+        "axis": { "$ref": "#/$defs/axis" },
+        "invert": { "type": "boolean" },
+        "range": { "$ref": "#/$defs/range" }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "type": { "const": "hinge" } } },
+          "then": { "required": ["axis", "range"], "properties": { "range": { "properties": { "units": { "const": "degrees" } } } } }
+        },
+        {
+          "if": { "properties": { "type": { "const": "slide_linear" } } },
+          "then": { "required": ["axis", "range"], "properties": { "range": { "properties": { "units": { "const": "meters" } } } } }
+        }
+      ]
+    },
+    "efsmBinding": {
+      "description": "Links the Interaction to the EFSM actions it triggers. Press: press_action. Hinge/slide: action_at_max fires above open_threshold of the range, action_at_min below closed_threshold.",
+      "type": "object",
+      "required": ["dimension"],
+      "properties": {
+        "dimension": { "type": "string" },
+        "press_action": { "type": ["string", "null"] },
+        "action_at_max": { "type": ["string", "null"] },
+        "action_at_min": { "type": ["string", "null"] },
+        "open_threshold": { "type": "number", "minimum": 0, "maximum": 1 },
+        "closed_threshold": { "type": "number", "minimum": 0, "maximum": 1 },
+        "movement_type": {
+          "description": "EFSM.MovementType used by ConstrainedMover in Unity.",
+          "enum": ["SlideHorizontal", "SlideVertical", "SlideDepth", "FlipHinge", "RotateAxis", "None"]
+        }
+      }
+    },
+    "pose": {
+      "type": "object",
+      "properties": {
+        "local_position": { "$ref": "#/$defs/vec3" },
+        "angle_deg": { "type": "number" }
+      }
+    },
+    "component": {
+      "type": "object",
+      "required": ["id", "machine_id", "interactive", "representation", "placement", "movement"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "display_name": { "type": "string" },
+        "machine_id": { "type": ["string", "null"], "description": "StateMachine of the EFSM, or null for static geometry." },
+        "interactive": { "type": "boolean" },
+        "user_created": { "type": "boolean" },
+        "representation": { "$ref": "#/$defs/representation" },
+        "placement": { "$ref": "#/$defs/placement" },
+        "movement": { "$ref": "#/$defs/movement" },
+        "provenance": {
+          "type": "object",
+          "properties": {
+            "existence": { "$ref": "#/$defs/provenanceTag" },
+            "placement": { "$ref": "#/$defs/provenanceTag" },
+            "movement": { "$ref": "#/$defs/provenanceTag" },
+            "inclusion": { "$ref": "#/$defs/provenanceTag" }
+          }
+        },
+        "xr_recipe": {
+          "description": "Meta XR Interaction SDK setup completed by hand in the Unity Inspector.",
+          "type": ["object", "null"],
+          "properties": {
+            "interaction": { "type": "string" },
+            "transformer": { "enum": ["OneGrabRotateTransformer", "OneGrabTranslateTransformer"] },
+            "movement_provider": { "type": "string" },
+            "constraints": { "type": "object" },
+            "rigidbody": {
+              "type": "object",
+              "properties": {
+                "is_kinematic": { "type": "boolean" },
+                "use_gravity": { "type": "boolean" }
+              }
+            }
+          }
+        },
+        "efsm_binding": { "$ref": "#/$defs/efsmBinding" },
+        "trajectory": {
+          "description": "Start and end poses set by the author; the pivot of a hinge is computed from them.",
+          "type": "object",
+          "properties": {
+            "view_plane": { "enum": ["side_ZY", "front_XY"] },
+            "start_pose": { "$ref": "#/$defs/pose" },
+            "end_pose": { "$ref": "#/$defs/pose" },
+            "provenance": { "$ref": "#/$defs/provenanceTag" }
+          }
+        },
+        "attach_on_complete": {
+          "description": "When the movement completes, the component is attached to target_id (EfsmStickToTarget).",
+          "type": "object",
+          "required": ["target_id"],
+          "properties": {
+            "target_id": { "$ref": "#/$defs/id" },
+            "snap_to_end_pose": { "type": "boolean" },
+            "provenance": { "$ref": "#/$defs/provenanceTag" },
+            "resolved_from": { "type": "string" }
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "movement": { "properties": { "type": { "const": "attach" } } } } },
+          "then": { "required": ["attach_on_complete"] }
+        }
+      ]
+    }
+  }
+}

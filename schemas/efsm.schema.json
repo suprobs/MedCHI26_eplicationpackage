@@ -1,0 +1,379 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "efsm.schema.json",
+  "title": "Behavioural specification (EFSM), runtime dialect 2.1.0-runtime",
+  "description": "Behavioural part of a model instance: Device, Components, StateMachines, Transitions, Procedures, Steps, StateConditions and Rules (Fig. 1 of the paper). This schema checks structure only. Cross-references (e.g. that a transition_ref exists, that a guard names a defined dimension) and integrity constraints C1-C5 are checked by validation/validate_instance.py.",
+  "type": "object",
+  "required": ["meta", "device_meta", "enums", "components_catalog", "machines", "procedures"],
+  "properties": {
+    "meta": { "$ref": "#/$defs/meta" },
+    "device_meta": {
+      "description": "Device. Read by the Unity loader (loader.Data.device_meta).",
+      "allOf": [
+        { "$ref": "#/$defs/meta" },
+        {
+          "type": "object",
+          "required": ["device_name", "source_manual", "target_procedures"],
+          "properties": {
+            "device_name": { "type": "string", "minLength": 1 },
+            "source_manual": { "type": "string", "minLength": 1 },
+            "target_procedures": {
+              "description": "Procedures to simulate, in execution order. Each must be an id in procedures[].",
+              "type": "array",
+              "minItems": 1,
+              "items": { "$ref": "#/$defs/id" }
+            }
+          }
+        }
+      ]
+    },
+    "enums": {
+      "description": "Vocabulary of the instance. Every dimension, action, movement, state value and signal used elsewhere must be listed here.",
+      "type": "object",
+      "required": ["dimensions", "actions", "movements", "state_values", "signals", "guard_ops"],
+      "properties": {
+        "dimensions": { "$ref": "#/$defs/stringSet" },
+        "actions": { "$ref": "#/$defs/stringSet" },
+        "movements": { "$ref": "#/$defs/stringSet" },
+        "state_values": { "$ref": "#/$defs/stringSet" },
+        "signals": { "$ref": "#/$defs/stringSet" },
+        "guard_ops": { "const": ["eq", "neq", "and", "or"] },
+        "ports": { "type": "array" },
+        "categories": { "$ref": "#/$defs/stringSet" }
+      }
+    },
+    "components_catalog": {
+      "description": "Components with behaviour in the target procedure(s); one StateMachine each. Materials have category 'material'.",
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/catalogComponent" }
+    },
+    "scene_props": {
+      "description": "Components without a StateMachine that are still shown (visual anchors, abstract materials).",
+      "type": "array",
+      "items": { "$ref": "#/$defs/sceneProp" }
+    },
+    "excluded_components": {
+      "description": "Components of the device not operated in the target procedure(s). Built as static geometry so the whole device is represented.",
+      "type": "array",
+      "items": { "$ref": "#/$defs/excludedComponent" }
+    },
+    "new_elements": {
+      "description": "Components added during behaviour modelling that were not in the extracted component table, with a rationale.",
+      "type": "array",
+      "items": { "$ref": "#/$defs/newElement" }
+    },
+    "machines": {
+      "description": "StateMachines, one per component in components_catalog.",
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/machine" }
+    },
+    "procedures": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/procedure" }
+    },
+    "rules": {
+      "description": "Rules derived from warnings and cautions. expr is null when the rule cannot be evaluated on the state variables.",
+      "type": "array",
+      "items": { "$ref": "#/$defs/rule" }
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_\\-]+$",
+      "description": "Identifiers are always strings, never integers."
+    },
+    "stringSet": {
+      "type": "array",
+      "items": { "type": "string" },
+      "uniqueItems": true
+    },
+    "value": {
+      "description": "Value of a state variable. Booleans are usually written as the strings 'true' / 'false'.",
+      "type": ["string", "number", "boolean"]
+    },
+    "guard": {
+      "description": "Guard expression: atoms 'machine_id.dimension eq|neq value' joined by ' and ' / ' or '. Operators ==, !=, &&, || are not allowed.",
+      "type": ["string", "null"],
+      "pattern": "^[A-Za-z0-9_]+\\.[A-Za-z0-9_]+ (eq|neq) \\S+( (and|or) [A-Za-z0-9_]+\\.[A-Za-z0-9_]+ (eq|neq) \\S+)*$"
+    },
+    "meta": {
+      "type": "object",
+      "required": ["version", "efsm_id", "device_type", "description", "source_manuals"],
+      "properties": {
+        "version": { "const": "2.1.0-runtime" },
+        "efsm_id": { "$ref": "#/$defs/id" },
+        "device_type": { "type": "string", "minLength": 1 },
+        "description": { "type": "string" },
+        "created_at": { "type": "string" },
+        "source_manuals": { "type": "array", "minItems": 1, "items": { "type": "string" } }
+      }
+    },
+    "layoutHint": {
+      "description": "Position and size read from the manual's overview figure, relative to the device. Depth estimated from a 2D figure is an estimate.",
+      "type": ["object", "null"],
+      "properties": {
+        "anchor": { "enum": ["top", "bottom", "left", "right", "front", "rear", "center", null] },
+        "rel": {
+          "description": "[x, y, z]: x and z in -0.5..0.5 from the centre; y in 0..1 from the base.",
+          "$ref": "#/$defs/vec3"
+        },
+        "size": { "description": "[w, h, d] as fractions of the device dimensions.", "$ref": "#/$defs/vec3" },
+        "flat": { "type": "boolean", "description": "Icons, LEDs, displays, labels: no 3D volume." },
+        "hingeEdge": { "enum": ["front", "back", null] }
+      }
+    },
+    "vec3": {
+      "type": "array",
+      "items": { "type": "number" },
+      "minItems": 3,
+      "maxItems": 3
+    },
+    "dimension": {
+      "description": "StateVariable. Both initial_value and initial are required and must be equal; the loader seeds the snapshot from 'initial'.",
+      "type": "object",
+      "required": ["name", "type", "values", "initial_value", "initial"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "type": { "enum": ["enum", "int", "bool"] },
+        "values": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/value" } },
+        "initial_value": { "$ref": "#/$defs/value" },
+        "initial": { "$ref": "#/$defs/value" },
+        "description": { "type": ["string", "null"] }
+      }
+    },
+    "catalogComponent": {
+      "type": "object",
+      "required": ["id", "machine_id", "name", "category", "dimensions"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "machine_id": { "type": "string", "pattern": "^machine_[A-Za-z0-9_\\-]+$" },
+        "name": { "type": "string", "minLength": 1, "description": "Exactly as in the extracted component table." },
+        "category": { "enum": ["device_component", "material"] },
+        "synonyms": { "type": "array", "items": { "type": "string" } },
+        "description": { "type": ["string", "null"] },
+        "location": { "type": ["string", "null"] },
+        "layout_hint": { "$ref": "#/$defs/layoutHint" },
+        "appearance_frequency": { "type": ["string", "null"] },
+        "dimensions": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/dimension" } },
+        "movements": { "type": "array", "items": { "type": "string" } },
+        "interactions": { "type": "array", "items": { "type": "string" }, "description": "Actions that change this component." }
+      }
+    },
+    "sceneProp": {
+      "type": "object",
+      "required": ["id", "name", "role"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "name": { "type": "string" },
+        "category": { "type": ["string", "null"] },
+        "role": { "enum": ["visual_anchor", "abstract_material"] },
+        "description": { "type": ["string", "null"] },
+        "location": { "type": ["string", "null"] },
+        "layout_hint": { "$ref": "#/$defs/layoutHint" }
+      }
+    },
+    "excludedComponent": {
+      "type": "object",
+      "required": ["id", "reason"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "name": { "type": "string" },
+        "reason": { "type": "string" },
+        "location": { "type": ["string", "null"] },
+        "layout_hint": { "$ref": "#/$defs/layoutHint" }
+      }
+    },
+    "newElement": {
+      "type": "object",
+      "required": ["name", "kind", "rationale"],
+      "properties": {
+        "name": { "type": "string" },
+        "kind": { "type": "string" },
+        "rationale": { "type": "string" },
+        "synonyms": { "type": "array", "items": { "type": "string" } },
+        "category": { "type": ["string", "null"] },
+        "description": { "type": ["string", "null"] },
+        "location": { "type": ["string", "null"] },
+        "layout_hint": { "$ref": "#/$defs/layoutHint" },
+        "appearance_frequency": { "type": ["string", "null"] },
+        "dimensions": { "type": "array", "items": { "$ref": "#/$defs/dimension" } },
+        "movements": { "type": "array", "items": { "type": "string" } },
+        "interactions": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "timeout": {
+      "description": "State timeout (e.g. heating 25 s). Either all fields are null or after_ms and to_state are set.",
+      "type": ["object", "null"],
+      "properties": {
+        "after_ms": { "type": ["integer", "null"], "minimum": 1 },
+        "to_state": { "type": ["string", "null"] },
+        "emit_signal": { "type": ["string", "null"] }
+      }
+    },
+    "state": {
+      "type": "object",
+      "required": ["id", "dimension_values"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "label": { "type": ["string", "null"] },
+        "dimension_values": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": { "$ref": "#/$defs/value" }
+        },
+        "is_error": { "type": "boolean" },
+        "is_terminal": { "type": "boolean" },
+        "invariant": { "type": ["string", "null"] },
+        "timeout": { "$ref": "#/$defs/timeout" }
+      }
+    },
+    "transition": {
+      "description": "Flat transition: one action changes one dimension from one value to another. Nested from_state/to_state objects and on_failure are not part of the dialect.",
+      "type": "object",
+      "required": ["id", "action", "movement", "dimension", "from", "to", "guard", "emits", "signals_emitted"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^t_[A-Za-z0-9_\\-]+_[0-9]+$" },
+        "action": { "type": "string", "minLength": 1 },
+        "movement": { "type": "string", "minLength": 1, "description": "A token of enums.movements or 'none'." },
+        "dimension": { "type": "string", "minLength": 1 },
+        "from": { "$ref": "#/$defs/value" },
+        "to": { "$ref": "#/$defs/value" },
+        "guard": { "$ref": "#/$defs/guard" },
+        "emits": { "type": ["string", "null"], "description": "Must equal signals_emitted[0] (or null if empty)." },
+        "signals_emitted": { "type": "array", "items": { "type": "string" } },
+        "description": { "type": ["string", "null"] }
+      },
+      "not": {
+        "anyOf": [
+          { "required": ["from_state"] },
+          { "required": ["to_state"] },
+          { "required": ["on_failure"] }
+        ]
+      }
+    },
+    "machine": {
+      "type": "object",
+      "required": ["id", "component_id", "initial_state", "states", "transitions"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^machine_[A-Za-z0-9_\\-]+$" },
+        "component_id": { "$ref": "#/$defs/id" },
+        "description": { "type": ["string", "null"] },
+        "initial_state": { "$ref": "#/$defs/id" },
+        "final_states": { "type": "array", "items": { "$ref": "#/$defs/id" } },
+        "states": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/state" } },
+        "transitions": { "type": "array", "items": { "$ref": "#/$defs/transition" } }
+      }
+    },
+    "precondition": {
+      "type": "object",
+      "required": ["machine_id", "dimension", "required_value"],
+      "properties": {
+        "machine_id": { "type": "string" },
+        "dimension": { "type": "string" },
+        "required_value": { "$ref": "#/$defs/value" },
+        "resolver_procedure_id": {
+          "type": ["string", "null"],
+          "description": "Procedure whose postconditions establish this value, if any."
+        }
+      }
+    },
+    "postcondition": {
+      "type": "object",
+      "required": ["machine_id", "dimension", "guaranteed_value"],
+      "properties": {
+        "machine_id": { "type": "string" },
+        "dimension": { "type": "string" },
+        "guaranteed_value": { "$ref": "#/$defs/value" }
+      }
+    },
+    "branch": {
+      "type": "object",
+      "properties": {
+        "id": { "type": ["string", "null"] },
+        "kind": { "enum": ["failure", "alternative", "diagnostic", "choice", null] },
+        "guard": { "$ref": "#/$defs/guard" },
+        "to_step": { "type": ["integer", "null"], "minimum": 1 },
+        "goto_procedure": { "type": ["string", "null"] },
+        "emit_signal": { "type": ["string", "null"] },
+        "description": { "type": ["string", "null"] }
+      }
+    },
+    "loop": {
+      "description": "Repetition of a contiguous block of steps ending at this step. times = number of extra passes.",
+      "type": ["object", "null"],
+      "properties": {
+        "repeat_step_orders": { "type": "array", "items": { "type": "integer", "minimum": 1 } },
+        "times": { "type": ["integer", "null"], "minimum": 0 },
+        "until_guard": { "$ref": "#/$defs/guard" }
+      }
+    },
+    "step": {
+      "type": "object",
+      "required": ["order", "description", "step_type", "external_step"],
+      "properties": {
+        "order": { "type": "integer", "minimum": 1 },
+        "description": { "type": "string", "minLength": 1, "description": "Instruction (as in the manual)." },
+        "simplified_description": { "type": ["string", "null"], "description": "simplifiedInstruction, shown when the guide escalates." },
+        "step_type": { "enum": ["action", "external", "loop"] },
+        "transition_ref": { "type": ["string", "null"] },
+        "accepted_transition_refs": {
+          "description": "Alternative transitions; any one of them completes the step.",
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "external_step": { "type": "boolean", "description": "Step performed outside the simulation (no transition)." },
+        "branches": { "type": "array", "items": { "$ref": "#/$defs/branch" } },
+        "loop": { "$ref": "#/$defs/loop" }
+      }
+    },
+    "procedure": {
+      "type": "object",
+      "required": ["id", "name", "preconditions", "postconditions", "steps"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "name": { "type": "string", "minLength": 1 },
+        "short_description": { "type": ["string", "null"] },
+        "category": { "type": ["string", "null"] },
+        "frequent_causes": { "type": "array" },
+        "requires": { "type": "array", "items": { "$ref": "#/$defs/id" } },
+        "unlocks": { "type": "array", "items": { "$ref": "#/$defs/id" } },
+        "preconditions": { "type": "array", "items": { "$ref": "#/$defs/precondition" } },
+        "postconditions": { "type": "array", "items": { "$ref": "#/$defs/postcondition" } },
+        "initial_component_states": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["machine_id", "dimension_values"],
+            "properties": {
+              "component_id": { "type": ["string", "null"] },
+              "machine_id": { "type": "string" },
+              "dimension_values": { "type": "object", "additionalProperties": { "$ref": "#/$defs/value" } }
+            }
+          }
+        },
+        "steps": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/step" } },
+        "guard": { "$ref": "#/$defs/guard", "description": "AND of the preconditions." }
+      }
+    },
+    "rule": {
+      "type": "object",
+      "required": ["id", "description", "expr", "applies_to"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "name": { "type": ["string", "null"] },
+        "description": { "type": "string" },
+        "expr": { "$ref": "#/$defs/guard" },
+        "priority": { "type": "integer" },
+        "applies_to": {
+          "description": "Transition ids or procedure ids the rule applies to.",
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    }
+  }
+}
