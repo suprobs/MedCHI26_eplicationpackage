@@ -1,0 +1,1763 @@
+{
+  "spec_version": "1.0",
+  "device": {
+    "id": "capsule_coffee_machine",
+    "display_name": "capsule_coffee_machine",
+    "source_manual": "UM_NESPRESSO_ESSENZA_MINI_Z1_C_PROD_WEB_2017_02_20.pdf",
+    "efsm_ref": "(EFSM loaded in this session)",
+    "selection_ref": "design_selection.json",
+    "physical_dimensions_mm": [
+      84,
+      204,
+      330
+    ],
+    "layout_source": "target_manual dimensions + EFSM location hints (semantic defaults; edited rows are user_decision)"
+  },
+  "device_root": {
+    "world_position_hint": [
+      0,
+      0.9,
+      0.7
+    ],
+    "note": "Table height, ~70 cm in front of the user. DeviceRoot with no scale."
+  },
+  "scene_integrity": {
+    "build_from_manual": true,
+    "policy": "Represent the full device. Every component in the manual is instantiated as geometry; procedure scope only decides interactivity, never presence.",
+    "total_known_components": 27,
+    "components_in_scene": 27,
+    "interactive_count": 8,
+    "static_count": 16,
+    "missing_from_scene": [],
+    "hidden_by_user": [
+      "descaling_agent",
+      "detergent",
+      "coffee_machine"
+    ],
+    "user_created": [
+      "espresso_button",
+      "lungo_button",
+      "water",
+      "coffee"
+    ],
+    "provenance_archetype_fallback": [],
+    "figure_check": {
+      "required": true,
+      "status": "confirmed",
+      "reference": "manual overview figure",
+      "confirmed_by": "session_20261017",
+      "confirmed_at": "2026-10-17T18:32:24.194Z",
+      "note": "Expert must confirm the built roster matches the labelled figure in the manual before the spec is valid."
+    },
+    "roster": [
+      {
+        "id": "espresso_button",
+        "name": "Espresso button",
+        "in_scene": true,
+        "interactive": true,
+        "role": "interactive",
+        "hidden_by_user": false,
+        "existence_provenance": "user_created:replaces_detected",
+        "placement_provenance": "user_decision",
+        "placement_rough": false
+      },
+      {
+        "id": "lungo_button",
+        "name": "Lungo button",
+        "in_scene": true,
+        "interactive": true,
+        "role": "interactive",
+        "hidden_by_user": false,
+        "existence_provenance": "user_created:replaces_detected",
+        "placement_provenance": "user_decision",
+        "placement_rough": false
+      },
+      {
+        "id": "leds",
+        "name": "LEDs",
+        "in_scene": true,
+        "interactive": true,
+        "role": "interactive",
+        "hidden_by_user": false,
+        "existence_provenance": "target_manual:UM_NESPRESSO_ESSENZA_MINI_Z1_C_PROD_WEB_2017_02_20.pdf",
+        "placement_provenance": "user_decision",
+        "placement_rough": false
+      },
+      {
+        "id": "lever",
+        "name": "Lever",
+        "in_scene": true,
+        "interactive": true,
+        "role": "interactive",
+        "hidden_by_user": false,
+        "existence_provenance": "target_manual:UM_NESPRESSO_ESSENZA_MINI_Z1_C_PROD_WEB_2017_02_20.pdf",
+        "placement_provenance": "target_manual:overview_figure",
+        "placement_rough": false
+      },
+      {
+        "id": "capsule",
+        "name": "Capsule",
+        "in_scene": true,
+        "interactive": true,
+        "role": "interactive",
+        "hidden_by_user": false,
+        "existence_provenance": "target_manual:UM_NESPRESSO_ESSENZA_MINI_Z1_C_PROD_WEB_2017_02_20.pdf",
+        "placement_provenance": "user_decision",
+        "placement_rough": false
+      },
+      {
+        "id": "cup",
+        "name": "Cup",
+        "in_scene": true,
+        "interactive": true,
+        "role": "interactive",
+        "hidden_by_user": false,
+        "existence_provenance": "target_manual:UM_NESPRESSO_ESSENZA_MINI_Z1_C_PROD_WEB_2017_02_20.pdf",
+        "placement_provenance": "user_decision",
+        "placement_rough": false
+      },
+      {
+        "id": "water_tank",
+        "name": "Water tank",
+        "in_scene": true,
+        "interactive": true,
+        "role": "interactive",
+        "hidden_by_user": false,
+        "existence_provenance": "target_manual:UM_NESPRESSO_ESSENZA_MINI_Z1_C_PROD_WEB_2017_02_20.pdf",
+        "placement_provenance": "user_decision",
+        "placement_rough": false
+      },
+      {
+        "id": "drip_tray",
+        "name": "Drip tray",
+        "in_scene": true,
+        "interactive": true,
+        "role": "interactive",
+        "hidden_by_user": false,
+        "existence_provenance": "target_manual:UM_NESPRESSO_ESSENZA_MINI_Z1_C_PROD_WEB_2017_02_20.pdf",
+        "placement_provenance": "user_decision",
+        "placement_rough": false
+      },
+      {
+        "id": "blades",
+        "name": "blades",
+        "in_scene": true,
+        "interactive": false,
+        "role": "device_roster_static",
+        "hidden_by_user": false,
+        "existence_provenance": "archetype_inference",
+        "placement_provenance": "target_manual:overview_figure",
+        "placement_rough": false
+      },
+      {
+        "id": "extraction_system",
+        "name": "extraction_system",
+        "in_scene": true,
+        "interactive": false,
+        "role": "device_roster_static",
+        "hidden_by_user": false,
+        "existence_provenance": "archetype_inference",
+        "placement_provenance": "target_manual:overview_figure",
+        "placement_rough": false
+      },
+      {
+        "id": "water_tank_lid",
+        "name": "water_tank_lid",
+        "in_scene": true,
+        "interactive": false,
+        "role": "device_roster_static",
+        "hidden_by_user": false,
+        "existence_provenance": "archetype_inference",
+        "placement_provenance": "user_decision",
+        "placement_rough": false
+      },
+      {
+        "id": "06_l_line",
+        "name": "06_l_line",
+        "in_scene": true,
+        "interactive": false,
+        "role": "device_roster_static",
+        "hidden_by_user": false,
+        "existence_provenance": "archetype_inference",
+        "placement_provenance": "user_decision",
+        "placement_rough": false
+      },
+      {
+        "id": "drip_base",
+        "name": "drip_base",
+        "in_scene": true,
+        "interactive": false,
+        "role": "device_roster_static",
+        "hidden_by_user": false,
+        "existence_provenance": "archetype_inference",
+        "placement_provenance": "user_decision",
+        "placement_rough": false
+      },
+      {
+        "id": "power_cord",
+        "name": "power_cord",
+        "in_scene": true,
+        "interactive": false,
+        "role": "device_roster_static",
+        "hidden_by_user": false,
+        "existence_provenance": "archetype_inference",
+        "placement_provenance": "user_decision",
+        "placement_rough": false
+      },
+      {
+        "id": "plug",
+        "name": "plug",
+        "in_scene": true,
+        "interactive": false,
+        "role": "device_roster_static",
+        "hidden_by_user": false,
+        "existence_provenance": "archetype_inference",
+        "placement_provenance": "user_decision",
+        "placement_rough": false
+      },
+      {
+        "id": "rating_plate",
+        "name": "rating_plate",
+        "in_scene": true,
+        "interactive": false,
+        "role": "device_roster_static",
+        "hidden_by_user": false,
+        "existence_provenance": "archetype_inference",
+        "placement_provenance": "user_decision",
+        "placement_rough": false
+      },
+      {
+        "id": "container",
+        "name": "container",
+        "in_scene": true,
+        "interactive": false,
+        "role": "device_roster_static",
+        "hidden_by_user": false,
+        "existence_provenance": "archetype_inference",
+        "placement_provenance": "user_decision",
+        "placement_rough": false
+      },
+      {
+        "id": "descaling_agent",
+        "name": "descaling_agent",
+        "in_scene": false,
+        "interactive": false,
+        "role": "HIDDEN_BY_USER",
+        "hidden_by_user": true,
+        "existence_provenance": null,
+        "placement_provenance": null,
+        "placement_rough": false
+      },
+      {
+        "id": "detergent",
+        "name": "detergent",
+        "in_scene": false,
+        "interactive": false,
+        "role": "HIDDEN_BY_USER",
+        "hidden_by_user": true,
+        "existence_provenance": null,
+        "placement_provenance": null,
+        "placement_rough": false
+      },
+      {
+        "id": "coffee_grounds",
+        "name": "coffee_grounds",
+        "in_scene": true,
+        "interactive": false,
+        "role": "device_roster_static",
+        "hidden_by_user": false,
+        "existence_provenance": "archetype_inference",
+        "placement_provenance": "user_decision",
+        "placement_rough": false
+      },
+      {
+        "id": "coffee_machine",
+        "name": "Coffee machine",
+        "in_scene": false,
+        "interactive": false,
+        "role": "HIDDEN_BY_USER",
+        "hidden_by_user": true,
+        "existence_provenance": null,
+        "placement_provenance": null,
+        "placement_rough": false
+      },
+      {
+        "id": "coffee_outlet",
+        "name": "Coffee outlet",
+        "in_scene": true,
+        "interactive": false,
+        "role": "scene_prop_visual_anchor",
+        "hidden_by_user": false,
+        "existence_provenance": "target_manual:UM_NESPRESSO_ESSENZA_MINI_Z1_C_PROD_WEB_2017_02_20.pdf",
+        "placement_provenance": "user_decision",
+        "placement_rough": false
+      },
+      {
+        "id": "drip_grid",
+        "name": "Drip grid",
+        "in_scene": true,
+        "interactive": false,
+        "role": "scene_prop_visual_anchor",
+        "hidden_by_user": false,
+        "existence_provenance": "target_manual:UM_NESPRESSO_ESSENZA_MINI_Z1_C_PROD_WEB_2017_02_20.pdf",
+        "placement_provenance": "user_decision",
+        "placement_rough": false
+      },
+      {
+        "id": "capsule_compartment",
+        "name": "Capsule compartment",
+        "in_scene": true,
+        "interactive": false,
+        "role": "scene_prop_visual_anchor",
+        "hidden_by_user": false,
+        "existence_provenance": "target_manual:UM_NESPRESSO_ESSENZA_MINI_Z1_C_PROD_WEB_2017_02_20.pdf",
+        "placement_provenance": "user_decision",
+        "placement_rough": false
+      },
+      {
+        "id": "capsule_container",
+        "name": "Capsule container",
+        "in_scene": true,
+        "interactive": false,
+        "role": "scene_prop_visual_anchor",
+        "hidden_by_user": false,
+        "existence_provenance": "target_manual:UM_NESPRESSO_ESSENZA_MINI_Z1_C_PROD_WEB_2017_02_20.pdf",
+        "placement_provenance": "user_decision",
+        "placement_rough": false
+      },
+      {
+        "id": "coffee",
+        "name": "Coffee",
+        "in_scene": true,
+        "interactive": false,
+        "role": "user_decision",
+        "hidden_by_user": false,
+        "existence_provenance": "user_created:replaces_detected",
+        "placement_provenance": "user_decision",
+        "placement_rough": false
+      },
+      {
+        "id": "water",
+        "name": "Water",
+        "in_scene": true,
+        "interactive": false,
+        "role": "user_decision",
+        "hidden_by_user": false,
+        "existence_provenance": "user_created:replaces_detected",
+        "placement_provenance": "user_decision",
+        "placement_rough": false
+      }
+    ]
+  },
+  "components": [
+    {
+      "id": "chassis",
+      "machine_id": null,
+      "interactive": false,
+      "representation": {
+        "kind": "primitive",
+        "primitive": "cube",
+        "dimensions_m": [
+          0.084,
+          0.204,
+          0.139
+        ],
+        "mesh_override": null,
+        "flat_icon": false,
+        "color_hint": [
+          0.22,
+          0.22,
+          0.24
+        ]
+      },
+      "placement": {
+        "local_position": [
+          0,
+          0.102,
+          -0.015
+        ],
+        "local_rotation_euler": [
+          0,
+          0,
+          0
+        ],
+        "pivot": {
+          "mode": "center"
+        }
+      },
+      "movement": {
+        "type": "static"
+      },
+      "provenance": {
+        "existence": "target_manual:UM_NESPRESSO_ESSENZA_MINI_Z1_C_PROD_WEB_2017_02_20.pdf",
+        "placement": "target_manual:dimensions",
+        "movement": "inferred_from_efsm",
+        "inclusion": "user_decision"
+      }
+    },
+    {
+      "id": "espresso_button",
+      "machine_id": "machine_espresso_button",
+      "interactive": true,
+      "representation": {
+        "kind": "primitive",
+        "primitive": "cube",
+        "dimensions_m": [
+          0.021,
+          0.005,
+          0.005
+        ],
+        "mesh_override": null,
+        "flat_icon": false,
+        "color_hint": [
+          0.82,
+          0.66,
+          0.3
+        ]
+      },
+      "placement": {
+        "local_position": [
+          -0.027,
+          0.205,
+          0.011
+        ],
+        "local_rotation_euler": [
+          0,
+          0,
+          0
+        ],
+        "pivot": {
+          "mode": "center"
+        }
+      },
+      "movement": {
+        "type": "press"
+      },
+      "provenance": {
+        "existence": "user_created:replaces_detected",
+        "placement": "user_decision",
+        "movement": "user_decision",
+        "inclusion": "user_decision"
+      },
+      "xr_recipe": {
+        "interaction": "EfsmPressTrigger"
+      },
+      "efsm_binding": {
+        "dimension": "contact",
+        "press_action": "press_espresso"
+      },
+      "user_created": true,
+      "display_name": "Espresso button"
+    },
+    {
+      "id": "lungo_button",
+      "machine_id": "machine_lungo_button",
+      "interactive": true,
+      "representation": {
+        "kind": "primitive",
+        "primitive": "cube",
+        "dimensions_m": [
+          0.021,
+          0.005,
+          0.005
+        ],
+        "mesh_override": null,
+        "flat_icon": false,
+        "color_hint": [
+          0.82,
+          0.66,
+          0.3
+        ]
+      },
+      "placement": {
+        "local_position": [
+          0.03,
+          0.207,
+          0.103
+        ],
+        "local_rotation_euler": [
+          0,
+          0,
+          0
+        ],
+        "pivot": {
+          "mode": "center"
+        }
+      },
+      "movement": {
+        "type": "press"
+      },
+      "provenance": {
+        "existence": "user_created:replaces_detected",
+        "placement": "user_decision",
+        "movement": "user_decision",
+        "inclusion": "user_decision"
+      },
+      "xr_recipe": {
+        "interaction": "EfsmPressTrigger"
+      },
+      "efsm_binding": {
+        "dimension": "contact",
+        "press_action": "press_lungo"
+      },
+      "user_created": true,
+      "display_name": "Lungo button"
+    },
+    {
+      "id": "leds",
+      "machine_id": "machine_leds",
+      "interactive": true,
+      "representation": {
+        "kind": "trigger_volume",
+        "primitive": "cube",
+        "dimensions_m": [
+          0.025,
+          0.003,
+          0.05
+        ],
+        "mesh_override": null,
+        "flat_icon": true,
+        "color_hint": [
+          0.7,
+          0.82,
+          0.92
+        ]
+      },
+      "placement": {
+        "local_position": [
+          0,
+          0.211,
+          0.036
+        ],
+        "local_rotation_euler": [
+          0,
+          0,
+          0
+        ],
+        "pivot": {
+          "mode": "center"
+        }
+      },
+      "movement": {
+        "type": "press",
+        "feedback": "blink"
+      },
+      "provenance": {
+        "existence": "target_manual:UM_NESPRESSO_ESSENZA_MINI_Z1_C_PROD_WEB_2017_02_20.pdf",
+        "placement": "user_decision",
+        "movement": "library_match:press_control",
+        "inclusion": "target_manual"
+      },
+      "xr_recipe": {
+        "interaction": "EfsmPressTrigger"
+      },
+      "efsm_binding": {
+        "dimension": "status",
+        "press_action": "press_espresso"
+      }
+    },
+    {
+      "id": "lever",
+      "machine_id": "machine_lever",
+      "interactive": true,
+      "representation": {
+        "kind": "primitive",
+        "primitive": "cube",
+        "dimensions_m": [
+          0.05,
+          0.012,
+          0.099
+        ],
+        "mesh_override": null,
+        "flat_icon": false,
+        "color_hint": [
+          0.7,
+          0.82,
+          0.92
+        ]
+      },
+      "placement": {
+        "local_position": [
+          0,
+          0.19,
+          0.099
+        ],
+        "local_rotation_euler": [
+          0,
+          0,
+          0
+        ],
+        "pivot": {
+          "mode": "explicit",
+          "local_position": [
+            0,
+            0.177,
+            0.067
+          ]
+        }
+      },
+      "movement": {
+        "type": "hinge",
+        "axis": "right",
+        "range": {
+          "min": 0,
+          "max": 70,
+          "units": "degrees"
+        },
+        "invert": false
+      },
+      "provenance": {
+        "existence": "target_manual:UM_NESPRESSO_ESSENZA_MINI_Z1_C_PROD_WEB_2017_02_20.pdf",
+        "placement": "target_manual:overview_figure",
+        "movement": "user_decision",
+        "inclusion": "target_manual"
+      },
+      "trajectory": {
+        "view_plane": "side_ZY",
+        "start_pose": {
+          "local_position": [
+            0,
+            0.19,
+            0.099
+          ],
+          "angle_deg": 0
+        },
+        "end_pose": {
+          "local_position": [
+            -0.001,
+            0.212,
+            0.066
+          ],
+          "angle_deg": 70
+        },
+        "provenance": "user_decision"
+      },
+      "xr_recipe": {
+        "transformer": "OneGrabRotateTransformer",
+        "constraints": {
+          "min": 0,
+          "max": 70
+        },
+        "movement_provider": "MoveFromTargetProvider",
+        "rigidbody": {
+          "is_kinematic": true,
+          "use_gravity": false
+        }
+      },
+      "efsm_binding": {
+        "dimension": "position",
+        "open_threshold": 0.85,
+        "closed_threshold": 0.15,
+        "action_at_max": "lift_lever",
+        "action_at_min": "close_lever"
+      }
+    },
+    {
+      "id": "capsule",
+      "machine_id": "machine_capsule",
+      "interactive": true,
+      "representation": {
+        "kind": "primitive",
+        "primitive": "cube",
+        "dimensions_m": [
+          0.037,
+          0.029,
+          0.036
+        ],
+        "mesh_override": null,
+        "flat_icon": false,
+        "color_hint": [
+          0.7,
+          0.82,
+          0.92
+        ]
+      },
+      "placement": {
+        "local_position": [
+          0.097,
+          0.132,
+          0.202
+        ],
+        "local_rotation_euler": [
+          0,
+          0,
+          0
+        ],
+        "pivot": {
+          "mode": "center"
+        }
+      },
+      "movement": {
+        "type": "slide_linear",
+        "axis": "forward",
+        "range": {
+          "min": 0,
+          "max": 0.173,
+          "units": "meters"
+        },
+        "invert": true
+      },
+      "provenance": {
+        "existence": "target_manual:UM_NESPRESSO_ESSENZA_MINI_Z1_C_PROD_WEB_2017_02_20.pdf",
+        "placement": "user_decision",
+        "movement": "user_decision",
+        "inclusion": "target_manual"
+      },
+      "trajectory": {
+        "view_plane": "side_ZY",
+        "start_pose": {
+          "local_position": [
+            0.097,
+            0.132,
+            0.202
+          ],
+          "angle_deg": 0
+        },
+        "end_pose": {
+          "local_position": [
+            0,
+            0.203,
+            0.029
+          ],
+          "angle_deg": 0
+        },
+        "provenance": "user_decision"
+      },
+      "xr_recipe": {
+        "transformer": "OneGrabTranslateTransformer",
+        "constraints": {
+          "axis": "forward",
+          "min": 0,
+          "max": 0.173,
+          "units": "meters"
+        },
+        "movement_provider": "MoveFromTargetProvider",
+        "rigidbody": {
+          "is_kinematic": true,
+          "use_gravity": false
+        }
+      },
+      "efsm_binding": {
+        "dimension": "position",
+        "open_threshold": 0.85,
+        "closed_threshold": 0.15,
+        "action_at_max": "insert_capsule",
+        "action_at_min": null,
+        "movement_type": "SlideDepth"
+      },
+      "attach_on_complete": {
+        "target_id": "chassis",
+        "snap_to_end_pose": true,
+        "provenance": "user_decision"
+      }
+    },
+    {
+      "id": "cup",
+      "machine_id": "machine_cup",
+      "interactive": true,
+      "representation": {
+        "kind": "primitive",
+        "primitive": "cube",
+        "dimensions_m": [
+          0.05,
+          0.06,
+          0.05
+        ],
+        "mesh_override": null,
+        "flat_icon": false,
+        "color_hint": [
+          0.7,
+          0.82,
+          0.92
+        ]
+      },
+      "placement": {
+        "local_position": [
+          0.099,
+          0.079,
+          0.202
+        ],
+        "local_rotation_euler": [
+          0,
+          0,
+          0
+        ],
+        "pivot": {
+          "mode": "center"
+        }
+      },
+      "movement": {
+        "type": "slide_linear",
+        "axis": "forward",
+        "range": {
+          "min": 0,
+          "max": 0.119,
+          "units": "meters"
+        },
+        "invert": true
+      },
+      "provenance": {
+        "existence": "target_manual:UM_NESPRESSO_ESSENZA_MINI_Z1_C_PROD_WEB_2017_02_20.pdf",
+        "placement": "user_decision",
+        "movement": "user_decision",
+        "inclusion": "target_manual"
+      },
+      "trajectory": {
+        "view_plane": "side_ZY",
+        "start_pose": {
+          "local_position": [
+            0.099,
+            0.079,
+            0.202
+          ],
+          "angle_deg": 0
+        },
+        "end_pose": {
+          "local_position": [
+            0,
+            0.076,
+            0.083
+          ],
+          "angle_deg": 0
+        },
+        "provenance": "user_decision"
+      },
+      "xr_recipe": {
+        "transformer": "OneGrabTranslateTransformer",
+        "constraints": {
+          "axis": "forward",
+          "min": 0,
+          "max": 0.119,
+          "units": "meters"
+        },
+        "movement_provider": "MoveFromTargetProvider",
+        "rigidbody": {
+          "is_kinematic": true,
+          "use_gravity": false
+        }
+      },
+      "efsm_binding": {
+        "dimension": "position",
+        "open_threshold": 0.85,
+        "closed_threshold": 0.15,
+        "action_at_max": "place_cup",
+        "action_at_min": "remove_cup",
+        "movement_type": "SlideDepth"
+      },
+      "attach_on_complete": {
+        "target_id": "drip_tray",
+        "snap_to_end_pose": true,
+        "provenance": "user_decision"
+      }
+    },
+    {
+      "id": "water_tank",
+      "machine_id": "machine_water_tank",
+      "interactive": true,
+      "representation": {
+        "kind": "primitive",
+        "primitive": "cube",
+        "dimensions_m": [
+          0.084,
+          0.184,
+          0.083
+        ],
+        "mesh_override": null,
+        "flat_icon": false,
+        "color_hint": [
+          0.7,
+          0.82,
+          0.92
+        ]
+      },
+      "placement": {
+        "local_position": [
+          0,
+          0.092,
+          -0.128
+        ],
+        "local_rotation_euler": [
+          0,
+          0,
+          0
+        ],
+        "pivot": {
+          "mode": "center"
+        }
+      },
+      "movement": {
+        "type": "slide_linear",
+        "axis": "forward",
+        "range": {
+          "min": 0,
+          "max": 0.115,
+          "units": "meters"
+        },
+        "invert": true
+      },
+      "provenance": {
+        "existence": "target_manual:UM_NESPRESSO_ESSENZA_MINI_Z1_C_PROD_WEB_2017_02_20.pdf",
+        "placement": "user_decision",
+        "movement": "user_decision",
+        "inclusion": "target_manual"
+      },
+      "trajectory": {
+        "view_plane": "side_ZY",
+        "start_pose": {
+          "local_position": [
+            0,
+            0.092,
+            -0.128
+          ],
+          "angle_deg": 0
+        },
+        "end_pose": {
+          "local_position": [
+            0,
+            0.098,
+            -0.243
+          ],
+          "angle_deg": 0
+        },
+        "provenance": "user_decision"
+      },
+      "xr_recipe": {
+        "transformer": "OneGrabTranslateTransformer",
+        "constraints": {
+          "axis": "forward",
+          "min": 0,
+          "max": 0.115,
+          "units": "meters"
+        },
+        "movement_provider": "MoveFromTargetProvider",
+        "rigidbody": {
+          "is_kinematic": true,
+          "use_gravity": false
+        }
+      },
+      "efsm_binding": {
+        "dimension": "content",
+        "open_threshold": 0.85,
+        "closed_threshold": 0.15,
+        "action_at_max": "empty_and_rinse_water_tank",
+        "action_at_min": "fill_water_tank",
+        "movement_type": "SlideDepth"
+      }
+    },
+    {
+      "id": "drip_tray",
+      "machine_id": "machine_drip_tray",
+      "interactive": true,
+      "representation": {
+        "kind": "primitive",
+        "primitive": "cube",
+        "dimensions_m": [
+          0.08,
+          0.016,
+          0.083
+        ],
+        "mesh_override": null,
+        "flat_icon": false,
+        "color_hint": [
+          0.7,
+          0.82,
+          0.92
+        ]
+      },
+      "placement": {
+        "local_position": [
+          0,
+          0.034,
+          0.097
+        ],
+        "local_rotation_euler": [
+          0,
+          0,
+          0
+        ],
+        "pivot": {
+          "mode": "center"
+        }
+      },
+      "movement": {
+        "type": "slide_linear",
+        "axis": "forward",
+        "range": {
+          "min": 0,
+          "max": 0.251,
+          "units": "meters"
+        },
+        "invert": false
+      },
+      "provenance": {
+        "existence": "target_manual:UM_NESPRESSO_ESSENZA_MINI_Z1_C_PROD_WEB_2017_02_20.pdf",
+        "placement": "user_decision",
+        "movement": "user_decision",
+        "inclusion": "target_manual"
+      },
+      "trajectory": {
+        "view_plane": "side_ZY",
+        "start_pose": {
+          "local_position": [
+            0,
+            0.034,
+            0.097
+          ],
+          "angle_deg": 0
+        },
+        "end_pose": {
+          "local_position": [
+            0,
+            0.05,
+            0.348
+          ],
+          "angle_deg": 0
+        },
+        "provenance": "user_decision"
+      },
+      "xr_recipe": {
+        "transformer": "OneGrabTranslateTransformer",
+        "constraints": {
+          "axis": "forward",
+          "min": 0,
+          "max": 0.251,
+          "units": "meters"
+        },
+        "movement_provider": "MoveFromTargetProvider",
+        "rigidbody": {
+          "is_kinematic": true,
+          "use_gravity": false
+        }
+      },
+      "efsm_binding": {
+        "dimension": "position",
+        "open_threshold": 0.85,
+        "closed_threshold": 0.15,
+        "action_at_max": "remove_drip_tray",
+        "action_at_min": "insert_drip_tray",
+        "movement_type": "SlideDepth"
+      }
+    },
+    {
+      "id": "water",
+      "machine_id": null,
+      "interactive": false,
+      "representation": {
+        "kind": "primitive",
+        "primitive": "cube",
+        "dimensions_m": [
+          0.075,
+          0.1,
+          0.083
+        ],
+        "mesh_override": null,
+        "flat_icon": false,
+        "color_hint": [
+          0.82,
+          0.66,
+          0.3
+        ]
+      },
+      "placement": {
+        "local_position": [
+          0,
+          0.05,
+          -0.127
+        ],
+        "local_rotation_euler": [
+          0,
+          0,
+          0
+        ],
+        "pivot": {
+          "mode": "center"
+        }
+      },
+      "movement": {
+        "type": "static"
+      },
+      "provenance": {
+        "existence": "user_created:replaces_detected",
+        "placement": "user_decision",
+        "movement": "user_decision",
+        "inclusion": "user_decision"
+      },
+      "user_created": true,
+      "display_name": "Water"
+    },
+    {
+      "id": "coffee",
+      "machine_id": null,
+      "interactive": false,
+      "representation": {
+        "kind": "primitive",
+        "primitive": "cube",
+        "dimensions_m": [
+          0.021,
+          0.051,
+          0.083
+        ],
+        "mesh_override": null,
+        "flat_icon": false,
+        "color_hint": [
+          0.82,
+          0.66,
+          0.3
+        ]
+      },
+      "placement": {
+        "local_position": [
+          0,
+          0.143,
+          -0.035
+        ],
+        "local_rotation_euler": [
+          0,
+          0,
+          0
+        ],
+        "pivot": {
+          "mode": "center"
+        }
+      },
+      "movement": {
+        "type": "static"
+      },
+      "provenance": {
+        "existence": "user_created:replaces_detected",
+        "placement": "user_decision",
+        "movement": "user_decision",
+        "inclusion": "user_decision"
+      },
+      "user_created": true,
+      "display_name": "Coffee"
+    },
+    {
+      "id": "coffee_outlet",
+      "machine_id": null,
+      "interactive": false,
+      "representation": {
+        "kind": "primitive",
+        "primitive": "cube",
+        "dimensions_m": [
+          0.021,
+          0.01,
+          0.026
+        ],
+        "mesh_override": null,
+        "flat_icon": false,
+        "color_hint": [
+          0.3,
+          0.3,
+          0.32
+        ]
+      },
+      "placement": {
+        "local_position": [
+          0,
+          0.177,
+          0.085
+        ],
+        "local_rotation_euler": [
+          0,
+          0,
+          0
+        ],
+        "pivot": {
+          "mode": "center"
+        }
+      },
+      "movement": {
+        "type": "static"
+      },
+      "provenance": {
+        "existence": "target_manual:UM_NESPRESSO_ESSENZA_MINI_Z1_C_PROD_WEB_2017_02_20.pdf",
+        "placement": "user_decision",
+        "inclusion": "scene_prop_visual_anchor"
+      }
+    },
+    {
+      "id": "drip_grid",
+      "machine_id": null,
+      "interactive": false,
+      "representation": {
+        "kind": "primitive",
+        "primitive": "cube",
+        "dimensions_m": [
+          0.076,
+          0.004,
+          0.073
+        ],
+        "mesh_override": null,
+        "flat_icon": false,
+        "color_hint": [
+          0.3,
+          0.3,
+          0.32
+        ]
+      },
+      "placement": {
+        "local_position": [
+          0,
+          0.022,
+          0.091
+        ],
+        "local_rotation_euler": [
+          0,
+          0,
+          0
+        ],
+        "pivot": {
+          "mode": "center"
+        }
+      },
+      "movement": {
+        "type": "static"
+      },
+      "provenance": {
+        "existence": "target_manual:UM_NESPRESSO_ESSENZA_MINI_Z1_C_PROD_WEB_2017_02_20.pdf",
+        "placement": "user_decision",
+        "inclusion": "scene_prop_visual_anchor"
+      }
+    },
+    {
+      "id": "capsule_compartment",
+      "machine_id": null,
+      "interactive": false,
+      "representation": {
+        "kind": "primitive",
+        "primitive": "cube",
+        "dimensions_m": [
+          0.034,
+          0.016,
+          0.04
+        ],
+        "mesh_override": null,
+        "flat_icon": false,
+        "color_hint": [
+          0.3,
+          0.3,
+          0.32
+        ]
+      },
+      "placement": {
+        "local_position": [
+          0,
+          0.2,
+          0.077
+        ],
+        "local_rotation_euler": [
+          0,
+          0,
+          0
+        ],
+        "pivot": {
+          "mode": "center"
+        }
+      },
+      "movement": {
+        "type": "static"
+      },
+      "provenance": {
+        "existence": "target_manual:UM_NESPRESSO_ESSENZA_MINI_Z1_C_PROD_WEB_2017_02_20.pdf",
+        "placement": "user_decision",
+        "inclusion": "scene_prop_visual_anchor"
+      }
+    },
+    {
+      "id": "capsule_container",
+      "machine_id": null,
+      "interactive": false,
+      "representation": {
+        "kind": "primitive",
+        "primitive": "cube",
+        "dimensions_m": [
+          0.071,
+          0.071,
+          0.066
+        ],
+        "mesh_override": null,
+        "flat_icon": false,
+        "color_hint": [
+          0.3,
+          0.3,
+          0.32
+        ]
+      },
+      "placement": {
+        "local_position": [
+          0,
+          0.145,
+          0.037
+        ],
+        "local_rotation_euler": [
+          0,
+          0,
+          0
+        ],
+        "pivot": {
+          "mode": "center"
+        }
+      },
+      "movement": {
+        "type": "static"
+      },
+      "provenance": {
+        "existence": "target_manual:UM_NESPRESSO_ESSENZA_MINI_Z1_C_PROD_WEB_2017_02_20.pdf",
+        "placement": "user_decision",
+        "inclusion": "scene_prop_visual_anchor"
+      }
+    },
+    {
+      "id": "blades",
+      "machine_id": null,
+      "interactive": false,
+      "representation": {
+        "kind": "primitive",
+        "primitive": "cube",
+        "dimensions_m": [
+          0.025,
+          0.031,
+          0.05
+        ],
+        "mesh_override": null,
+        "flat_icon": false,
+        "color_hint": [
+          0.62,
+          0.6,
+          0.55
+        ]
+      },
+      "placement": {
+        "local_position": [
+          0,
+          0.016,
+          0
+        ],
+        "local_rotation_euler": [
+          0,
+          0,
+          0
+        ],
+        "pivot": {
+          "mode": "center"
+        }
+      },
+      "movement": {
+        "type": "static"
+      },
+      "provenance": {
+        "existence": "archetype_inference",
+        "placement": "target_manual:overview_figure",
+        "inclusion": "device_roster_static",
+        "excluded_from_procedure": "Internal part that pierces the capsule; not shown in figures and not acted on by the user."
+      }
+    },
+    {
+      "id": "extraction_system",
+      "machine_id": null,
+      "interactive": false,
+      "representation": {
+        "kind": "primitive",
+        "primitive": "cube",
+        "dimensions_m": [
+          0.025,
+          0.031,
+          0.05
+        ],
+        "mesh_override": null,
+        "flat_icon": false,
+        "color_hint": [
+          0.62,
+          0.6,
+          0.55
+        ]
+      },
+      "placement": {
+        "local_position": [
+          0,
+          0.049,
+          0
+        ],
+        "local_rotation_euler": [
+          0,
+          0,
+          0
+        ],
+        "pivot": {
+          "mode": "center"
+        }
+      },
+      "movement": {
+        "type": "static"
+      },
+      "provenance": {
+        "existence": "archetype_inference",
+        "placement": "target_manual:overview_figure",
+        "inclusion": "device_roster_static",
+        "excluded_from_procedure": "Internal pressurised system; not shown in figures and not acted on by the user."
+      }
+    },
+    {
+      "id": "water_tank_lid",
+      "machine_id": null,
+      "interactive": false,
+      "representation": {
+        "kind": "primitive",
+        "primitive": "cube",
+        "dimensions_m": [
+          0.084,
+          0.006,
+          0.083
+        ],
+        "mesh_override": null,
+        "flat_icon": false,
+        "color_hint": [
+          0.62,
+          0.6,
+          0.55
+        ]
+      },
+      "placement": {
+        "local_position": [
+          0,
+          0.186,
+          -0.127
+        ],
+        "local_rotation_euler": [
+          0,
+          0,
+          0
+        ],
+        "pivot": {
+          "mode": "edge",
+          "edge": "front"
+        }
+      },
+      "movement": {
+        "type": "static"
+      },
+      "provenance": {
+        "existence": "archetype_inference",
+        "placement": "user_decision",
+        "inclusion": "device_roster_static",
+        "excluded_from_procedure": "Not used in coffee preparation."
+      }
+    },
+    {
+      "id": "06_l_line",
+      "machine_id": null,
+      "interactive": false,
+      "representation": {
+        "kind": "trigger_volume",
+        "primitive": "cube",
+        "dimensions_m": [
+          0,
+          0.003,
+          0.033
+        ],
+        "mesh_override": null,
+        "flat_icon": true,
+        "color_hint": [
+          0.62,
+          0.6,
+          0.55
+        ]
+      },
+      "placement": {
+        "local_position": [
+          0.042,
+          0.117,
+          -0.099
+        ],
+        "local_rotation_euler": [
+          0,
+          0,
+          0
+        ],
+        "pivot": {
+          "mode": "center"
+        }
+      },
+      "movement": {
+        "type": "static"
+      },
+      "provenance": {
+        "existence": "archetype_inference",
+        "placement": "user_decision",
+        "inclusion": "device_roster_static",
+        "excluded_from_procedure": "Fill mark used in descaling."
+      }
+    },
+    {
+      "id": "drip_base",
+      "machine_id": null,
+      "interactive": false,
+      "representation": {
+        "kind": "primitive",
+        "primitive": "cube",
+        "dimensions_m": [
+          0.076,
+          0.024,
+          0.066
+        ],
+        "mesh_override": null,
+        "flat_icon": false,
+        "color_hint": [
+          0.62,
+          0.6,
+          0.55
+        ]
+      },
+      "placement": {
+        "local_position": [
+          0,
+          0.012,
+          0.091
+        ],
+        "local_rotation_euler": [
+          0,
+          0,
+          0
+        ],
+        "pivot": {
+          "mode": "center"
+        }
+      },
+      "movement": {
+        "type": "static"
+      },
+      "provenance": {
+        "existence": "archetype_inference",
+        "placement": "user_decision",
+        "inclusion": "device_roster_static",
+        "excluded_from_procedure": "Emptied in cleaning and descaling."
+      }
+    },
+    {
+      "id": "power_cord",
+      "machine_id": null,
+      "interactive": false,
+      "representation": {
+        "kind": "primitive",
+        "primitive": "cube",
+        "dimensions_m": [
+          0.025,
+          0.031,
+          0.05
+        ],
+        "mesh_override": null,
+        "flat_icon": false,
+        "color_hint": [
+          0.62,
+          0.6,
+          0.55
+        ]
+      },
+      "placement": {
+        "local_position": [
+          0,
+          0.016,
+          -0.059
+        ],
+        "local_rotation_euler": [
+          0,
+          0,
+          0
+        ],
+        "pivot": {
+          "mode": "center"
+        }
+      },
+      "movement": {
+        "type": "static"
+      },
+      "provenance": {
+        "existence": "archetype_inference",
+        "placement": "user_decision",
+        "inclusion": "device_roster_static",
+        "excluded_from_procedure": "Not exercised by coffee preparation."
+      }
+    },
+    {
+      "id": "plug",
+      "machine_id": null,
+      "interactive": false,
+      "representation": {
+        "kind": "primitive",
+        "primitive": "cube",
+        "dimensions_m": [
+          0.025,
+          0.031,
+          0.05
+        ],
+        "mesh_override": null,
+        "flat_icon": false,
+        "color_hint": [
+          0.62,
+          0.6,
+          0.55
+        ]
+      },
+      "placement": {
+        "local_position": [
+          0,
+          0.016,
+          -0.113
+        ],
+        "local_rotation_euler": [
+          0,
+          0,
+          0
+        ],
+        "pivot": {
+          "mode": "center"
+        }
+      },
+      "movement": {
+        "type": "static"
+      },
+      "provenance": {
+        "existence": "archetype_inference",
+        "placement": "user_decision",
+        "inclusion": "device_roster_static",
+        "excluded_from_procedure": "Machine assumed plugged in; plugging in belongs to First use (low ecological validity for MR)."
+      }
+    },
+    {
+      "id": "rating_plate",
+      "machine_id": null,
+      "interactive": false,
+      "representation": {
+        "kind": "primitive",
+        "primitive": "cube",
+        "dimensions_m": [
+          0.025,
+          0.031,
+          0.05
+        ],
+        "mesh_override": null,
+        "flat_icon": false,
+        "color_hint": [
+          0.62,
+          0.6,
+          0.55
+        ]
+      },
+      "placement": {
+        "local_position": [
+          0,
+          0.05,
+          -0.05
+        ],
+        "local_rotation_euler": [
+          0,
+          0,
+          0
+        ],
+        "pivot": {
+          "mode": "center"
+        }
+      },
+      "movement": {
+        "type": "static"
+      },
+      "provenance": {
+        "existence": "archetype_inference",
+        "placement": "user_decision",
+        "inclusion": "device_roster_static",
+        "excluded_from_procedure": "Label; not exercised by coffee preparation."
+      }
+    },
+    {
+      "id": "container",
+      "machine_id": null,
+      "interactive": false,
+      "representation": {
+        "kind": "primitive",
+        "primitive": "cube",
+        "dimensions_m": [
+          0.076,
+          0.051,
+          0.083
+        ],
+        "mesh_override": null,
+        "flat_icon": false,
+        "color_hint": [
+          0.62,
+          0.6,
+          0.55
+        ]
+      },
+      "placement": {
+        "local_position": [
+          0,
+          0.089,
+          -0.036
+        ],
+        "local_rotation_euler": [
+          0,
+          0,
+          0
+        ],
+        "pivot": {
+          "mode": "center"
+        }
+      },
+      "movement": {
+        "type": "static"
+      },
+      "provenance": {
+        "existence": "archetype_inference",
+        "placement": "user_decision",
+        "inclusion": "device_roster_static",
+        "excluded_from_procedure": "Used in first use, descaling and emptying the system."
+      }
+    },
+    {
+      "id": "coffee_grounds",
+      "machine_id": null,
+      "interactive": false,
+      "representation": {
+        "kind": "primitive",
+        "primitive": "cube",
+        "dimensions_m": [
+          0.025,
+          0.031,
+          0.05
+        ],
+        "mesh_override": null,
+        "flat_icon": false,
+        "color_hint": [
+          0.62,
+          0.6,
+          0.55
+        ]
+      },
+      "placement": {
+        "local_position": [
+          0,
+          0.165,
+          -0.036
+        ],
+        "local_rotation_euler": [
+          0,
+          0,
+          0
+        ],
+        "pivot": {
+          "mode": "center"
+        }
+      },
+      "movement": {
+        "type": "static"
+      },
+      "provenance": {
+        "existence": "archetype_inference",
+        "placement": "user_decision",
+        "inclusion": "device_roster_static",
+        "excluded_from_procedure": "Stay inside the capsule; only relevant to the safety rule on forcing the machine open."
+      }
+    }
+  ]
+}

@@ -1,0 +1,208 @@
+{
+  "checks": {
+    "Schema (EFSM)": [
+      {
+        "level": "info",
+        "msg": "jsonschema not installed; schema check skipped (pip install jsonschema)."
+      }
+    ],
+    "Schema (device_spec)": [
+      {
+        "level": "info",
+        "msg": "jsonschema not installed; schema check skipped (pip install jsonschema)."
+      }
+    ],
+    "References": [
+      {
+        "level": "ok",
+        "msg": "All references resolve."
+      }
+    ],
+    "C1 steps perform transitions": [
+      {
+        "level": "ok",
+        "msg": "Every non-external step references existing transitions."
+      }
+    ],
+    "C2 procedure dependencies": [
+      {
+        "level": "ok",
+        "msg": "All procedure dependencies resolve."
+      }
+    ],
+    "C3 initial values": [
+      {
+        "level": "ok",
+        "msg": "Initial values satisfy the preconditions of 'turn_machine_on'."
+      }
+    ],
+    "C4 executability": [
+      {
+        "level": "warning",
+        "msg": "End of 'turn_machine_on': postcondition(s) reached through a state timeout (machine_leds: leds__heating -> leds__ready after 25000 ms)."
+      },
+      {
+        "level": "ok",
+        "msg": "Simulated walk of turn_machine_on -> descaling completes with every step firing from the seeded snapshot."
+      }
+    ],
+    "C5 steps triggered by interactions": [
+      {
+        "level": "ok",
+        "msg": "Every step is triggered by an interaction of an interactive component; bindings and attach targets resolve."
+      }
+    ]
+  },
+  "competency_questions": {
+    "CQ1": "26 components; 11 with a StateMachine (2 materials: Container, Descaling agent)",
+    "CQ2": [
+      "espresso_button: 21 x 5 x 5 mm, primitive, pivot center",
+      "lungo_button: 21 x 5 x 5 mm, primitive, pivot center",
+      "leds: 25 x 3 x 50 mm, trigger_volume, pivot center",
+      "lever: 50 x 12 x 99 mm, primitive, pivot explicit [0, 0.194, 0.055]",
+      "drip_tray: 80 x 16 x 83 mm, primitive, pivot center",
+      "drip_base: 76 x 24 x 66 mm, primitive, pivot center",
+      "capsule_container: 71 x 71 x 66 mm, primitive, pivot center",
+      "water_tank: 84 x 184 x 83 mm, primitive, pivot explicit [0, -0.004, -0.238]",
+      "plug: 25 x 31 x 50 mm, primitive, pivot center",
+      "container: 76 x 51 x 83 mm, primitive, pivot center",
+      "descaling_agent: 25 x 31 x 50 mm, primitive, pivot center"
+    ],
+    "CQ3": [
+      "machine_espresso_button: contact in ['released'] (initial released) | states ['espresso_button__released']",
+      "machine_lungo_button: contact in ['released'] (initial released) | states ['lungo_button__released']",
+      "machine_leds: mode in ['normal', 'descaling_mode'] (initial normal); status in ['off', 'heating', 'ready'] (initial off) | states ['leds__off', 'leds__heating', 'leds__ready', 'leds__normal', 'leds__descaling_mode']",
+      "machine_lever: position in ['closed', 'lifted'] (initial closed) | states ['lever__closed', 'lever__lifted']",
+      "machine_drip_tray: content in ['contains_liquid', 'empty'] (initial contains_liquid) | states ['drip_tray__contains_liquid', 'drip_tray__empty']",
+      "machine_drip_base: content in ['contains_liquid', 'empty', 'empty_after_descaling'] (initial contains_liquid) | states ['drip_base__contains_liquid', 'drip_base__empty', 'drip_base__empty_after_descaling']",
+      "machine_capsule_container: content in ['used_capsules', 'empty'] (initial used_capsules) | states ['capsule_container__used_capsules', 'capsule_container__empty']",
+      "machine_water_tank: content in ['potable_water', 'descaling_solution', 'drained_solution', 'empty_clean'] (initial potable_water) | states ['water_tank__potable_water', 'water_tank__descaling_solution', 'water_tank__drained_solution', 'water_tank__empty_clean']",
+      "machine_plug: connection in ['plugged_in', 'unplugged'] (initial plugged_in) | states ['plug__plugged_in', 'plug__unplugged']",
+      "machine_container: position in ['absent', 'under_outlet'] (initial absent) | states ['container__absent', 'container__under_outlet']",
+      "machine_descaling_agent: location in ['sachet', 'poured'] (initial sachet) | states ['descaling_agent__sachet', 'descaling_agent__poured']"
+    ],
+    "CQ4": [
+      "espresso_button__released: press_espresso",
+      "lungo_button__released: press_lungo",
+      "leds__off: press_espresso, press_lungo",
+      "leds__heating: timeout 25000 ms -> leds__ready",
+      "leds__normal: hold_both_buttons [machine_leds.status eq ready]",
+      "leds__descaling_mode: hold_both_buttons [machine_water_tank.content eq empty_clean]",
+      "lever__closed: lift_lever",
+      "lever__lifted: close_lever",
+      "drip_tray__contains_liquid: empty_drip_tray",
+      "drip_base__contains_liquid: empty_drip_base",
+      "drip_base__empty: empty_drip_base [machine_leds.mode eq normal and machine_water_tank.content eq empty_clean]",
+      "capsule_container__used_capsules: empty_capsule_container",
+      "water_tank__potable_water: empty_and_rinse_water_tank [machine_descaling_agent.location eq sachet], fill_water_tank [machine_descaling_agent.location eq poured], press_lungo [machine_leds.mode eq descaling_mode and machine_container.position eq under_outlet]",
+      "water_tank__descaling_solution: press_lungo [machine_leds.mode eq descaling_mode and machine_container.position eq under_outlet]",
+      "water_tank__drained_solution: fill_water_tank [machine_container.position eq absent], empty_and_rinse_water_tank [machine_container.position eq under_outlet]",
+      "water_tank__empty_clean: fill_water_tank",
+      "plug__plugged_in: unplug",
+      "plug__unplugged: plug_in",
+      "container__absent: place_container",
+      "container__under_outlet: remove_container",
+      "descaling_agent__sachet: pour_descaling_agent"
+    ],
+    "CQ5": [
+      "press_espresso: espresso_button press (press_action)",
+      "press_lungo: lungo_button press (press_action)",
+      "hold_both_buttons: leds press (press_action)",
+      "lift_lever: lever hinge (action_at_max)",
+      "close_lever: lever hinge (action_at_min)",
+      "empty_drip_tray: drip_tray slide_linear (action_at_max)",
+      "empty_drip_base: drip_base hinge (action_at_max)",
+      "empty_capsule_container: capsule_container slide_linear (action_at_max)",
+      "empty_and_rinse_water_tank: water_tank hinge (action_at_max)",
+      "fill_water_tank: water_tank hinge (action_at_min)",
+      "unplug: plug press (press_action)",
+      "place_container: container slide_linear (action_at_max)",
+      "remove_container: container slide_linear (action_at_min)",
+      "pour_descaling_agent: descaling_agent slide_linear (action_at_max)"
+    ],
+    "CQ6": "8 of 24 transitions cross-guarded: t_machine_leds_2, t_machine_drip_base_2, t_machine_water_tank_1, t_machine_water_tank_3, t_machine_water_tank_4, t_machine_water_tank_5, t_machine_water_tank_6, t_machine_water_tank_7 | signals: press_espresso emits espresso_button_pressed, press_lungo emits lungo_button_pressed, hold_both_buttons emits descaling_mode_entered, hold_both_buttons emits descaling_mode_exited, press_espresso emits machine_heating, press_lungo emits machine_heating, lift_lever emits lever_lifted, close_lever emits capsule_ejected, empty_drip_tray emits drip_tray_emptied, empty_drip_base emits drip_base_emptied, empty_drip_base emits drip_base_emptied, empty_capsule_container emits capsule_container_emptied, empty_and_rinse_water_tank emits water_tank_emptied, fill_water_tank emits water_tank_filled, fill_water_tank emits descaling_solution_prepared, press_lungo emits descaling_solution_flushed, fill_water_tank emits used_solution_returned, empty_and_rinse_water_tank emits water_tank_emptied, press_lungo emits rinse_flushed, unplug emits plug_disconnected, plug_in emits plug_connected, place_container emits container_placed, remove_container emits container_removed, pour_descaling_agent emits descaling_agent_poured",
+    "CQ7": [
+      "turn_machine_on (Turn machine ON)",
+      "descaling (Descaling)"
+    ],
+    "CQ8": {
+      "turn_machine_on": [
+        "1: press_espresso, press_lungo"
+      ],
+      "descaling": [
+        "1: lift_lever",
+        "2: close_lever",
+        "3: empty_drip_tray",
+        "4: empty_drip_base",
+        "5: empty_capsule_container",
+        "6: pour_descaling_agent",
+        "7: fill_water_tank",
+        "8: place_container",
+        "9: hold_both_buttons",
+        "10: press_lungo",
+        "11: remove_container",
+        "12: fill_water_tank",
+        "13: place_container",
+        "14: press_lungo",
+        "15: empty_and_rinse_water_tank",
+        "16: remove_container",
+        "17: fill_water_tank",
+        "18: place_container",
+        "19: press_lungo (loop [16, 17, 18, 19] x1)",
+        "20: hold_both_buttons",
+        "21: empty_drip_base"
+      ]
+    },
+    "CQ9": {
+      "turn_machine_on": {
+        "pre": [
+          "machine_leds.status = off",
+          "machine_plug.connection = plugged_in"
+        ],
+        "post": [
+          "machine_leds.status = ready",
+          "machine_plug.connection = plugged_in"
+        ]
+      },
+      "descaling": {
+        "pre": [
+          "machine_leds.status = ready",
+          "machine_leds.mode = normal",
+          "machine_plug.connection = plugged_in",
+          "machine_lever.position = closed",
+          "machine_water_tank.content = potable_water",
+          "machine_descaling_agent.location = sachet",
+          "machine_container.position = absent"
+        ],
+        "post": [
+          "machine_leds.status = ready",
+          "machine_leds.mode = normal",
+          "machine_lever.position = closed",
+          "machine_drip_tray.content = empty",
+          "machine_drip_base.content = empty_after_descaling",
+          "machine_capsule_container.content = empty",
+          "machine_water_tank.content = empty_clean",
+          "machine_container.position = under_outlet",
+          "machine_descaling_agent.location = poured"
+        ]
+      }
+    },
+    "CQ10": {
+      "turn_machine_on": "2 components (1 acted on: ['machine_leds']; 1 only in conditions: ['machine_plug'])",
+      "descaling": "9 components (8 acted on: ['machine_capsule_container', 'machine_container', 'machine_descaling_agent', 'machine_drip_base', 'machine_drip_tray', 'machine_leds', 'machine_lever', 'machine_water_tank']; 1 only in conditions: ['machine_plug'])"
+    },
+    "CQ11": "11 rules, 4 evaluable",
+    "CQ12": {
+      "descaling": [
+        "turn_machine_on"
+      ]
+    },
+    "CQ13": "7 state variables, 15 actions, 22 signals",
+    "CQ14": [
+      "Container: position ['absent', 'under_outlet']",
+      "Descaling agent: location ['sachet', 'poured']"
+    ]
+  },
+  "errors": 0,
+  "warnings": 1
+}

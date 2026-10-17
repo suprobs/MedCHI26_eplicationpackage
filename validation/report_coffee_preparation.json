@@ -1,0 +1,157 @@
+{
+  "checks": {
+    "Schema (EFSM)": [
+      {
+        "level": "info",
+        "msg": "jsonschema not installed; schema check skipped (pip install jsonschema)."
+      }
+    ],
+    "Schema (device_spec)": [
+      {
+        "level": "info",
+        "msg": "jsonschema not installed; schema check skipped (pip install jsonschema)."
+      }
+    ],
+    "References": [
+      {
+        "level": "ok",
+        "msg": "All references resolve."
+      }
+    ],
+    "C1 steps perform transitions": [
+      {
+        "level": "ok",
+        "msg": "Every non-external step references existing transitions."
+      }
+    ],
+    "C2 procedure dependencies": [
+      {
+        "level": "ok",
+        "msg": "No dependencies between procedures (n/a)."
+      }
+    ],
+    "C3 initial values": [
+      {
+        "level": "ok",
+        "msg": "Initial values satisfy the preconditions of 'coffee_preparation'."
+      }
+    ],
+    "C4 executability": [
+      {
+        "level": "ok",
+        "msg": "Simulated walk of coffee_preparation completes with every step firing from the seeded snapshot."
+      }
+    ],
+    "C5 steps triggered by interactions": [
+      {
+        "level": "ok",
+        "msg": "Every step is triggered by an interaction of an interactive component; bindings and attach targets resolve."
+      }
+    ]
+  },
+  "competency_questions": {
+    "CQ1": "27 components; 8 with a StateMachine (2 materials: Capsule, Cup)",
+    "CQ2": [
+      "espresso_button: 21 x 5 x 5 mm, primitive, pivot center",
+      "lungo_button: 21 x 5 x 5 mm, primitive, pivot center",
+      "leds: 25 x 3 x 50 mm, trigger_volume, pivot center",
+      "lever: 50 x 12 x 99 mm, primitive, pivot explicit [0, 0.177, 0.067]",
+      "capsule: 37 x 29 x 36 mm, primitive, pivot center",
+      "cup: 50 x 60 x 50 mm, primitive, pivot center",
+      "water_tank: 84 x 184 x 83 mm, primitive, pivot center",
+      "drip_tray: 80 x 16 x 83 mm, primitive, pivot center"
+    ],
+    "CQ3": [
+      "machine_espresso_button: contact in ['released'] (initial released) | states ['espresso_button__released']",
+      "machine_lungo_button: contact in ['released'] (initial released) | states ['lungo_button__released']",
+      "machine_leds: status in ['off', 'heating', 'ready'] (initial off) | states ['leds__off', 'leds__heating', 'leds__ready']",
+      "machine_lever: position in ['closed', 'lifted'] (initial closed) | states ['lever__closed', 'lever__lifted']",
+      "machine_capsule: position in ['outside', 'in_compartment', 'ejected'] (initial outside) | states ['capsule__outside', 'capsule__in_compartment', 'capsule__ejected']",
+      "machine_cup: position in ['absent', 'under_outlet'] (initial absent); content in ['empty', 'coffee'] (initial empty) | states ['cup__absent', 'cup__under_outlet', 'cup__empty', 'cup__coffee']",
+      "machine_water_tank: content in ['potable_water', 'empty_clean'] (initial potable_water) | states ['water_tank__potable_water', 'water_tank__empty_clean']",
+      "machine_drip_tray: position in ['installed', 'removed'] (initial installed) | states ['drip_tray__installed', 'drip_tray__removed']"
+    ],
+    "CQ4": [
+      "espresso_button__released: press_espresso",
+      "lungo_button__released: press_lungo",
+      "leds__off: press_espresso, press_lungo",
+      "leds__heating: heat_up_complete, timeout 25000 ms -> leds__ready",
+      "lever__closed: lift_lever",
+      "lever__lifted: close_lever",
+      "capsule__outside: insert_capsule [machine_lever.position eq lifted]",
+      "capsule__in_compartment: close_lever [machine_cup.content eq coffee]",
+      "cup__absent: place_cup",
+      "cup__under_outlet: remove_cup [machine_cup.content eq coffee]",
+      "cup__empty: press_espresso [machine_leds.status eq ready and machine_lever.position eq closed and machine_capsule.position eq in_compartment and machine_cup.position eq under_outlet and machine_drip_tray.position eq installed and machine_water_tank.content eq potable_water], press_lungo [machine_leds.status eq ready and machine_lever.position eq closed and machine_capsule.position eq in_compartment and machine_cup.position eq under_outlet and machine_drip_tray.position eq installed and machine_water_tank.content eq potable_water]",
+      "water_tank__potable_water: empty_and_rinse_water_tank",
+      "water_tank__empty_clean: fill_water_tank",
+      "drip_tray__installed: remove_drip_tray",
+      "drip_tray__removed: insert_drip_tray"
+    ],
+    "CQ5": [
+      "press_espresso: espresso_button press (press_action)",
+      "press_lungo: lungo_button press (press_action)",
+      "press_espresso: leds press (press_action)",
+      "lift_lever: lever hinge (action_at_max)",
+      "close_lever: lever hinge (action_at_min)",
+      "insert_capsule: capsule slide_linear (action_at_max)",
+      "place_cup: cup slide_linear (action_at_max)",
+      "remove_cup: cup slide_linear (action_at_min)",
+      "empty_and_rinse_water_tank: water_tank slide_linear (action_at_max)",
+      "fill_water_tank: water_tank slide_linear (action_at_min)",
+      "remove_drip_tray: drip_tray slide_linear (action_at_max)",
+      "insert_drip_tray: drip_tray slide_linear (action_at_min)",
+      "heat_up_complete: state timeout (no interaction)"
+    ],
+    "CQ6": "4 of 17 transitions cross-guarded: t_machine_capsule_1, t_machine_capsule_2, t_machine_cup_3, t_machine_cup_4 | signals: press_espresso emits espresso_button_pressed, press_lungo emits lungo_button_pressed, press_espresso emits machine_heating, press_lungo emits machine_heating, heat_up_complete emits machine_ready, lift_lever emits lever_lifted, close_lever emits lever_closed, insert_capsule emits capsule_inserted, close_lever emits capsule_ejected, place_cup emits cup_placed, remove_cup emits cup_removed, press_espresso emits espresso_brewed, press_lungo emits lungo_brewed, empty_and_rinse_water_tank emits water_tank_emptied, fill_water_tank emits water_tank_filled, remove_drip_tray emits drip_tray_removed, insert_drip_tray emits drip_tray_installed",
+    "CQ7": [
+      "coffee_preparation (Coffee preparation)"
+    ],
+    "CQ8": {
+      "coffee_preparation": [
+        "1: press_espresso, press_lungo",
+        "2: heat_up_complete",
+        "3: lift_lever",
+        "4: insert_capsule",
+        "5: close_lever",
+        "6: place_cup",
+        "7: press_espresso, press_lungo",
+        "8: remove_cup",
+        "9: lift_lever",
+        "10: close_lever"
+      ]
+    },
+    "CQ9": {
+      "coffee_preparation": {
+        "pre": [
+          "machine_leds.status = off",
+          "machine_lever.position = closed",
+          "machine_capsule.position = outside",
+          "machine_cup.position = absent",
+          "machine_cup.content = empty",
+          "machine_water_tank.content = potable_water",
+          "machine_drip_tray.position = installed"
+        ],
+        "post": [
+          "machine_leds.status = ready",
+          "machine_lever.position = closed",
+          "machine_cup.position = absent",
+          "machine_cup.content = coffee",
+          "machine_drip_tray.position = installed"
+        ]
+      }
+    },
+    "CQ10": {
+      "coffee_preparation": "6 components (4 acted on: ['machine_capsule', 'machine_cup', 'machine_leds', 'machine_lever']; 2 only in conditions: ['machine_drip_tray', 'machine_water_tank'])"
+    },
+    "CQ11": "11 rules, 6 evaluable",
+    "CQ12": "n/a (no procedure requires another)",
+    "CQ13": "4 state variables, 12 actions, 16 signals",
+    "CQ14": [
+      "Capsule: position ['outside', 'in_compartment', 'ejected']",
+      "Cup: position ['absent', 'under_outlet'] x content ['empty', 'coffee']"
+    ]
+  },
+  "errors": 0,
+  "warnings": 0
+}

@@ -1,0 +1,1761 @@
+{
+  "meta": {
+    "version": "2.1.0-runtime",
+    "efsm_id": "hp_deskjet_2720e_load_paper",
+    "device_type": "all_in_one_inkjet_printer",
+    "description": "EFSM for loading paper into the HP DeskJet 2700e All-in-One series (HP DeskJet 2720e).",
+    "created_at": "2026-10-17T00:00:00Z",
+    "source_manuals": [
+      "[M01] e1b68e96-HPDeskJet___2720e_userGuide.pdf"
+    ]
+  },
+  "device_meta": {
+    "version": "2.1.0-runtime",
+    "efsm_id": "hp_deskjet_2720e_load_paper",
+    "device_type": "all_in_one_inkjet_printer",
+    "description": "EFSM for loading paper into the HP DeskJet 2700e All-in-One series (HP DeskJet 2720e).",
+    "created_at": "2026-10-17T00:00:00Z",
+    "source_manuals": [
+      "[M01] e1b68e96-HPDeskJet___2720e_userGuide.pdf"
+    ],
+    "device_name": "HP DeskJet 2700e All-in-One series (HP DeskJet 2720e)",
+    "source_manual": "[M01] e1b68e96-HPDeskJet___2720e_userGuide.pdf",
+    "target_procedures": [
+      "load_paper"
+    ]
+  },
+  "enums": {
+    "dimensions": [
+      "position",
+      "location"
+    ],
+    "actions": [
+      "close_output_tray_extender",
+      "insert_paper",
+      "lower_input_tray",
+      "lower_output_tray",
+      "pull_out_output_tray_extender",
+      "push_in_output_tray",
+      "raise_input_tray",
+      "remove_paper",
+      "slide_paper_width_guide_left",
+      "slide_paper_width_guide_right"
+    ],
+    "movements": [
+      "flip_hinge",
+      "slide_horizontal",
+      "slide_depth",
+      "attach",
+      "none"
+    ],
+    "state_values": [
+      "lowered",
+      "raised",
+      "closed",
+      "open",
+      "snug",
+      "outside",
+      "in_input_tray",
+      "extended"
+    ],
+    "signals": [
+      "input_tray_lowered",
+      "input_tray_raised",
+      "output_tray_closed",
+      "output_tray_extender_closed",
+      "output_tray_extender_extended",
+      "output_tray_lowered",
+      "paper_loaded",
+      "paper_removed",
+      "paper_width_guide_closed",
+      "paper_width_guide_opened",
+      "paper_width_guide_snug"
+    ],
+    "guard_ops": [
+      "eq",
+      "neq",
+      "and",
+      "or"
+    ],
+    "ports": [],
+    "categories": [
+      "device_component",
+      "material"
+    ]
+  },
+  "components_catalog": [
+    {
+      "id": "input_tray",
+      "machine_id": "machine_input_tray",
+      "name": "Input tray",
+      "category": "device_component",
+      "synonyms": [
+        "tray"
+      ],
+      "description": "Holds the paper stack fed into the printer; raised to load media and lowered to stow it.",
+      "location": "Top-rear of the printer",
+      "layout_hint": {
+        "anchor": "rear",
+        "rel": [
+          0.0,
+          0.92,
+          -0.42
+        ],
+        "size": [
+          0.55,
+          0.4,
+          0.04
+        ],
+        "flat": false,
+        "hingeEdge": "back"
+      },
+      "appearance_frequency": "1/1",
+      "dimensions": [
+        {
+          "name": "position",
+          "type": "enum",
+          "values": [
+            "lowered",
+            "raised"
+          ],
+          "initial_value": "lowered",
+          "initial": "lowered",
+          "description": "Input tray stowed or raised for loading"
+        }
+      ],
+      "movements": [
+        "flip_hinge"
+      ],
+      "interactions": [
+        "raise_input_tray",
+        "lower_input_tray"
+      ]
+    },
+    {
+      "id": "paper_width_guide",
+      "machine_id": "machine_paper_width_guide",
+      "name": "Paper-width guide",
+      "category": "device_component",
+      "synonyms": [
+        "paper-width guides"
+      ],
+      "description": "Slides horizontally in the input tray to align the paper stack; must fit snugly without bending the paper.",
+      "location": "Inside the input tray, top-rear of the printer",
+      "layout_hint": {
+        "anchor": "rear",
+        "rel": [
+          -0.12,
+          0.95,
+          -0.4
+        ],
+        "size": [
+          0.04,
+          0.12,
+          0.03
+        ],
+        "flat": false,
+        "hingeEdge": null
+      },
+      "appearance_frequency": "1/1",
+      "dimensions": [
+        {
+          "name": "position",
+          "type": "enum",
+          "values": [
+            "closed",
+            "open",
+            "snug"
+          ],
+          "initial_value": "closed",
+          "initial": "closed",
+          "description": "Guide at rest (closed), slid fully left (open), or against the paper edge (snug); initial value not specified in manual, inferred"
+        }
+      ],
+      "movements": [
+        "slide_horizontal"
+      ],
+      "interactions": [
+        "slide_paper_width_guide_left",
+        "slide_paper_width_guide_right"
+      ]
+    },
+    {
+      "id": "paper",
+      "machine_id": "machine_paper",
+      "name": "Paper",
+      "category": "material",
+      "synonyms": [
+        "plain paper",
+        "stack of paper",
+        "photo paper"
+      ],
+      "description": "Stack of print media inserted short edge down and print side up into the input tray.",
+      "location": "User-supplied; loaded into the Input tray",
+      "layout_hint": {
+        "anchor": "rear",
+        "rel": [
+          0.05,
+          0.95,
+          -0.41
+        ],
+        "size": [
+          0.5,
+          0.35,
+          0.01
+        ],
+        "flat": false,
+        "hingeEdge": null
+      },
+      "appearance_frequency": "1/1",
+      "dimensions": [
+        {
+          "name": "location",
+          "type": "enum",
+          "values": [
+            "outside",
+            "in_input_tray"
+          ],
+          "initial_value": "outside",
+          "initial": "outside",
+          "description": "Paper stack outside the printer or loaded in the input tray"
+        }
+      ],
+      "movements": [
+        "attach"
+      ],
+      "interactions": [
+        "insert_paper",
+        "remove_paper"
+      ]
+    },
+    {
+      "id": "output_tray",
+      "machine_id": "machine_output_tray",
+      "name": "Output tray",
+      "category": "device_component",
+      "synonyms": [],
+      "description": "Receives printed and copied pages; lowered to open the output path.",
+      "location": "Front of the printer, below the cartridge access door",
+      "layout_hint": {
+        "anchor": "front",
+        "rel": [
+          0.12,
+          0.1,
+          0.45
+        ],
+        "size": [
+          0.45,
+          0.03,
+          0.2
+        ],
+        "flat": false,
+        "hingeEdge": "back"
+      },
+      "appearance_frequency": "1/1",
+      "dimensions": [
+        {
+          "name": "position",
+          "type": "enum",
+          "values": [
+            "closed",
+            "lowered"
+          ],
+          "initial_value": "closed",
+          "initial": "closed",
+          "description": "Output tray pushed into the printer or lowered open"
+        }
+      ],
+      "movements": [
+        "flip_hinge"
+      ],
+      "interactions": [
+        "lower_output_tray",
+        "push_in_output_tray"
+      ]
+    },
+    {
+      "id": "output_tray_extender",
+      "machine_id": "machine_output_tray_extender",
+      "name": "Output tray extender",
+      "category": "device_component",
+      "synonyms": [
+        "tray extender"
+      ],
+      "description": "Pulls out from the output tray to support printed pages.",
+      "location": "Front end of the output tray",
+      "layout_hint": {
+        "anchor": "front",
+        "rel": [
+          0.12,
+          0.1,
+          0.5
+        ],
+        "size": [
+          0.4,
+          0.02,
+          0.18
+        ],
+        "flat": false,
+        "hingeEdge": null
+      },
+      "appearance_frequency": "1/1",
+      "dimensions": [
+        {
+          "name": "position",
+          "type": "enum",
+          "values": [
+            "closed",
+            "extended"
+          ],
+          "initial_value": "closed",
+          "initial": "closed",
+          "description": "Extender closed or pulled out"
+        }
+      ],
+      "movements": [
+        "slide_depth"
+      ],
+      "interactions": [
+        "pull_out_output_tray_extender",
+        "close_output_tray_extender"
+      ]
+    }
+  ],
+  "scene_props": [],
+  "machines": [
+    {
+      "id": "machine_input_tray",
+      "component_id": "input_tray",
+      "description": "Input tray position.",
+      "initial_state": "s_input_tray_lowered",
+      "final_states": [
+        "s_input_tray_raised"
+      ],
+      "states": [
+        {
+          "id": "s_input_tray_lowered",
+          "label": "Lowered (stowed)",
+          "dimension_values": {
+            "position": "lowered"
+          },
+          "is_error": false,
+          "is_terminal": false,
+          "invariant": null,
+          "timeout": {
+            "after_ms": null,
+            "to_state": null,
+            "emit_signal": null
+          }
+        },
+        {
+          "id": "s_input_tray_raised",
+          "label": "Raised (open)",
+          "dimension_values": {
+            "position": "raised"
+          },
+          "is_error": false,
+          "is_terminal": false,
+          "invariant": null,
+          "timeout": {
+            "after_ms": null,
+            "to_state": null,
+            "emit_signal": null
+          }
+        }
+      ],
+      "transitions": [
+        {
+          "id": "t_machine_input_tray_1",
+          "action": "raise_input_tray",
+          "movement": "flip_hinge",
+          "signals_emitted": [
+            "input_tray_raised"
+          ],
+          "guard": null,
+          "description": "Raise the input tray.",
+          "dimension": "position",
+          "from": "lowered",
+          "to": "raised",
+          "emits": "input_tray_raised"
+        },
+        {
+          "id": "t_machine_input_tray_2",
+          "action": "lower_input_tray",
+          "movement": "flip_hinge",
+          "signals_emitted": [
+            "input_tray_lowered"
+          ],
+          "guard": "machine_paper.location eq outside",
+          "description": "Lower the input tray back into the printer (paper removed).",
+          "dimension": "position",
+          "from": "raised",
+          "to": "lowered",
+          "emits": "input_tray_lowered"
+        }
+      ]
+    },
+    {
+      "id": "machine_paper_width_guide",
+      "component_id": "paper_width_guide",
+      "description": "Paper-width guide position in the input tray.",
+      "initial_state": "s_paper_width_guide_closed",
+      "final_states": [
+        "s_paper_width_guide_snug"
+      ],
+      "states": [
+        {
+          "id": "s_paper_width_guide_closed",
+          "label": "Closed (rest)",
+          "dimension_values": {
+            "position": "closed"
+          },
+          "is_error": false,
+          "is_terminal": false,
+          "invariant": null,
+          "timeout": {
+            "after_ms": null,
+            "to_state": null,
+            "emit_signal": null
+          }
+        },
+        {
+          "id": "s_paper_width_guide_open",
+          "label": "Open (slid left)",
+          "dimension_values": {
+            "position": "open"
+          },
+          "is_error": false,
+          "is_terminal": false,
+          "invariant": null,
+          "timeout": {
+            "after_ms": null,
+            "to_state": null,
+            "emit_signal": null
+          }
+        },
+        {
+          "id": "s_paper_width_guide_snug",
+          "label": "Snug against paper edge",
+          "dimension_values": {
+            "position": "snug"
+          },
+          "is_error": false,
+          "is_terminal": false,
+          "invariant": null,
+          "timeout": {
+            "after_ms": null,
+            "to_state": null,
+            "emit_signal": null
+          }
+        }
+      ],
+      "transitions": [
+        {
+          "id": "t_machine_paper_width_guide_1",
+          "action": "slide_paper_width_guide_left",
+          "movement": "slide_horizontal",
+          "signals_emitted": [
+            "paper_width_guide_opened"
+          ],
+          "guard": "machine_input_tray.position eq raised",
+          "description": "Slide the paper-width guide to the left.",
+          "dimension": "position",
+          "from": "closed",
+          "to": "open",
+          "emits": "paper_width_guide_opened"
+        },
+        {
+          "id": "t_machine_paper_width_guide_2",
+          "action": "slide_paper_width_guide_right",
+          "movement": "slide_horizontal",
+          "signals_emitted": [
+            "paper_width_guide_snug"
+          ],
+          "guard": "machine_paper.location eq in_input_tray",
+          "description": "Slide the paper-width guide to the right until it stops at the edge of the paper.",
+          "dimension": "position",
+          "from": "open",
+          "to": "snug",
+          "emits": "paper_width_guide_snug"
+        },
+        {
+          "id": "t_machine_paper_width_guide_3",
+          "action": "slide_paper_width_guide_left",
+          "movement": "slide_horizontal",
+          "signals_emitted": [
+            "paper_width_guide_opened"
+          ],
+          "guard": null,
+          "description": "Slide the paper-width guide to the left away from the paper stack.",
+          "dimension": "position",
+          "from": "snug",
+          "to": "open",
+          "emits": "paper_width_guide_opened"
+        },
+        {
+          "id": "t_machine_paper_width_guide_4",
+          "action": "slide_paper_width_guide_right",
+          "movement": "slide_horizontal",
+          "signals_emitted": [
+            "paper_width_guide_closed"
+          ],
+          "guard": "machine_paper.location eq outside",
+          "description": "Slide the paper-width guide back to rest with no paper loaded.",
+          "dimension": "position",
+          "from": "open",
+          "to": "closed",
+          "emits": "paper_width_guide_closed"
+        }
+      ]
+    },
+    {
+      "id": "machine_paper",
+      "component_id": "paper",
+      "description": "Paper stack location.",
+      "initial_state": "s_paper_outside",
+      "final_states": [
+        "s_paper_in_input_tray"
+      ],
+      "states": [
+        {
+          "id": "s_paper_outside",
+          "label": "Outside the printer",
+          "dimension_values": {
+            "location": "outside"
+          },
+          "is_error": false,
+          "is_terminal": false,
+          "invariant": null,
+          "timeout": {
+            "after_ms": null,
+            "to_state": null,
+            "emit_signal": null
+          }
+        },
+        {
+          "id": "s_paper_in_input_tray",
+          "label": "Loaded in the input tray",
+          "dimension_values": {
+            "location": "in_input_tray"
+          },
+          "is_error": false,
+          "is_terminal": false,
+          "invariant": null,
+          "timeout": {
+            "after_ms": null,
+            "to_state": null,
+            "emit_signal": null
+          }
+        }
+      ],
+      "transitions": [
+        {
+          "id": "t_machine_paper_1",
+          "action": "insert_paper",
+          "movement": "attach",
+          "signals_emitted": [
+            "paper_loaded"
+          ],
+          "guard": "machine_input_tray.position eq raised and machine_paper_width_guide.position eq open",
+          "description": "Insert the paper stack short edge down, print side up, and slide it down until it stops.",
+          "dimension": "location",
+          "from": "outside",
+          "to": "in_input_tray",
+          "emits": "paper_loaded"
+        },
+        {
+          "id": "t_machine_paper_2",
+          "action": "remove_paper",
+          "movement": "attach",
+          "signals_emitted": [
+            "paper_removed"
+          ],
+          "guard": "machine_paper_width_guide.position neq snug",
+          "description": "Remove all the paper from the input tray.",
+          "dimension": "location",
+          "from": "in_input_tray",
+          "to": "outside",
+          "emits": "paper_removed"
+        }
+      ]
+    },
+    {
+      "id": "machine_output_tray",
+      "component_id": "output_tray",
+      "description": "Output tray position.",
+      "initial_state": "s_output_tray_closed",
+      "final_states": [
+        "s_output_tray_lowered"
+      ],
+      "states": [
+        {
+          "id": "s_output_tray_closed",
+          "label": "Closed (pushed in)",
+          "dimension_values": {
+            "position": "closed"
+          },
+          "is_error": false,
+          "is_terminal": false,
+          "invariant": null,
+          "timeout": {
+            "after_ms": null,
+            "to_state": null,
+            "emit_signal": null
+          }
+        },
+        {
+          "id": "s_output_tray_lowered",
+          "label": "Lowered (open)",
+          "dimension_values": {
+            "position": "lowered"
+          },
+          "is_error": false,
+          "is_terminal": false,
+          "invariant": null,
+          "timeout": {
+            "after_ms": null,
+            "to_state": null,
+            "emit_signal": null
+          }
+        }
+      ],
+      "transitions": [
+        {
+          "id": "t_machine_output_tray_1",
+          "action": "lower_output_tray",
+          "movement": "flip_hinge",
+          "signals_emitted": [
+            "output_tray_lowered"
+          ],
+          "guard": null,
+          "description": "Lower the output tray.",
+          "dimension": "position",
+          "from": "closed",
+          "to": "lowered",
+          "emits": "output_tray_lowered"
+        },
+        {
+          "id": "t_machine_output_tray_2",
+          "action": "push_in_output_tray",
+          "movement": "flip_hinge",
+          "signals_emitted": [
+            "output_tray_closed"
+          ],
+          "guard": "machine_output_tray_extender.position eq closed",
+          "description": "Push the output tray into the printer.",
+          "dimension": "position",
+          "from": "lowered",
+          "to": "closed",
+          "emits": "output_tray_closed"
+        }
+      ]
+    },
+    {
+      "id": "machine_output_tray_extender",
+      "component_id": "output_tray_extender",
+      "description": "Output tray extender position.",
+      "initial_state": "s_output_tray_extender_closed",
+      "final_states": [
+        "s_output_tray_extender_extended"
+      ],
+      "states": [
+        {
+          "id": "s_output_tray_extender_closed",
+          "label": "Closed",
+          "dimension_values": {
+            "position": "closed"
+          },
+          "is_error": false,
+          "is_terminal": false,
+          "invariant": null,
+          "timeout": {
+            "after_ms": null,
+            "to_state": null,
+            "emit_signal": null
+          }
+        },
+        {
+          "id": "s_output_tray_extender_extended",
+          "label": "Extended (pulled out)",
+          "dimension_values": {
+            "position": "extended"
+          },
+          "is_error": false,
+          "is_terminal": false,
+          "invariant": null,
+          "timeout": {
+            "after_ms": null,
+            "to_state": null,
+            "emit_signal": null
+          }
+        }
+      ],
+      "transitions": [
+        {
+          "id": "t_machine_output_tray_extender_1",
+          "action": "pull_out_output_tray_extender",
+          "movement": "slide_depth",
+          "signals_emitted": [
+            "output_tray_extender_extended"
+          ],
+          "guard": "machine_output_tray.position eq lowered",
+          "description": "Pull out the output tray extender.",
+          "dimension": "position",
+          "from": "closed",
+          "to": "extended",
+          "emits": "output_tray_extender_extended"
+        },
+        {
+          "id": "t_machine_output_tray_extender_2",
+          "action": "close_output_tray_extender",
+          "movement": "slide_depth",
+          "signals_emitted": [
+            "output_tray_extender_closed"
+          ],
+          "guard": null,
+          "description": "Close the output tray extender.",
+          "dimension": "position",
+          "from": "extended",
+          "to": "closed",
+          "emits": "output_tray_extender_closed"
+        }
+      ]
+    }
+  ],
+  "procedures": [
+    {
+      "id": "load_paper",
+      "name": "Load paper",
+      "short_description": "Loads a stack of paper into the input tray and opens the output path",
+      "category": "media_loading",
+      "frequent_causes": [],
+      "requires": [],
+      "preconditions": [
+        {
+          "machine_id": "machine_input_tray",
+          "dimension": "position",
+          "required_value": "lowered",
+          "resolver_procedure_id": null
+        },
+        {
+          "machine_id": "machine_paper_width_guide",
+          "dimension": "position",
+          "required_value": "closed",
+          "resolver_procedure_id": null
+        },
+        {
+          "machine_id": "machine_paper",
+          "dimension": "location",
+          "required_value": "outside",
+          "resolver_procedure_id": null
+        },
+        {
+          "machine_id": "machine_output_tray",
+          "dimension": "position",
+          "required_value": "closed",
+          "resolver_procedure_id": null
+        },
+        {
+          "machine_id": "machine_output_tray_extender",
+          "dimension": "position",
+          "required_value": "closed",
+          "resolver_procedure_id": null
+        }
+      ],
+      "postconditions": [
+        {
+          "machine_id": "machine_input_tray",
+          "dimension": "position",
+          "guaranteed_value": "raised"
+        },
+        {
+          "machine_id": "machine_paper_width_guide",
+          "dimension": "position",
+          "guaranteed_value": "snug"
+        },
+        {
+          "machine_id": "machine_paper",
+          "dimension": "location",
+          "guaranteed_value": "in_input_tray"
+        },
+        {
+          "machine_id": "machine_output_tray",
+          "dimension": "position",
+          "guaranteed_value": "lowered"
+        },
+        {
+          "machine_id": "machine_output_tray_extender",
+          "dimension": "position",
+          "guaranteed_value": "extended"
+        }
+      ],
+      "unlocks": [],
+      "initial_component_states": [
+        {
+          "component_id": "input_tray",
+          "machine_id": "machine_input_tray",
+          "dimension_values": {
+            "position": "lowered"
+          }
+        },
+        {
+          "component_id": "paper_width_guide",
+          "machine_id": "machine_paper_width_guide",
+          "dimension_values": {
+            "position": "closed"
+          }
+        },
+        {
+          "component_id": "paper",
+          "machine_id": "machine_paper",
+          "dimension_values": {
+            "location": "outside"
+          }
+        },
+        {
+          "component_id": "output_tray",
+          "machine_id": "machine_output_tray",
+          "dimension_values": {
+            "position": "closed"
+          }
+        },
+        {
+          "component_id": "output_tray_extender",
+          "machine_id": "machine_output_tray_extender",
+          "dimension_values": {
+            "position": "closed"
+          }
+        }
+      ],
+      "steps": [
+        {
+          "order": 1,
+          "description": "Raise the input tray.",
+          "simplified_description": "Lift the tray at the back up.",
+          "step_type": "action",
+          "transition_ref": "t_machine_input_tray_1",
+          "accepted_transition_refs": [],
+          "external_step": false,
+          "branches": [],
+          "loop": {
+            "repeat_step_orders": [],
+            "times": null,
+            "until_guard": null
+          }
+        },
+        {
+          "order": 2,
+          "description": "Slide the paper-width guide to the left.",
+          "simplified_description": "Move the small guide in the tray all the way to the left.",
+          "step_type": "action",
+          "transition_ref": "t_machine_paper_width_guide_1",
+          "accepted_transition_refs": [],
+          "external_step": false,
+          "branches": [],
+          "loop": {
+            "repeat_step_orders": [],
+            "times": null,
+            "until_guard": null
+          }
+        },
+        {
+          "order": 3,
+          "description": "Insert a stack of paper into the input tray with the short edge down and the print side up, and slide the stack down until it stops.",
+          "simplified_description": "Put the paper in the tray, short side down, and push it down gently.",
+          "step_type": "action",
+          "transition_ref": "t_machine_paper_1",
+          "accepted_transition_refs": [],
+          "external_step": false,
+          "branches": [],
+          "loop": {
+            "repeat_step_orders": [],
+            "times": null,
+            "until_guard": null
+          }
+        },
+        {
+          "order": 4,
+          "description": "Slide the paper-width guide to the right until it stops at the edge of the paper.",
+          "simplified_description": "Move the guide to the right until it touches the paper.",
+          "step_type": "action",
+          "transition_ref": "t_machine_paper_width_guide_2",
+          "accepted_transition_refs": [],
+          "external_step": false,
+          "branches": [],
+          "loop": {
+            "repeat_step_orders": [],
+            "times": null,
+            "until_guard": null
+          }
+        },
+        {
+          "order": 5,
+          "description": "Lower the output tray.",
+          "simplified_description": "Pull the front tray down.",
+          "step_type": "action",
+          "transition_ref": "t_machine_output_tray_1",
+          "accepted_transition_refs": [],
+          "external_step": false,
+          "branches": [],
+          "loop": {
+            "repeat_step_orders": [],
+            "times": null,
+            "until_guard": null
+          }
+        },
+        {
+          "order": 6,
+          "description": "Pull out the output tray extender.",
+          "simplified_description": "Pull the small extension out of the front tray.",
+          "step_type": "action",
+          "transition_ref": "t_machine_output_tray_extender_1",
+          "accepted_transition_refs": [],
+          "external_step": false,
+          "branches": [],
+          "loop": {
+            "repeat_step_orders": [],
+            "times": null,
+            "until_guard": null
+          }
+        }
+      ],
+      "guard": "machine_input_tray.position eq lowered and machine_paper_width_guide.position eq closed and machine_paper.location eq outside and machine_output_tray.position eq closed and machine_output_tray_extender.position eq closed"
+    }
+  ],
+  "new_elements": [],
+  "excluded_components": [
+    {
+      "id": "input_tray_shield",
+      "name": "Input tray shield",
+      "reason": "Not exercised by Load paper; injected as static geometry so the whole device is rendered.",
+      "location": "Top of the printer, in front of the input tray",
+      "layout_hint": {
+        "anchor": "top",
+        "rel": [
+          0.0,
+          0.88,
+          -0.3
+        ],
+        "size": [
+          0.55,
+          0.03,
+          0.08
+        ],
+        "flat": false,
+        "hingeEdge": "back"
+      }
+    },
+    {
+      "id": "scanner_lid",
+      "name": "Scanner lid",
+      "reason": "Not exercised by Load paper; injected as static geometry so the whole device is rendered.",
+      "location": "Top of the printer",
+      "layout_hint": {
+        "anchor": "top",
+        "rel": [
+          0.0,
+          1.0,
+          0.02
+        ],
+        "size": [
+          1.0,
+          0.04,
+          0.9
+        ],
+        "flat": false,
+        "hingeEdge": "back"
+      }
+    },
+    {
+      "id": "scanner_glass",
+      "name": "Scanner glass",
+      "reason": "Not exercised by Load paper; injected as static geometry so the whole device is rendered.",
+      "location": "Top of the printer, under the scanner lid",
+      "layout_hint": {
+        "anchor": "top",
+        "rel": [
+          -0.02,
+          0.96,
+          0.04
+        ],
+        "size": [
+          0.8,
+          0.01,
+          0.75
+        ],
+        "flat": true,
+        "hingeEdge": null
+      }
+    },
+    {
+      "id": "cartridge_access_door",
+      "name": "Cartridge access door",
+      "reason": "Not exercised by Load paper; injected as static geometry so the whole device is rendered.",
+      "location": "Front of the printer, above the output tray",
+      "layout_hint": {
+        "anchor": "front",
+        "rel": [
+          0.12,
+          0.35,
+          0.5
+        ],
+        "size": [
+          0.45,
+          0.3,
+          0.02
+        ],
+        "flat": false,
+        "hingeEdge": null
+      }
+    },
+    {
+      "id": "print_carriage",
+      "name": "Print carriage",
+      "reason": "Not exercised by Load paper; injected as static geometry so the whole device is rendered.",
+      "location": "Inside the cartridge access area",
+      "layout_hint": {
+        "anchor": "center",
+        "rel": [
+          0.12,
+          0.4,
+          0.25
+        ],
+        "size": [
+          0.25,
+          0.18,
+          0.25
+        ],
+        "flat": false,
+        "hingeEdge": null
+      }
+    },
+    {
+      "id": "cartridge_slot",
+      "name": "Cartridge slot",
+      "reason": "Not exercised by Load paper; injected as static geometry so the whole device is rendered.",
+      "location": "In the print carriage",
+      "layout_hint": {
+        "anchor": "center",
+        "rel": [
+          0.12,
+          0.42,
+          0.3
+        ],
+        "size": [
+          0.2,
+          0.12,
+          0.15
+        ],
+        "flat": false,
+        "hingeEdge": null
+      }
+    },
+    {
+      "id": "cartridge_latch",
+      "name": "Cartridge latch",
+      "reason": "Not exercised by Load paper; injected as static geometry so the whole device is rendered.",
+      "location": "In the print carriage, at each cartridge slot",
+      "layout_hint": {
+        "anchor": "center",
+        "rel": [
+          0.12,
+          0.5,
+          0.3
+        ],
+        "size": [
+          0.2,
+          0.03,
+          0.1
+        ],
+        "flat": false,
+        "hingeEdge": null
+      }
+    },
+    {
+      "id": "printer_contacts",
+      "name": "Printer contacts",
+      "reason": "Not exercised by Load paper; injected as static geometry so the whole device is rendered.",
+      "location": "Inside the printer, in the print carriage",
+      "layout_hint": {
+        "anchor": "center",
+        "rel": [
+          0.12,
+          0.42,
+          0.2
+        ],
+        "size": [
+          0.15,
+          0.08,
+          0.01
+        ],
+        "flat": true,
+        "hingeEdge": null
+      }
+    },
+    {
+      "id": "printhead",
+      "name": "Printhead",
+      "reason": "Not exercised by Load paper; injected as static geometry so the whole device is rendered. Not shown in overview figure.",
+      "location": "not specified in manual",
+      "layout_hint": {
+        "anchor": null,
+        "rel": null,
+        "size": null,
+        "flat": null,
+        "hingeEdge": null
+      }
+    },
+    {
+      "id": "paper_feed_mechanism",
+      "name": "Paper feed mechanism",
+      "reason": "Not exercised by Load paper; injected as static geometry so the whole device is rendered. Internal; not shown in overview figure.",
+      "location": "Internal",
+      "layout_hint": {
+        "anchor": null,
+        "rel": null,
+        "size": null,
+        "flat": null,
+        "hingeEdge": null
+      }
+    },
+    {
+      "id": "cleanout_door",
+      "name": "Cleanout door",
+      "reason": "Not exercised by Load paper; injected as static geometry so the whole device is rendered. Not shown in overview figure.",
+      "location": "Bottom of the printer",
+      "layout_hint": {
+        "anchor": null,
+        "rel": null,
+        "size": null,
+        "flat": null,
+        "hingeEdge": null
+      }
+    },
+    {
+      "id": "control_panel",
+      "name": "Control panel",
+      "reason": "Not exercised by Load paper; injected as static geometry so the whole device is rendered.",
+      "location": "Front-left of the printer, vertical strip",
+      "layout_hint": {
+        "anchor": "front",
+        "rel": [
+          -0.42,
+          0.55,
+          0.47
+        ],
+        "size": [
+          0.1,
+          0.45,
+          0.02
+        ],
+        "flat": true,
+        "hingeEdge": null
+      }
+    },
+    {
+      "id": "power_button",
+      "name": "Power button",
+      "reason": "Not exercised by Load paper; injected as static geometry so the whole device is rendered.",
+      "location": "Control panel, top position",
+      "layout_hint": {
+        "anchor": "front",
+        "rel": [
+          -0.42,
+          0.76,
+          0.48
+        ],
+        "size": [
+          0.05,
+          0.04,
+          0.01
+        ],
+        "flat": true,
+        "hingeEdge": null
+      }
+    },
+    {
+      "id": "power_button_light",
+      "name": "Power button light",
+      "reason": "Not exercised by Load paper; injected as static geometry so the whole device is rendered.",
+      "location": "Control panel, at the Power button",
+      "layout_hint": {
+        "anchor": "front",
+        "rel": [
+          -0.42,
+          0.76,
+          0.48
+        ],
+        "size": [
+          0.05,
+          0.04,
+          0.005
+        ],
+        "flat": true,
+        "hingeEdge": null
+      }
+    },
+    {
+      "id": "control_panel_display",
+      "name": "Control panel display",
+      "reason": "Not exercised by Load paper; injected as static geometry so the whole device is rendered.",
+      "location": "Control panel, below the Power button",
+      "layout_hint": {
+        "anchor": "front",
+        "rel": [
+          -0.42,
+          0.68,
+          0.48
+        ],
+        "size": [
+          0.07,
+          0.08,
+          0.01
+        ],
+        "flat": true,
+        "hingeEdge": null
+      }
+    },
+    {
+      "id": "number_of_copies_icon",
+      "name": "Number of copies icon",
+      "reason": "Not exercised by Load paper; injected as static geometry so the whole device is rendered.",
+      "location": "Control panel display",
+      "layout_hint": {
+        "anchor": "front",
+        "rel": [
+          -0.41,
+          0.7,
+          0.485
+        ],
+        "size": [
+          0.03,
+          0.03,
+          0.005
+        ],
+        "flat": true,
+        "hingeEdge": null
+      }
+    },
+    {
+      "id": "error_icon",
+      "name": "Error icon",
+      "reason": "Not exercised by Load paper; injected as static geometry so the whole device is rendered.",
+      "location": "Control panel display",
+      "layout_hint": {
+        "anchor": "front",
+        "rel": [
+          -0.44,
+          0.71,
+          0.485
+        ],
+        "size": [
+          0.01,
+          0.01,
+          0.005
+        ],
+        "flat": true,
+        "hingeEdge": null
+      }
+    },
+    {
+      "id": "paper_error_icon",
+      "name": "Paper Error icon",
+      "reason": "Not exercised by Load paper; injected as static geometry so the whole device is rendered.",
+      "location": "Control panel display",
+      "layout_hint": {
+        "anchor": "front",
+        "rel": [
+          -0.44,
+          0.69,
+          0.485
+        ],
+        "size": [
+          0.01,
+          0.01,
+          0.005
+        ],
+        "flat": true,
+        "hingeEdge": null
+      }
+    },
+    {
+      "id": "wireless_attention_icon",
+      "name": "Wireless Attention icon",
+      "reason": "Not exercised by Load paper; injected as static geometry so the whole device is rendered.",
+      "location": "Control panel display",
+      "layout_hint": {
+        "anchor": "front",
+        "rel": [
+          -0.43,
+          0.67,
+          0.485
+        ],
+        "size": [
+          0.01,
+          0.01,
+          0.005
+        ],
+        "flat": true,
+        "hingeEdge": null
+      }
+    },
+    {
+      "id": "wi_fi_direct_icon",
+      "name": "Wi-Fi Direct icon",
+      "reason": "Not exercised by Load paper; injected as static geometry so the whole device is rendered.",
+      "location": "Control panel display",
+      "layout_hint": {
+        "anchor": "front",
+        "rel": [
+          -0.41,
+          0.66,
+          0.485
+        ],
+        "size": [
+          0.01,
+          0.01,
+          0.005
+        ],
+        "flat": true,
+        "hingeEdge": null
+      }
+    },
+    {
+      "id": "ink_level_icons",
+      "name": "Ink Level icons",
+      "reason": "Not exercised by Load paper; injected as static geometry so the whole device is rendered.",
+      "location": "Control panel display",
+      "layout_hint": {
+        "anchor": "front",
+        "rel": [
+          -0.42,
+          0.65,
+          0.485
+        ],
+        "size": [
+          0.05,
+          0.015,
+          0.005
+        ],
+        "flat": true,
+        "hingeEdge": null
+      }
+    },
+    {
+      "id": "ink_alert_light",
+      "name": "Ink Alert light",
+      "reason": "Not exercised by Load paper; injected as static geometry so the whole device is rendered.",
+      "location": "Control panel, below the display",
+      "layout_hint": {
+        "anchor": "front",
+        "rel": [
+          -0.42,
+          0.62,
+          0.48
+        ],
+        "size": [
+          0.02,
+          0.01,
+          0.005
+        ],
+        "flat": true,
+        "hingeEdge": null
+      }
+    },
+    {
+      "id": "cancel_button",
+      "name": "Cancel button",
+      "reason": "Not exercised by Load paper; injected as static geometry so the whole device is rendered.",
+      "location": "Control panel, below the Ink Alert light",
+      "layout_hint": {
+        "anchor": "front",
+        "rel": [
+          -0.42,
+          0.58,
+          0.48
+        ],
+        "size": [
+          0.05,
+          0.04,
+          0.01
+        ],
+        "flat": true,
+        "hingeEdge": null
+      }
+    },
+    {
+      "id": "resume_button",
+      "name": "Resume button",
+      "reason": "Not exercised by Load paper; injected as static geometry so the whole device is rendered.",
+      "location": "Control panel, below the Cancel button",
+      "layout_hint": {
+        "anchor": "front",
+        "rel": [
+          -0.42,
+          0.53,
+          0.48
+        ],
+        "size": [
+          0.05,
+          0.04,
+          0.01
+        ],
+        "flat": true,
+        "hingeEdge": null
+      }
+    },
+    {
+      "id": "resume_light",
+      "name": "Resume light",
+      "reason": "Not exercised by Load paper; injected as static geometry so the whole device is rendered.",
+      "location": "Control panel, at the Resume button",
+      "layout_hint": {
+        "anchor": "front",
+        "rel": [
+          -0.455,
+          0.53,
+          0.48
+        ],
+        "size": [
+          0.01,
+          0.01,
+          0.005
+        ],
+        "flat": true,
+        "hingeEdge": null
+      }
+    },
+    {
+      "id": "wireless_button",
+      "name": "Wireless button",
+      "reason": "Not exercised by Load paper; injected as static geometry so the whole device is rendered.",
+      "location": "Control panel, below the Resume button",
+      "layout_hint": {
+        "anchor": "front",
+        "rel": [
+          -0.42,
+          0.48,
+          0.48
+        ],
+        "size": [
+          0.05,
+          0.04,
+          0.01
+        ],
+        "flat": true,
+        "hingeEdge": null
+      }
+    },
+    {
+      "id": "wireless_light",
+      "name": "Wireless light",
+      "reason": "Not exercised by Load paper; injected as static geometry so the whole device is rendered.",
+      "location": "Control panel, at the Wireless button",
+      "layout_hint": {
+        "anchor": "front",
+        "rel": [
+          -0.455,
+          0.48,
+          0.48
+        ],
+        "size": [
+          0.01,
+          0.01,
+          0.005
+        ],
+        "flat": true,
+        "hingeEdge": null
+      }
+    },
+    {
+      "id": "information_button",
+      "name": "Information button",
+      "reason": "Not exercised by Load paper; injected as static geometry so the whole device is rendered.",
+      "location": "Control panel, below the Wireless button",
+      "layout_hint": {
+        "anchor": "front",
+        "rel": [
+          -0.42,
+          0.43,
+          0.48
+        ],
+        "size": [
+          0.05,
+          0.04,
+          0.01
+        ],
+        "flat": true,
+        "hingeEdge": null
+      }
+    },
+    {
+      "id": "information_light",
+      "name": "Information light",
+      "reason": "Not exercised by Load paper; injected as static geometry so the whole device is rendered.",
+      "location": "Control panel, at the Information button",
+      "layout_hint": {
+        "anchor": "front",
+        "rel": [
+          -0.455,
+          0.43,
+          0.48
+        ],
+        "size": [
+          0.01,
+          0.01,
+          0.005
+        ],
+        "flat": true,
+        "hingeEdge": null
+      }
+    },
+    {
+      "id": "start_copy_color_button",
+      "name": "Start Copy Color button",
+      "reason": "Not exercised by Load paper; injected as static geometry so the whole device is rendered.",
+      "location": "Control panel, second from bottom",
+      "layout_hint": {
+        "anchor": "front",
+        "rel": [
+          -0.42,
+          0.38,
+          0.48
+        ],
+        "size": [
+          0.05,
+          0.04,
+          0.01
+        ],
+        "flat": true,
+        "hingeEdge": null
+      }
+    },
+    {
+      "id": "start_copy_black_button",
+      "name": "Start Copy Black button",
+      "reason": "Not exercised by Load paper; injected as static geometry so the whole device is rendered.",
+      "location": "Control panel, bottom position",
+      "layout_hint": {
+        "anchor": "front",
+        "rel": [
+          -0.42,
+          0.33,
+          0.48
+        ],
+        "size": [
+          0.05,
+          0.04,
+          0.01
+        ],
+        "flat": true,
+        "hingeEdge": null
+      }
+    },
+    {
+      "id": "power_connection",
+      "name": "Power connection",
+      "reason": "Not exercised by Load paper; injected as static geometry so the whole device is rendered.",
+      "location": "Rear of the printer",
+      "layout_hint": {
+        "anchor": "rear",
+        "rel": [
+          0.1,
+          0.3,
+          -0.5
+        ],
+        "size": [
+          0.04,
+          0.1,
+          0.02
+        ],
+        "flat": false,
+        "hingeEdge": null
+      }
+    },
+    {
+      "id": "usb_port",
+      "name": "USB port",
+      "reason": "Not exercised by Load paper; injected as static geometry so the whole device is rendered.",
+      "location": "Rear of the printer",
+      "layout_hint": {
+        "anchor": "rear",
+        "rel": [
+          -0.06,
+          0.35,
+          -0.5
+        ],
+        "size": [
+          0.03,
+          0.06,
+          0.02
+        ],
+        "flat": false,
+        "hingeEdge": null
+      }
+    },
+    {
+      "id": "power_cord",
+      "name": "Power cord",
+      "reason": "Not exercised by Load paper; injected as static geometry so the whole device is rendered. Not shown in overview figure.",
+      "location": "Rear of the printer to the wall outlet",
+      "layout_hint": {
+        "anchor": null,
+        "rel": null,
+        "size": null,
+        "flat": null,
+        "hingeEdge": null
+      }
+    },
+    {
+      "id": "printer_label",
+      "name": "Printer label",
+      "reason": "Not exercised by Load paper; injected as static geometry so the whole device is rendered. Not shown in overview figure.",
+      "location": "Inside the cartridge access door",
+      "layout_hint": {
+        "anchor": null,
+        "rel": null,
+        "size": null,
+        "flat": null,
+        "hingeEdge": null
+      }
+    },
+    {
+      "id": "cartridges",
+      "name": "Cartridges",
+      "reason": "Material not exercised by Load paper; shown installed in the overview figure, rendered as static geometry.",
+      "location": "In the print carriage, behind the cartridge access door",
+      "layout_hint": {
+        "anchor": "center",
+        "rel": [
+          0.12,
+          0.42,
+          0.3
+        ],
+        "size": [
+          0.2,
+          0.1,
+          0.12
+        ],
+        "flat": false,
+        "hingeEdge": null
+      }
+    },
+    {
+      "id": "envelopes",
+      "name": "Envelopes",
+      "reason": "External material not used by Load paper; not part of the device body.",
+      "location": "User-supplied; input tray far-right side when loaded",
+      "layout_hint": {
+        "anchor": null,
+        "rel": null,
+        "size": null,
+        "flat": null,
+        "hingeEdge": null
+      }
+    },
+    {
+      "id": "original",
+      "name": "Original",
+      "reason": "External material not used by Load paper; not part of the device body.",
+      "location": "User-supplied; scanner glass when loaded",
+      "layout_hint": {
+        "anchor": null,
+        "rel": null,
+        "size": null,
+        "flat": null,
+        "hingeEdge": null
+      }
+    },
+    {
+      "id": "ink",
+      "name": "Ink",
+      "reason": "Abstract material inside the cartridges; not used by Load paper.",
+      "location": "Inside the cartridges",
+      "layout_hint": {
+        "anchor": null,
+        "rel": null,
+        "size": null,
+        "flat": null,
+        "hingeEdge": null
+      }
+    },
+    {
+      "id": "usb_cable",
+      "name": "USB cable",
+      "reason": "External material not used by Load paper; not part of the device body.",
+      "location": "Between the rear USB port and the computer",
+      "layout_hint": {
+        "anchor": null,
+        "rel": null,
+        "size": null,
+        "flat": null,
+        "hingeEdge": null
+      }
+    },
+    {
+      "id": "flashlight",
+      "name": "Flashlight",
+      "reason": "External user-supplied tool not used by Load paper; not part of the device body.",
+      "location": "User-supplied",
+      "layout_hint": {
+        "anchor": null,
+        "rel": null,
+        "size": null,
+        "flat": null,
+        "hingeEdge": null
+      }
+    }
+  ],
+  "rules": [
+    {
+      "id": "r_paper_orientation",
+      "name": "Paper orientation",
+      "description": "Insert the paper with the short edge down and the print side up.",
+      "expr": null,
+      "priority": 1,
+      "applies_to": [
+        "t_machine_paper_1"
+      ]
+    },
+    {
+      "id": "r_same_size_type",
+      "name": "Uniform stack",
+      "description": "All paper in the stack must be the same size and type, flat, with edges not bent or torn, to avoid paper jams.",
+      "expr": null,
+      "priority": 1,
+      "applies_to": [
+        "t_machine_paper_1"
+      ]
+    },
+    {
+      "id": "r_no_overfill",
+      "name": "Do not overfill",
+      "description": "Do not overfill the input tray (up to 60 plain sheets) and do not force paper too far down.",
+      "expr": null,
+      "priority": 1,
+      "applies_to": [
+        "t_machine_paper_1"
+      ]
+    },
+    {
+      "id": "r_guide_no_bend",
+      "name": "Guide must not bend paper",
+      "description": "The paper-width guide must fit snugly against the paper without bending it.",
+      "expr": "machine_paper_width_guide.position eq snug",
+      "priority": 1,
+      "applies_to": [
+        "t_machine_paper_width_guide_2"
+      ]
+    },
+    {
+      "id": "r_no_add_while_printing",
+      "name": "No loading while printing",
+      "description": "Do not add paper while the printer is printing; wait for the out of paper message.",
+      "expr": null,
+      "priority": 2,
+      "applies_to": [
+        "load_paper"
+      ]
+    }
+  ]
+}

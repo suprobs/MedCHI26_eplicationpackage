@@ -1,0 +1,67 @@
+[SESSION OVERRIDE — SINGLE-MANUAL MODE]
+Exactly ONE target manual is provided: [M01]. This overrides any multi-batch or threshold instruction below:
+  - Analyze ONLY the target manual. There are no other batches.
+  - Fill "Present in" with [M01] and "Frequency" with 1/1 for every row.
+  - BLOCK 3 must contain ALL rows of the working table (the frequency threshold does not apply with a single manual).
+  - Do not import data from other device models. If a field is not stated in the manual, write "not specified in manual" — it will be resolved later via the archetype fallback with explicit provenance.
+
+Role: Act as a technical documentation expert specializing in device manuals and formal process modeling.
+
+Context: A Components Table has already been generated from these manuals. It is provided at the end of this prompt. All component references in your output must use names exactly as they appear in that table.
+
+Session mode: Same multi-batch logic and manual identifiers as the component analysis. Single-manual session — no frequency threshold.
+
+Objective:
+Extract all user-initiated procedures and operational tasks explicitly described in the manuals. For each procedure, capture enough structured detail to allow direct conversion into a JSON task description and subsequently into an Extended Finite State Machine (EFSM).
+
+For each procedure, populate the following table:
+| Procedure | Brief description | Initial device state | Steps (plain) | Steps with components | Decision points and conditional steps | Internal error paths | Final device state | Preconditions | Notes and warnings | Component–action map | Present in | Frequency |
+
+Inclusion rules:
+  • Include ALL found procedures regardless of frequency.
+  • BLOCK 3 contains ALL rows (single-manual session — the frequency threshold does not apply).
+  • Do not include a procedure unless it is explicitly described with steps in at least one manual.
+
+Procedure dependencies (prerequisites):
+  • If a procedure can only start once the device is in a state that another procedure produces, and the manual does NOT write that action as a step of this procedure (e.g. descaling is performed "while the machine is turned on" but has no switch-on step), do NOT inline it as an extra step. Keep the enabling action as its own procedure row (even if it has a single step, e.g. "Turn machine ON") and declare the dependency in the Preconditions column with the exact text "Requires procedure: <exact Procedure name>", followed by the state it guarantees (e.g. "Requires procedure: Turn machine ON, Coffee machine: Ready").
+  • The dependent procedure's Initial device state must equal the prerequisite's Final device state, using the same component names and state wording.
+  • Actions the manual writes as steps inside a procedure (e.g. step 1 "turn the machine on" of coffee preparation) stay as steps of that procedure; only states the manual assumes without a step become prerequisites.
+  • Name procedures with a plain verb phrase (e.g. "Turn machine ON", "Load paper"); do not add parenthetical qualifiers to the Procedure name, and never label a prerequisite as "not a standalone procedure".
+
+Output — four blocks:
+BLOCK 1 — Session metadata
+BLOCK 2 — Full working table (grouped by functional category)
+BLOCK 3 — Full summary table (single manual: contains ALL rows)
+BLOCK 4 — Modeling notes
+
+STRICT OUTPUT FORMATTING (Markdown) — follow exactly. My output is consumed by a parser, not read by a human, so structure matters as much as content:
+1. ONE PHYSICAL LINE PER ROW. Every table row must sit on a single line, from its leading "|" to its trailing "|". Never break a row across multiple lines. Never put a blank line between a row's cells.
+2. NO BLANK LINES INSIDE A TABLE. A blank line ends the table. Rows must be consecutive, with no empty line between them.
+3. ONE TABLE PER BLOCK, ONE HEADER ROW. Do not split a block's data into several tables and do not insert bold labels or sub-headings (e.g. "Device components", "External elements") between rows. To group by category, just order the rows by the "Category" column inside the single table.
+4. EXACT HEADER (13 columns), used verbatim:
+| Procedure | Brief description | Initial device state | Steps (plain) | Steps with components | Decision points and conditional steps | Internal error paths | Final device state | Preconditions | Notes and warnings | Component–action map | Present in | Frequency |
+5. BLOCK TITLES AS MARKDOWN HEADINGS with "###", e.g. "### BLOCK 3 — Full summary table". Do NOT use bold ("**BLOCK 3 …**") for block titles.
+6. NO LINE BREAKS INSIDE CELLS. Keep multi-value cells comma-separated on the same line.
+CORRECT (single line, no internal blank lines):
+| **Lever** | Device component | Lever, Levier, Palanca, Alavanca | Rotational / Pivoting | Open (lifted), Closed (lowered) | Opens to allow capsule insertion; closes to perforate; opens to eject. | Top of machine | Coffee preparation, Descaling | Capsule blocked; scalding hazard if forced | [M01] | 1/1 |
+INCORRECT (never do this — one cell per line with blank lines between them):
+| **Lever** | Device component | Lever, Levier, Palanca, Alavanca
+ | Rotational / Pivoting
+ | Open (lifted), Closed (lowered)
+7. SEPARATOR ROW IS MANDATORY. Immediately after every table's header row, output a separator row of dashes with the SAME number of columns, before any data row. A Markdown table is invalid without it. Example:
+| Procedure | Brief description | Initial device state | Steps (plain) | Steps with components | Decision points and conditional steps | Internal error paths | Final device state | Preconditions | Notes and warnings | Component–action map | Present in | Frequency |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+8. NO CITATION ARTIFACTS. Do not insert "[cite: N]", footnote markers, or any tool-generated annotations inside cells. Cells contain plain text only.
+9. "Present in" COLUMN IS PLAIN TEXT. Write the manual identifier as plain text (e.g. [M01]) with NO hyperlink, NO URL, NO markdown link syntax. Just the bracketed id.
+
+OVERRIDE FOR MULTI-STEP CELLS — this supersedes any earlier rule that allowed <br>:
+- Do NOT use the <br> tag anywhere. Not around steps, not inside any cell.
+- Join the steps of a cell into ONE line separated by " / ". Example:
+  "1) Unpack machine / 2) Rinse tank / 3) Plug in / 4) Press button to power ON"
+- The ONLY newline (carriage return / Enter) in the entire table is the one that ends each row, right after its final "|". There are exactly as many newlines in the table as there are rows (plus header and separator). Inside a row you never press Enter.
+- Before finishing, silently re-read each row and confirm it occupies a single physical line.
+
+──────────────────────────────────────
+COMPONENT TABLE (sole source of component names):
+| Element | Category |
+|---------|----------|

@@ -2076,6 +2076,12 @@ Inclusion rules:
   • Generate a separate filtered summary table for procedures present in more than {T}% of manuals.
   • Do not include a procedure unless it is explicitly described with steps in at least one manual.
 
+Procedure dependencies (prerequisites):
+  • If a procedure can only start once the device is in a state that another procedure produces, and the manual does NOT write that action as a step of this procedure (e.g. descaling is performed "while the machine is turned on" but has no switch-on step), do NOT inline it as an extra step. Keep the enabling action as its own procedure row (even if it has a single step, e.g. "Turn machine ON") and declare the dependency in the Preconditions column with the exact text "Requires procedure: <exact Procedure name>", followed by the state it guarantees (e.g. "Requires procedure: Turn machine ON, Coffee machine: Ready").
+  • The dependent procedure's Initial device state must equal the prerequisite's Final device state, using the same component names and state wording.
+  • Actions the manual writes as steps inside a procedure (e.g. step 1 "turn the machine on" of coffee preparation) stay as steps of that procedure; only states the manual assumes without a step become prerequisites.
+  • Name procedures with a plain verb phrase (e.g. "Turn machine ON", "Load paper"); do not add parenthetical qualifiers to the Procedure name, and never label a prerequisite as "not a standalone procedure".
+
 Output — four blocks:
 BLOCK 1 — Session metadata
 BLOCK 2 — Full working table (grouped by functional category)
@@ -2314,7 +2320,24 @@ function parseMdProcs(text){
   }
   var seen={};
   parsedProcs.forEach(function(p){var base=_procSlug(p.name)||'proc',s=base,k=2;while(seen[s]){s=base+'_'+(k++);}seen[s]=1;p.pid=s;});
+  _applyDeclaredPrereqs();
   return parsedProcs.length>0;
+}
+/* Explicit prerequisites declared in the Procedures Table: "Requires procedure: <exact name>"
+   (Preconditions or Initial device state column). Resolved against the parsed procedure names;
+   self-references and direct cycles are ignored. Heuristic suggestions (suggestPrereqs) still apply on top. */
+function _applyDeclaredPrereqs(){
+  var norm=function(x){return _procSlug(String(x||'').replace(/\*\*/g,'').replace(/\s*\(.*$/,'').trim());};
+  parsedProcs.forEach(function(p){
+    var src=[p.preconds,p.initState].join(' , ');
+    var re=/requires?\s+(?:procedures?|prerequisites?)\s*:\s*([^,;\/|]+)/gi, m;
+    while((m=re.exec(src))){
+      var nm=norm(m[1]);if(!nm)continue;
+      var q=parsedProcs.find(function(x){return x!==p&&(x.pid===nm||norm(x.name)===nm);});
+      if(!q||(q.requires||[]).indexOf(p.pid)!==-1)continue;
+      if(p.requires.indexOf(q.pid)===-1)p.requires.push(q.pid);
+    }
+  });
 }
 
 function parseMdErrors(text){
@@ -3246,14 +3269,18 @@ const _STOP={the:1,a:1,an:1,of:1,to:1,and:1,or:1,is:1,are:1,be:1,in:1,on:1,for:1
 function _tokens(s){return String(dval(s)||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]+/g,' ').split(/\s+/).filter(function(w){return w.length>2&&!_STOP[w];});}
 function suggestPrereqs(i){
   const p=parsedProcs[i];if(!p)return [];
-  const need=new Set(_tokens(p.initState).concat(_tokens(p.preconds)));
+  // tokens shared by most procedures (e.g. the device name) carry no dependency signal
+  const df={};parsedProcs.forEach(function(q){new Set(_tokens(q.initState).concat(_tokens(q.preconds))).forEach(function(t){df[t]=(df[t]||0)+1;});});
+  const common=function(t){return parsedProcs.length>=4&&df[t]>parsedProcs.length/2;};
+  const need=new Set(_tokens(p.initState).concat(_tokens(p.preconds)).filter(function(t){return !common(t);}));
   if(!need.size)return [];
   const out=[];
   parsedProcs.forEach(function(q,j){
     if(j===i)return;
     if(q.requires&&q.requires.indexOf(p.pid)!==-1)return; // avoid obvious cycle
     // q must look like a preparation/setup procedure
-    if(!/(^|\b)(load|prepar|position|insert|install|enabl|connect|set up|setup|turn .* on|place)\b/i.test(q.name+' '+dval(q.finalState)))return;
+    if(!/(^|\b)(load|prepar|position|insert|install|enabl|connect|set up|setup|place)\b/i.test(q.name+' '+dval(q.finalState))
+       && !/\b(turn|switch|power)\b(\s+\S+){0,3}\s+on\b|\bpower\s+up\b|\bstart\s*up\b/i.test(q.name))return;
     const prov=new Set(_tokens(q.finalState).concat(_tokens(q.name)));
     let shared=0;prov.forEach(function(t){if(need.has(t))shared++;});
     if(shared>=2)out.push({j:j,score:shared});
@@ -3560,6 +3587,13 @@ RUNTIME TRANSITION FORMAT (mandatory — the Unity loader consumes this dialect,
 Do NOT emit "from_state"/"to_state" objects, an "on_failure" object, or a nested guard object — those are not read by the loader. The states[] list still carries the full state objects with dimension_values; the transition's flat from/to/dimension MUST be consistent with those states.
 Emit a signal on every transition that changes a dimension value another machine or the orchestrator might need to observe.
 
+Interaction binding constraints (the scene configurator derives each component's bindings from its transitions; a step whose action is not bound cannot be performed in MR):
+- A press component (button, icon, trigger volume) triggers exactly ONE action: the action of its machine's first transition whose "from" equals the initial value of the component's first dimension. A grabbable component (hinge or slide) triggers at most TWO: that action at the far end of its movement, and at the near end the first other transition that returns to the initial value.
+- Every action used by a step must be one of those bound actions of some component, or be fired by a state timeout (a transition whose from/to match a state's timeout).
+- An action is offered to every machine, so one interaction may change several machines (e.g. pressing a coffee button switches the machine on through the LEDs machine). Give the operated component its own machine with a transition for that action (a momentary button may keep its state: released -> released) and put the effects on the machines that change.
+- If a component would need more actions than it can bind, reuse one action name on transitions that differ in their "from" value, or move the action to another component.
+- To trigger the action of the near end, the learner first moves a grabbable through its far end. If the far-end action can fire at that point with a true guard, it changes the state although the step expected the other action (e.g. pulling the water tank out to fill it would empty it). Guard such transitions so they cannot fire there.
+
 Step 3 — Build the procedure entry.
 Divide the procedure into atomic steps, numbered with a 1-based integer "order". One transition per step: set "transition_ref" to the single transition ID from Step 2 that satisfies this step. If — and only if — the manual explicitly allows more than one action to satisfy the same step with no difference in what follows (e.g. "press once for X, twice for Y", both leading to the same next step), list every acceptable transition ID in "accepted_transition_refs" instead and leave "transition_ref" null. Mark "external_step": true for steps with no transition_ref because the action happens outside the device. Express preconditions and postconditions as lists of { machine_id, dimension, required_value } objects.
 
@@ -3844,7 +3878,10 @@ function efsmIntegrityIssues(m){
   let walked=true;
   for(let k=0;k<walkIds.length;k++){
     const p=procs.find(function(q){return q.id===walkIds[k];}); if(!p){walked=false;break;}
-    const unmet=(p.preconditions||[]).filter(function(pc){return String((snap[pc.machine_id]||{})[pc.dimension])!==String(pc.required_value);});
+    const unmetNow=function(){return (p.preconditions||[]).filter(function(pc){return String((snap[pc.machine_id]||{})[pc.dimension])!==String(pc.required_value);});};
+    let unmet=unmetNow();
+    // A prerequisite may end in a timed state (e.g. heating 25 s -> ready): let it elapse before the dependent procedure starts.
+    if(unmet.length&&k>0){const tf=applyTimeouts();if(tf.length){unmet=unmetNow();warn.push('Start of "'+p.id+'" relies on a state timeout reached after its prerequisite ('+tf.join('; ')+'). Check that the runtime fires state timeouts.');}}
     if(unmet.length){err.push('Start of "'+p.id+'": precondition(s) not met by the current state — '+unmet.map(function(pc){return pc.machine_id+'.'+pc.dimension+' is '+(snap[pc.machine_id]||{})[pc.dimension]+', needs '+pc.required_value;}).join('; ')+'.');walked=false;break;}
     const byOrder={};(p.steps||[]).forEach(function(st){byOrder[st.order]=st;});
     const rem={};let cur=(p.steps||[]).slice().sort(function(a,b){return a.order-b.order;})[0];let guardSteps=0;
@@ -3864,10 +3901,23 @@ function efsmIntegrityIssues(m){
       cur=next||byOrder[cur.order+1];
     }
     if(!walked)break;
-    const post=(p.postconditions||[]).filter(function(po){return String((snap[po.machine_id]||{})[po.dimension])!==String(po.guaranteed_value);});
+    const postNow=function(){return (p.postconditions||[]).filter(function(po){return String((snap[po.machine_id]||{})[po.dimension])!==String(po.guaranteed_value);});};
+    let post=postNow();
+    if(post.length){const tf=applyTimeouts();if(tf.length){post=postNow();if(!post.length)warn.push('End of "'+p.id+'": postcondition(s) reached through a state timeout ('+tf.join('; ')+'). Check that the runtime fires state timeouts.');}}
     if(post.length)warn.push('End of "'+p.id+'": postcondition(s) not reached — '+post.map(function(po){return po.machine_id+'.'+po.dimension+' is '+(snap[po.machine_id]||{})[po.dimension]+', guaranteed '+po.guaranteed_value;}).join('; ')+'.');
   }
   if(walked&&walkIds.length)ok.push('Simulated walk of '+walkIds.map(function(x){return '"'+x+'"';}).join(' → ')+' completes with every step firing from the seeded snapshot.');
+  // 5) rules: applies_to names transitions or procedures; an evaluable rule is enforced by the guards of the transitions it applies to
+  (m.rules||[]).forEach(function(r){
+    const ap=r.applies_to||[];
+    ap.forEach(function(a){if(!trans[a]&&!has(a))warn.push('Rule "'+r.id+'": applies_to "'+a+'" is neither a transition nor a procedure.');});
+    if(r.expr){
+      const atoms=String(r.expr).split(/\s+(?:and|or)\s+/).map(function(x){return x.trim();});
+      const ts=ap.filter(function(a){return trans[a];}).map(function(a){return trans[a];});
+      if(!ts.length)warn.push('Rule "'+r.id+'" has an expression but applies to no transition, so no guard enforces it.');
+      ts.forEach(function(e){const t=e.t;const g=String(t.guard||'');const eff=e.mid+'.'+t.dimension+' eq '+t.to;const miss=atoms.filter(function(x){return g.indexOf(x)===-1&&x!==eff;});if(miss.length)warn.push('Rule "'+r.id+'" is evaluable, but neither the guard nor the effect of '+t.id+' enforces '+miss.join(' / ')+'.');});
+    }
+  });
   const deps=procs.some(function(p){return (p.requires||[]).length||(p.unlocks||[]).length||(p.preconditions||[]).some(function(pc){return pc.resolver_procedure_id;});});
   if(deps&&!err.some(function(e){return /not in procedures\[\]/.test(e);}))ok.push('All procedure dependencies resolve inside this EFSM.');
   return {err:err,warn:warn,ok:ok};
@@ -5318,7 +5368,8 @@ function hintToDef(h, D){
   var py = r3((typeof rel[1]==='number' ? rel[1] : base[1]) * D.y);
   var pz = r3((base[2] + (rel[2]||0)) * D.z);
   var sz = h.size || [0.3,0.15,0.15];
-  var out = { dim:[r3(sz[0]*D.x), r3(Math.max(0.004,sz[1]*D.y)), r3(sz[2]*D.z)],
+  /* A size fraction of 0 (or one that rounds to 0) would produce an invisible, degenerate box. */
+  var out = { dim:[r3(Math.max(0.002,sz[0]*D.x)), r3(Math.max(0.004,sz[1]*D.y)), r3(Math.max(0.002,sz[2]*D.z))],
               pos:[px, py, pz], col:h.col||null, prov:'target_manual:overview_figure' };
   if(h.flat){ out.flat=true; out.dim[1]=0.003; }
   if(h.hingeEdge){ out.pivot={mode:'edge', edge:h.hingeEdge}; out.hingeMax=h.hingeMax||70; }
@@ -6876,6 +6927,43 @@ function runV3(){
       errs.push('Step '+s.order+": no interactive component triggers '"+acts+"' and it is not fired by a state timeout (C5). Bind the action to an interactive component (check its box or verify its movement isn't 'static')");
     }
   });
+  /* Round trip of grabbables: to trigger the near-end action (action_at_min) the learner
+     first moves the part through its far end, which fires action_at_max. If that action can
+     fire there with a true guard it changes the state the step expected (e.g. pulling the
+     water tank out to fill it would empty it). Walked over device_meta.target_procedures. */
+  (function(){
+    var byMachine={};
+    spec.components.forEach(function(c){var b=c.efsm_binding||{};if(c.interactive&&c.machine_id&&b.action_at_max&&b.action_at_min)byMachine[c.machine_id]={id:c.id,max:b.action_at_max,min:b.action_at_min};});
+    if(!Object.keys(byMachine).length)return;
+    var mById={};resultJson.machines.forEach(function(mc){mById[mc.id]=mc;});
+    var snap={};(resultJson.components_catalog||[]).forEach(function(c){snap[c.machine_id]={};(c.dimensions||[]).forEach(function(d){snap[c.machine_id][d.name]=d.initial!=null?d.initial:d.initial_value;});});
+    var timeouts=function(){Object.keys(mById).forEach(function(mid){var mc=mById[mid],cur=snap[mid]||{};var st=(mc.states||[]).find(function(x){var dv=x.dimension_values||{},ks=Object.keys(dv);return ks.length&&ks.every(function(k){return String(cur[k])===String(dv[k]);});});var to=st&&st.timeout&&st.timeout.after_ms&&st.timeout.to_state;var tgt=to&&(mc.states||[]).find(function(x){return x.id===to;});if(tgt)Object.keys(tgt.dimension_values||{}).forEach(function(k){cur[k]=tgt.dimension_values[k];});});};
+    var walkIds=((resultJson.device_meta||{}).target_procedures||[]).slice();if(!walkIds.length)walkIds=[cfg.procId];
+    walkIds.forEach(function(pid){
+      var p=resultJson.procedures.find(function(x){return x.id===pid;});if(!p)return;
+      var byOrder={};(p.steps||[]).forEach(function(st){byOrder[st.order]=st;});
+      var cur=(p.steps||[]).slice().sort(function(a,b){return a.order-b.order;})[0],rem={},n=0;
+      while(cur&&n++<500){
+        if((cur.branches||[]).length)break;
+        if(!cur.external_step){
+          var refs=[cur.transition_ref].concat(cur.accepted_transition_refs||[]).filter(Boolean);
+          var pick=function(){return refs.map(function(r){return {t:tById[r],mid:t2m[r]};}).filter(function(x){return x.t&&String((snap[x.mid]||{})[x.t.dimension])===String(x.t.from)&&_efsmGuardEval(x.t.guard,snap);})[0];};
+          var f=pick();if(!f){timeouts();f=pick();}if(!f)break;
+          var g=byMachine[f.mid];
+          if(g&&f.t.action===g.min&&g.max!==g.min){
+            (mById[f.mid].transitions||[]).forEach(function(x){
+              if(x.action===g.max&&String((snap[f.mid]||{})[x.dimension])===String(x.from)&&_efsmGuardEval(x.guard,snap))
+                errs.push("'"+pid+"' step "+cur.order+": to perform '"+f.t.action+"' the learner moves "+g.id+" through the other end of its movement, which first fires '"+g.max+"' ("+x.dimension+" "+x.from+" -> "+x.to+"). Guard "+x.id+" so it cannot fire at this point, or bind the actions differently.");
+            });
+          }
+          snap[f.mid][f.t.dimension]=f.t.to;
+        }
+        var lp=cur.loop||{},ro=lp.repeat_step_orders||[],nx=null;
+        if(ro.length&&lp.times>0){if(rem[cur.order]===undefined)rem[cur.order]=lp.times;if(rem[cur.order]>0){rem[cur.order]--;nx=byOrder[ro[0]];}}
+        cur=nx||byOrder[cur.order+1];
+      }
+    });
+  })();
   var box = document.getElementById('cfg-v3');
   var aliasHtml='';
   if(cfg._aliasHints && cfg._aliasHints.length){

@@ -1,0 +1,101 @@
+Role: Act as a formal modeling expert converting device procedure descriptions into Extended Finite State Machine (EFSM) definitions for use in a Unity training simulation.
+
+Architecture overview:
+- Each physical component has exactly ONE state machine (machine) that manages its states independently across all procedures.
+- A procedure is a sequence of steps identified by an integer "order". By default execution advances from one order to the next (order + 1). A step only deviates from this default when it declares "branches" (conditional routing) or "loop" (bounded repetition of earlier steps) — see Step 3 below. Each step references exactly one transition in a component machine by ID — it does not redefine the transition.
+- Component machine states persist between procedures. If a component is already in the required state, its procedure does not need to be repeated.
+- Procedures can depend on other procedures. Dependencies are expressed as preconditions over component machine states, not as free text, and are recorded with "requires" / "unlocks" and with the precondition's "resolver_procedure_id". Every procedure id referenced this way must be a procedure defined in procedures[] of the same output — never reference a procedure that is not in the output. A step can also delegate mid-procedure to another procedure via "goto_procedure" inside a branch (e.g. an unresolved symptom escalates into a corrective procedure).
+
+Inputs you will receive:
+- Procedure: name of the procedure to model.
+- Short description: what the procedure accomplishes.
+- Typical causes (optional): why a user would perform this procedure.
+- Available components: the Components Table generated in the previous analysis phase. Map all fields into the required schema.
+- Extra rules / guards (optional): additional conditional logic to enforce.
+- Steps (optional): plain-language step list from the Procedures Table. If provided, use it as the source of truth for step sequence. If not provided, infer from the manual analysis.
+- Template: the base JSON template to populate.
+
+Definitions — use these consistently:
+- Dimension: a single measurable or observable axis of a component's state (e.g. position, fill_level, connection_status, door_status). Every component must have at least one dimension.
+- State value: a discrete value that a dimension can take (e.g. open, closed, empty, loaded, low, full).
+- Transition: a change in one dimension of one component, from one state value to another, triggered by an action, optionally gated by a guard.
+- Guard: a boolean expression over one or more dimension values that must be true for a transition to fire.
+- Signal: an event emitted as a side effect of a transition, consumable by other machines or by the procedure orchestrator.
+- Precondition: a set of dimension–value pairs that must all be satisfied before a procedure can start.
+- Postcondition: a set of dimension–value pairs that are guaranteed to be true after a procedure completes successfully.
+- Branch: a guarded alternative to the default next step. Each step may declare zero or more branches, evaluated in order; the first branch whose guard evaluates true redirects execution to its "to_step" (or to another procedure via "goto_procedure"). A branch with no guard is an unconditional fallback and must be the last one listed. Use "kind":"failure" for a failed attempt that needs correction, "diagnostic" for a symptom-driven decision (e.g. troubleshooting), "alternative" for a non-failure detour, and "choice" for a user-selected target state.
+- Loop: a bounded, author-specified repetition of earlier steps, declared on the LAST step of the repeated block (the loop step). Runtime semantics (EfsmStateManager): when the loop step completes and a repetition remains, execution jumps back to repeat_step_orders[0] and then advances linearly (order + 1) until it reaches the loop step again, which is performed again and re-evaluated. Therefore "repeat_step_orders" MUST be the contiguous range of orders from the first repeated step up to and including the loop step's own order (e.g. [11,12,13] on step 13). "times" is the number of EXTRA passes (times = 1 runs the block twice in total); use "until_guard" instead of "times" only when the manual expresses the repetition as state-dependent. Every step in the block must be performable again from the state reached at the end of the previous pass (its transition's "from" must match that state). If the manual's repetition skips steps in between, or a repeated step could not fire again (e.g. entering a mode that is already active), do NOT use "loop": write the repeated steps out explicitly as new steps with their own orders.
+- External step: a step with no physical transition in the simulated device (e.g. an instruction that takes place outside the device, such as using a computer application). It auto-completes after a short delay instead of waiting for a transition.
+
+Instructions — follow in order:
+
+Step 1 — Build or update components_catalog (procedure-scoped).
+Do NOT catalog every component in Available components by default. Catalog ONLY the components this specific procedure (or, when a "Procedure composition" block is present below, any procedure of that chain) actually exercises — that is, a component that is either: (a) the subject of a step's transition, (b) referenced in a precondition, postcondition or guard, or (c) the target of a side-effect signal emitted during the procedure (e.g. the container that receives an ejected capsule). Each cataloged component gets exactly one machine.
+Components that must appear in the scene as geometry but have NO state machine in this procedure (static visual anchors like a spout, or abstract materials represented through another component's dimension) go into "scene_props", not into components_catalog and not as passive machines. Each scene prop has: id, name, category, role ("visual_anchor" or "abstract_material"), description, location.
+Components from Available components that belong to OTHER procedures and play no role here go into "excluded_components" with { id, name, reason, location, layout_hint } — do not create empty passive machines for them. Include name/location/layout_hint so the scene builder can still place them: the simulated object must be the WHOLE device, not only this procedure's active parts.
+Layout from the manual's Overview figure (applies to components_catalog, excluded_components, scene_props and new_elements): if the manual contains a labelled overview/diagram of the device, read it and emit a "layout_hint" for every component placing it relative to the device body. Fields: "anchor" (top|bottom|left|right|front|rear|center — where on the body the part sits), "rel" [x,y,z] as fractions of device width/height/depth (x,z in -0.5..0.5 from center; y in 0..1 from the base), "size" [w,h,d] as fractions of device dims, "flat" (true for icons/LEDs/screens/labels — no 3D volume), and "hingeEdge" (front|back) for lids/levers. This layout_hint is the reliable source of relative position for devices outside the common printer/coffee-machine layouts (e.g. microscopes, mixers): base it on what the figure actually shows, not on guesses. If the manual has no usable figure, omit layout_hint (leave its fields null) and the builder falls back to family-archetype and token heuristics.
+For each cataloged component define: all dimensions relevant to this procedure, all possible state values per dimension, initial state at device power-on, machine ID (format: machine_<component_id>).
+Category (controlled vocabulary — use these two literal strings only): set "category" to "device_component" for a part of the device itself (it stays with the device), or "material" for an external object the device processes or the user brings to it and which may be consumed, transformed or taken away (paper, capsule, water, cup, laundry, specimen). A container is a device_component while its contents are a material (the water tank is a device_component; the water is a material). Populate "enums.categories" with exactly the values used, drawn from ["device_component","material"] — no other wording and no synonyms.
+A material that has its own state in this procedure goes into components_catalog with category "material" and gets a machine; a material whose state is only represented through another component's dimension (e.g. water tracked by the tank's fill_level) goes into scene_props with role "abstract_material" and gets no machine.
+
+Step 2 — Build or update machines.
+One machine per component. Every transition must have a unique ID (format: t_<machine_id>_<sequence_number>). Add a timeout only if the manual explicitly describes a time limit for that state.
+
+RUNTIME TRANSITION FORMAT (mandatory — the Unity loader consumes this dialect, not a nested one). Each transition is a FLAT object with these fields:
+  - "id": string
+  - "action": the action name (matches an entry in enums.actions)
+  - "movement": one movement token from enums.movements, or "none"
+  - "dimension": the single dimension name (defined in the component's dimensions) that this transition changes
+  - "from": the state VALUE of that dimension before the transition (a value from the dimension's values list)
+  - "to": the state VALUE of that dimension after the transition
+  - "guard": a STRING expression or null. Never an object. Format: "machine_id.dimension eq value" (or "neq"), combined with " and " / " or ". Example: "machine_lever.position eq lifted". Use eq/neq/and/or only — never ==, !=, &&, ||.
+  - "emits": a single signal STRING (the primary emitted signal) or null
+  - "signals_emitted": the array form of the emitted signals (may be empty). Keep it consistent with "emits" (emits = signals_emitted[0], or null if none).
+  - "description": optional string.
+Do NOT emit "from_state"/"to_state" objects, an "on_failure" object, or a nested guard object — those are not read by the loader. The states[] list still carries the full state objects with dimension_values; the transition's flat from/to/dimension MUST be consistent with those states.
+Emit a signal on every transition that changes a dimension value another machine or the orchestrator might need to observe.
+
+Interaction binding constraints (the scene configurator derives each component's bindings from its transitions; a step whose action is not bound cannot be performed in MR):
+- A press component (button, icon, trigger volume) triggers exactly ONE action: the action of its machine's first transition whose "from" equals the initial value of the component's first dimension. A grabbable component (hinge or slide) triggers at most TWO: that action at the far end of its movement, and at the near end the first other transition that returns to the initial value.
+- Every action used by a step must be one of those bound actions of some component, or be fired by a state timeout (a transition whose from/to match a state's timeout).
+- An action is offered to every machine, so one interaction may change several machines (e.g. pressing a coffee button switches the machine on through the LEDs machine). Give the operated component its own machine with a transition for that action (a momentary button may keep its state: released -> released) and put the effects on the machines that change.
+- If a component would need more actions than it can bind, reuse one action name on transitions that differ in their "from" value, or move the action to another component.
+- To trigger the action of the near end, the learner first moves a grabbable through its far end. If the far-end action can fire at that point with a true guard, it changes the state although the step expected the other action (e.g. pulling the water tank out to fill it would empty it). Guard such transitions so they cannot fire there.
+
+Step 3 — Build the procedure entry.
+Divide the procedure into atomic steps, numbered with a 1-based integer "order". One transition per step: set "transition_ref" to the single transition ID from Step 2 that satisfies this step. If — and only if — the manual explicitly allows more than one action to satisfy the same step with no difference in what follows (e.g. "press once for X, twice for Y", both leading to the same next step), list every acceptable transition ID in "accepted_transition_refs" instead and leave "transition_ref" null. Mark "external_step": true for steps with no transition_ref because the action happens outside the device. Express preconditions and postconditions as lists of { machine_id, dimension, required_value } objects.
+
+Do not default to a linear procedure if the manual describes otherwise. Use "branches" (see Branch definition above) whenever the manual: (a) describes a corrective action that may or may not resolve the problem ("if leakage occurs, call the club"), (b) presents a symptom-driven decision with more than one possible cause (troubleshooting tables — model only the branches whose remedy is an actual device interaction or a reference to another procedure; a remedy that is purely "contact support" with no further device interaction is a single terminal branch, not a sub-tree), or (c) refers the user to another procedure as a corrective step (use "goto_procedure" with that procedure's id). Use "loop" (see Loop definition above) whenever the manual explicitly instructs repeating a block of consecutive steps a stated number of times and every step of the block can fire again; otherwise (e.g. "repeat steps 4 and 7 twice" with other steps in between) write the repetitions out as explicit steps. If a step has neither branches nor a loop, leave both fields empty — the default order+1 advancement applies.
+Branch guards are STRING expressions too (same "machine_id.dimension eq value" dialect), never objects. Also emit a procedure-level "guard" string: the AND of all preconditions, e.g. "machine_a.dim eq x and machine_b.dim eq y".
+
+Step 3-bis — Runtime fields the loader requires.
+- Every dimension in components_catalog (and in new_elements) MUST carry BOTH "initial_value" and "initial" with the same value. The loader seeds the start snapshot from "initial"; omitting it leaves the dimension null and no transition can match its "from" state.
+- Emit a top-level "device_meta" object (in addition to "meta") with: version, efsm_id, device_type, description, source_manuals, plus "device_name", "source_manual" (a single string), and "target_procedures" (array with the id(s) of the procedure(s) the simulation runs, in execution order: this procedure's id, or the ids given in the "Procedure composition" block when present). The Unity loader reads loader.Data.device_meta.
+- Set enums.guard_ops to ["eq","neq","and","or"].
+- Each component's initial state MUST equal the machine's initial_state and the initial_component_states and preconditions of the FIRST procedure in device_meta.target_procedures — the scenario start must be internally consistent so that procedure's step 1 "from" matches the seeded snapshot. Any other procedure in the output describes, in its initial_component_states, the state at its own start.
+
+Step 4 — Populate enums.
+Add to each enum array any new values introduced by this procedure. Never remove existing values.
+
+Step 5 — Handle missing components.
+If a component is missing from Available components, add it to both new_elements and components_catalog with full schema.
+
+Output rules:
+- Return ONE markdown code block containing ONLY valid JSON.
+- Do not include comments inside the JSON.
+- Do not truncate or omit any section of the template.
+- Transitions use the FLAT runtime format from Step 2 (action, movement, dimension, from, to, guard-as-string, emits). Never nested from_state/to_state or object guards.
+- Every dimension carries "initial" (= initial_value). A top-level "device_meta" is present.
+- All transition IDs referenced in procedure steps (transition_ref or accepted_transition_refs) must exist in the machines section.
+- All guard expressions (transition, branch, procedure) are strings using eq/neq/and/or and reference only dimensions defined in components_catalog.
+- Every "to_step" and every entry in "repeat_step_orders" must equal the "order" of a step that exists in the same procedure, and "repeat_step_orders" is a contiguous range ending at the loop step's own order; every "goto_procedure", every entry of "requires" and "unlocks", every non-null "resolver_procedure_id" and every entry of device_meta.target_procedures must equal the id of a procedure that exists in procedures[] of this output — never invent a step order or a procedure id that is not defined elsewhere.
+- Procedure dependencies are symmetric and acyclic: X in Y.requires if and only if Y in X.unlocks; a resolver_procedure_id names a procedure whose postconditions guarantee that precondition's value.
+- components_catalog must be procedure-scoped (Step 1): every cataloged component must be exercised by this procedure. Do not emit passive machines with no transitions for components that only appear in other procedures — place those in "excluded_components", and place geometry-only elements in "scene_props".
+
+──────────────────────────────────────
+Inputs:
+[FULFILLED BY TOOL]
+Template:
+```json
+
+```

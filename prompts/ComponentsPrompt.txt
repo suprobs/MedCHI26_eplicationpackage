@@ -1,0 +1,65 @@
+[SESSION OVERRIDE — SINGLE-MANUAL MODE]
+Exactly ONE target manual is provided: [M01]. This overrides any multi-batch or threshold instruction below:
+  - Analyze ONLY the target manual. There are no other batches.
+  - Fill "Present in" with [M01] and "Frequency" with 1/1 for every row.
+  - BLOCK 3 must contain ALL rows of the working table (the frequency threshold does not apply with a single manual).
+  - Do not import data from other device models. If a field is not stated in the manual, write "not specified in manual" — it will be resolved later via the archetype fallback with explicit provenance.
+
+Role: Act as a technical documentation expert specializing in device manuals.
+
+Session mode: INITIAL ANALYSIS
+This is the first batch of manuals in a multi-batch analysis. Structure your output so that future batches can expand it without reprocessing previous manuals.
+
+Manual identification:
+Assign a short identifier to each provided manual: [M01], [M02], etc.
+List the correspondence between each identifier and its source filename at the top of your output.
+
+Objective:
+Analyze the provided manuals and extract all explicitly mentioned elements, classified into exactly two categories:
+  • device_component: a physical part of the device itself — integrated into, installed in, or permanently attached to it. It stays with the device.
+  • material: an external object that the device processes or that the user brings to it, and which may be consumed, transformed or taken away (e.g. paper, capsule, water, cup, laundry, a specimen). It does not stay with the device.
+Use the literal strings "device_component" and "material" in the Category column — no other wording, no synonyms, no sub-labels.
+Decision rule when in doubt: if the element leaves with the user or is used up, it is a material; if it remains part of the device, it is a device_component. A container is a device_component; its contents are a material (e.g. the water tank is a device_component, the water it holds is a material).
+
+Granularity level:
+Include major components and named subcomponents. Do not infer parts not mentioned by name.
+
+For each element, populate the following table:
+| Element | Category | Name variants | Type of movement | Possible states | Functional description | Typical location | Associated procedures | Associated errors / messages | Present in | Frequency |
+
+Inclusion rules:
+  • Include ALL found elements in the full working table regardless of frequency.
+  • BLOCK 3 contains ALL rows (single-manual session — the frequency threshold does not apply).
+
+Output — four blocks:
+BLOCK 1 — Session metadata (must include one row "Physical dimensions (mm)" with the device's stated width × height × depth, each value labeled (W)/(H)/(D), e.g. "84 mm (W) × 204 mm (H) × 330 mm (D)"; if the manual states no dimensions, write "not specified in manual")
+BLOCK 2 — Full working table (grouped by category)
+BLOCK 3 — Full summary table (single manual: contains ALL rows)
+BLOCK 4 — Cross-manual notes
+
+STRICT OUTPUT FORMATTING (Markdown) — follow exactly. My output is consumed by a parser, not read by a human, so structure matters as much as content:
+1. ONE PHYSICAL LINE PER ROW. Every table row must sit on a single line, from its leading "|" to its trailing "|". Never break a row across multiple lines. Never put a blank line between a row's cells.
+2. NO BLANK LINES INSIDE A TABLE. A blank line ends the table. Rows must be consecutive, with no empty line between them.
+3. ONE TABLE PER BLOCK, ONE HEADER ROW. Do not split a block's data into several tables and do not insert bold labels or sub-headings (e.g. "Device components", "External elements") between rows. To group by category, just order the rows by the "Category" column inside the single table.
+4. EXACT HEADER (11 columns), used verbatim:
+| Element | Category | Name variants | Type of movement | Possible states | Functional description | Typical location | Associated procedures | Associated errors / messages | Present in | Frequency |
+5. BLOCK TITLES AS MARKDOWN HEADINGS with "###", e.g. "### BLOCK 3 — Full summary table". Do NOT use bold ("**BLOCK 3 …**") for block titles.
+6. NO LINE BREAKS INSIDE CELLS. Keep multi-value cells comma-separated on the same line.
+CORRECT (single line, no internal blank lines):
+| **Lever** | Device component | Lever, Levier, Palanca, Alavanca | Rotational / Pivoting | Open (lifted), Closed (lowered) | Opens to allow capsule insertion; closes to perforate; opens to eject. | Top of machine | Coffee preparation, Descaling | Capsule blocked; scalding hazard if forced | [M01] | 1/1 |
+INCORRECT (never do this — one cell per line with blank lines between them):
+| **Lever** | Device component | Lever, Levier, Palanca, Alavanca
+ | Rotational / Pivoting
+ | Open (lifted), Closed (lowered)
+7. SEPARATOR ROW IS MANDATORY. Immediately after every table's header row, output a separator row of dashes with the SAME number of columns, before any data row. A Markdown table is invalid without it. Example:
+| Element | Category | Name variants | Type of movement | Possible states | Functional description | Typical location | Associated procedures | Associated errors / messages | Present in | Frequency |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+8. NO CITATION ARTIFACTS. Do not insert "[cite: N]", footnote markers, or any tool-generated annotations inside cells. Cells contain plain text only.
+9. "Present in" COLUMN IS PLAIN TEXT. Write the manual identifier as plain text (e.g. [M01]) with NO hyperlink, NO URL, NO markdown link syntax. Just the bracketed id.
+
+OVERRIDE FOR MULTI-STEP CELLS — this supersedes any earlier rule that allowed <br>:
+- Do NOT use the <br> tag anywhere. Not around steps, not inside any cell.
+- Join the steps of a cell into ONE line separated by " / ". Example:
+  "1) Unpack machine / 2) Rinse tank / 3) Plug in / 4) Press button to power ON"
+- The ONLY newline (carriage return / Enter) in the entire table is the one that ends each row, right after its final "|". There are exactly as many newlines in the table as there are rows (plus header and separator). Inside a row you never press Enter.
+- Before finishing, silently re-read each row and confirm it occupies a single physical line.

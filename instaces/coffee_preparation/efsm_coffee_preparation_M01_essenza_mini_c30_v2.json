@@ -1,0 +1,1889 @@
+{
+  "meta": {
+    "version": "2.1.0-runtime",
+    "efsm_id": "nespresso_essenza_mini_c30_coffee_preparation",
+    "device_type": "capsule_coffee_machine",
+    "description": "Nespresso Essenza Mini C30: coffee preparation (Espresso or Lungo).",
+    "created_at": "2026-10-17",
+    "source_manuals": [
+      "[M01] UM_NESPRESSO_ESSENZA_MINI_Z1_C_PROD_WEB_2017_02_20.pdf"
+    ]
+  },
+  "device_meta": {
+    "version": "2.1.0-runtime",
+    "efsm_id": "nespresso_essenza_mini_c30_coffee_preparation",
+    "device_type": "capsule_coffee_machine",
+    "description": "Nespresso Essenza Mini C30: coffee preparation (Espresso or Lungo).",
+    "created_at": "2026-10-17",
+    "source_manuals": [
+      "[M01] UM_NESPRESSO_ESSENZA_MINI_Z1_C_PROD_WEB_2017_02_20.pdf"
+    ],
+    "device_name": "Nespresso Essenza Mini C30",
+    "source_manual": "UM_NESPRESSO_ESSENZA_MINI_Z1_C_PROD_WEB_2017_02_20.pdf",
+    "target_procedures": [
+      "coffee_preparation"
+    ]
+  },
+  "enums": {
+    "dimensions": [
+      "contact",
+      "status",
+      "position",
+      "content"
+    ],
+    "actions": [
+      "press_espresso",
+      "press_lungo",
+      "heat_up_complete",
+      "lift_lever",
+      "close_lever",
+      "insert_capsule",
+      "place_cup",
+      "remove_cup",
+      "empty_and_rinse_water_tank",
+      "fill_water_tank",
+      "remove_drip_tray",
+      "insert_drip_tray"
+    ],
+    "movements": [
+      "press",
+      "none",
+      "hinge_rotation",
+      "insert",
+      "lift_and_place",
+      "lift_out",
+      "remove"
+    ],
+    "state_values": [
+      "released",
+      "off",
+      "heating",
+      "ready",
+      "closed",
+      "lifted",
+      "outside",
+      "in_compartment",
+      "ejected",
+      "absent",
+      "under_outlet",
+      "empty",
+      "coffee",
+      "potable_water",
+      "empty_clean",
+      "installed",
+      "removed"
+    ],
+    "signals": [
+      "espresso_button_pressed",
+      "lungo_button_pressed",
+      "machine_heating",
+      "machine_ready",
+      "lever_lifted",
+      "lever_closed",
+      "capsule_inserted",
+      "capsule_ejected",
+      "cup_placed",
+      "cup_removed",
+      "espresso_brewed",
+      "lungo_brewed",
+      "water_tank_emptied",
+      "water_tank_filled",
+      "drip_tray_removed",
+      "drip_tray_installed"
+    ],
+    "guard_ops": [
+      "eq",
+      "neq",
+      "and",
+      "or"
+    ],
+    "ports": [],
+    "categories": [
+      "device_component",
+      "material"
+    ]
+  },
+  "components_catalog": [
+    {
+      "id": "espresso_button",
+      "machine_id": "machine_espresso_button",
+      "name": "Espresso button",
+      "category": "device_component",
+      "synonyms": [
+        "Coffee Buttons (Espresso & Lungo)",
+        "Bouton Espresso",
+        "Botón de Espresso"
+      ],
+      "description": "Momentary push button. Its press (press_espresso) is offered to every machine: it turns the machine on (LEDs) and, once ready, brews an Espresso into the cup. The button itself keeps no state.",
+      "location": "Top surface, next to the lever (left/right order not specified in manual)",
+      "layout_hint": {
+        "anchor": "top",
+        "rel": [
+          0.0,
+          1.0,
+          0.18
+        ],
+        "size": [
+          0.15,
+          0.01,
+          0.06
+        ],
+        "flat": true,
+        "hingeEdge": null
+      },
+      "appearance_frequency": "1/1",
+      "dimensions": [
+        {
+          "name": "contact",
+          "type": "enum",
+          "values": [
+            "released"
+          ],
+          "initial_value": "released",
+          "initial": "released",
+          "description": "Momentary contact: returns to released immediately after each press."
+        }
+      ],
+      "movements": [
+        "press"
+      ],
+      "interactions": [
+        "press_espresso"
+      ]
+    },
+    {
+      "id": "lungo_button",
+      "machine_id": "machine_lungo_button",
+      "name": "Lungo button",
+      "category": "device_component",
+      "synonyms": [
+        "Coffee Buttons (Espresso & Lungo)",
+        "Bouton Lungo",
+        "Botón de Lungo"
+      ],
+      "description": "Momentary push button. Its press (press_lungo) is offered to every machine: it turns the machine on (LEDs) and, once ready, brews a Lungo into the cup. The button itself keeps no state.",
+      "location": "Top surface, next to the lever (left/right order not specified in manual)",
+      "layout_hint": {
+        "anchor": "top",
+        "rel": [
+          0.0,
+          1.0,
+          0.08
+        ],
+        "size": [
+          0.15,
+          0.01,
+          0.06
+        ],
+        "flat": true,
+        "hingeEdge": null
+      },
+      "appearance_frequency": "1/1",
+      "dimensions": [
+        {
+          "name": "contact",
+          "type": "enum",
+          "values": [
+            "released"
+          ],
+          "initial_value": "released",
+          "initial": "released",
+          "description": "Momentary contact: returns to released immediately after each press."
+        }
+      ],
+      "movements": [
+        "press"
+      ],
+      "interactions": [
+        "press_lungo"
+      ]
+    },
+    {
+      "id": "leds",
+      "machine_id": "machine_leds",
+      "name": "LEDs",
+      "category": "device_component",
+      "synonyms": [
+        "Lights",
+        "Light indicator",
+        "Voyants",
+        "Luces",
+        "Luzes"
+      ],
+      "description": "Lights integrated in the Espresso and Lungo buttons; observable state of the machine (the internal heating is not modelled, the LEDs that show it are).",
+      "location": "Integrated in the Espresso and Lungo buttons, top surface",
+      "layout_hint": {
+        "anchor": "top",
+        "rel": [
+          0.0,
+          1.0,
+          0.13
+        ],
+        "size": [
+          0.3,
+          0.01,
+          0.15
+        ],
+        "flat": true,
+        "hingeEdge": null
+      },
+      "appearance_frequency": "1/1",
+      "dimensions": [
+        {
+          "name": "status",
+          "type": "enum",
+          "values": [
+            "off",
+            "heating",
+            "ready"
+          ],
+          "initial_value": "off",
+          "initial": "off",
+          "description": "off; heating = lights blinking (25 s); ready = lights steady."
+        }
+      ],
+      "movements": [
+        "none"
+      ],
+      "interactions": [
+        "observe"
+      ]
+    },
+    {
+      "id": "lever",
+      "machine_id": "machine_lever",
+      "name": "Lever",
+      "category": "device_component",
+      "synonyms": [
+        "Levier",
+        "Palanca",
+        "Alavanca"
+      ],
+      "description": "Opens the capsule compartment for capsule insertion; closing locks the system; a lift-and-close cycle after brewing ejects the capsule into the capsule container.",
+      "location": "Top front of machine, above the coffee outlet",
+      "layout_hint": {
+        "anchor": "top",
+        "rel": [
+          0.0,
+          0.93,
+          0.3
+        ],
+        "size": [
+          0.6,
+          0.06,
+          0.3
+        ],
+        "flat": false,
+        "hingeEdge": "back"
+      },
+      "appearance_frequency": "1/1",
+      "dimensions": [
+        {
+          "name": "position",
+          "type": "enum",
+          "values": [
+            "closed",
+            "lifted"
+          ],
+          "initial_value": "closed",
+          "initial": "closed",
+          "description": "Lever position."
+        }
+      ],
+      "movements": [
+        "hinge_rotation"
+      ],
+      "interactions": [
+        "lift_lever",
+        "close_lever"
+      ]
+    },
+    {
+      "id": "capsule",
+      "machine_id": "machine_capsule",
+      "name": "Capsule",
+      "category": "material",
+      "synonyms": [
+        "Nespresso capsule",
+        "Capsule tasting gift",
+        "Cápsula"
+      ],
+      "description": "Single-portion Nespresso coffee capsule inserted into the capsule compartment and ejected after brewing.",
+      "location": "Outside the machine, then in the capsule compartment, then in the capsule container",
+      "layout_hint": {
+        "anchor": "top",
+        "rel": [
+          0.0,
+          0.95,
+          0.45
+        ],
+        "size": [
+          0.44,
+          0.14,
+          0.11
+        ],
+        "flat": false,
+        "hingeEdge": null
+      },
+      "appearance_frequency": "1/1",
+      "dimensions": [
+        {
+          "name": "position",
+          "type": "enum",
+          "values": [
+            "outside",
+            "in_compartment",
+            "ejected"
+          ],
+          "initial_value": "outside",
+          "initial": "outside",
+          "description": "outside; in_compartment (inserted with the lever lifted); ejected (dropped into the capsule container by the lever cycle after brewing)."
+        }
+      ],
+      "movements": [
+        "insert"
+      ],
+      "interactions": [
+        "insert_capsule"
+      ]
+    },
+    {
+      "id": "cup",
+      "machine_id": "machine_cup",
+      "name": "Cup",
+      "category": "material",
+      "synonyms": [
+        "Espresso cup",
+        "Lungo cup",
+        "Tasse",
+        "Taza",
+        "Xícara"
+      ],
+      "description": "Cup placed on the drip grid under the coffee outlet; receives the coffee.",
+      "location": "On the drip grid under the coffee outlet",
+      "layout_hint": {
+        "anchor": "front",
+        "rel": [
+          0.0,
+          0.12,
+          0.42
+        ],
+        "size": [
+          0.6,
+          0.15,
+          0.2
+        ],
+        "flat": false,
+        "hingeEdge": null
+      },
+      "appearance_frequency": "1/1",
+      "dimensions": [
+        {
+          "name": "position",
+          "type": "enum",
+          "values": [
+            "absent",
+            "under_outlet"
+          ],
+          "initial_value": "absent",
+          "initial": "absent",
+          "description": "Whether the cup is under the coffee outlet."
+        },
+        {
+          "name": "content",
+          "type": "enum",
+          "values": [
+            "empty",
+            "coffee"
+          ],
+          "initial_value": "empty",
+          "initial": "empty",
+          "description": "empty; coffee (Espresso 40 ml or Lungo 110 ml, factory volumes)."
+        }
+      ],
+      "movements": [
+        "lift_and_place"
+      ],
+      "interactions": [
+        "place_cup",
+        "remove_cup"
+      ]
+    },
+    {
+      "id": "water_tank",
+      "machine_id": "machine_water_tank",
+      "name": "Water tank",
+      "category": "device_component",
+      "synonyms": [
+        "Water Tank",
+        "Réservoir d'eau",
+        "Tanque de agua"
+      ],
+      "description": "Holds the water supply (0.6 L); must contain potable water for brewing (water use per cup not modelled).",
+      "location": "Rear of machine (vertical cylinder)",
+      "layout_hint": {
+        "anchor": "rear",
+        "rel": [
+          0.0,
+          0.45,
+          -0.38
+        ],
+        "size": [
+          1.0,
+          0.9,
+          0.25
+        ],
+        "flat": false,
+        "hingeEdge": null
+      },
+      "appearance_frequency": "1/1",
+      "dimensions": [
+        {
+          "name": "content",
+          "type": "enum",
+          "values": [
+            "potable_water",
+            "empty_clean"
+          ],
+          "initial_value": "potable_water",
+          "initial": "potable_water",
+          "description": "potable_water; empty_clean (emptied and rinsed)."
+        }
+      ],
+      "movements": [
+        "lift_out"
+      ],
+      "interactions": [
+        "empty_and_rinse_water_tank",
+        "fill_water_tank"
+      ]
+    },
+    {
+      "id": "drip_tray",
+      "machine_id": "machine_drip_tray",
+      "name": "Drip tray",
+      "category": "device_component",
+      "synonyms": [
+        "Drip Tray",
+        "Bac d'égouttage",
+        "Bandeja de goteo"
+      ],
+      "description": "Collects drips and spills under the coffee outlet; must be in place before brewing.",
+      "location": "Front base, below the coffee outlet",
+      "layout_hint": {
+        "anchor": "front",
+        "rel": [
+          0.0,
+          0.04,
+          0.42
+        ],
+        "size": [
+          0.95,
+          0.08,
+          0.25
+        ],
+        "flat": false,
+        "hingeEdge": null
+      },
+      "appearance_frequency": "1/1",
+      "dimensions": [
+        {
+          "name": "position",
+          "type": "enum",
+          "values": [
+            "installed",
+            "removed"
+          ],
+          "initial_value": "installed",
+          "initial": "installed",
+          "description": "Whether the drip tray is in place."
+        }
+      ],
+      "movements": [
+        "remove"
+      ],
+      "interactions": [
+        "remove_drip_tray",
+        "insert_drip_tray"
+      ]
+    }
+  ],
+  "scene_props": [
+    {
+      "id": "coffee_machine",
+      "name": "Coffee machine",
+      "category": "device_component",
+      "role": "visual_anchor",
+      "description": "Machine body. Internal heating and extraction are not modelled; their effect is shown by the LEDs and the Cup content.",
+      "location": "Whole device (84 x 204 x 330 mm)",
+      "layout_hint": {
+        "anchor": "center",
+        "rel": [
+          0.0,
+          0.5,
+          0.0
+        ],
+        "size": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "flat": false,
+        "hingeEdge": null
+      }
+    },
+    {
+      "id": "coffee_outlet",
+      "name": "Coffee outlet",
+      "category": "device_component",
+      "role": "visual_anchor",
+      "description": "Spout under which the cup is placed.",
+      "location": "Front, under the top overhang, above the drip area",
+      "layout_hint": {
+        "anchor": "front",
+        "rel": [
+          0.0,
+          0.72,
+          0.42
+        ],
+        "size": [
+          0.25,
+          0.05,
+          0.08
+        ],
+        "flat": false,
+        "hingeEdge": null
+      }
+    },
+    {
+      "id": "drip_grid",
+      "name": "Drip grid",
+      "category": "device_component",
+      "role": "visual_anchor",
+      "description": "Perforated grid on the drip tray on which the cup is placed.",
+      "location": "Front base, on top of the drip tray",
+      "layout_hint": {
+        "anchor": "front",
+        "rel": [
+          0.0,
+          0.09,
+          0.42
+        ],
+        "size": [
+          0.9,
+          0.01,
+          0.22
+        ],
+        "flat": false,
+        "hingeEdge": null
+      }
+    },
+    {
+      "id": "capsule_compartment",
+      "name": "Capsule compartment",
+      "category": "device_component",
+      "role": "visual_anchor",
+      "description": "Cavity opened by the lever where the capsule is inserted.",
+      "location": "Top front, under the lever",
+      "layout_hint": {
+        "anchor": "top",
+        "rel": [
+          0.0,
+          0.88,
+          0.33
+        ],
+        "size": [
+          0.4,
+          0.08,
+          0.12
+        ],
+        "flat": false,
+        "hingeEdge": null
+      }
+    },
+    {
+      "id": "capsule_container",
+      "name": "Capsule container",
+      "category": "device_component",
+      "role": "visual_anchor",
+      "description": "Receives the ejected capsule (signal capsule_ejected); its fill level is not tracked in this procedure.",
+      "location": "Inside the front of the machine, below the capsule compartment",
+      "layout_hint": {
+        "anchor": "front",
+        "rel": [
+          0.0,
+          0.3,
+          0.28
+        ],
+        "size": [
+          0.85,
+          0.35,
+          0.2
+        ],
+        "flat": false,
+        "hingeEdge": null
+      }
+    },
+    {
+      "id": "coffee",
+      "name": "Coffee",
+      "category": "material",
+      "role": "abstract_material",
+      "description": "Beverage; represented through machine_cup.content (signals espresso_brewed / lungo_brewed).",
+      "location": "Coffee outlet into the cup",
+      "layout_hint": {
+        "anchor": null,
+        "rel": null,
+        "size": null,
+        "flat": false,
+        "hingeEdge": null
+      }
+    },
+    {
+      "id": "water",
+      "name": "Water",
+      "category": "material",
+      "role": "abstract_material",
+      "description": "Potable water; represented through machine_water_tank.content.",
+      "location": "Water tank",
+      "layout_hint": {
+        "anchor": "rear",
+        "rel": [
+          0.0,
+          0.45,
+          -0.38
+        ],
+        "size": [
+          0.9,
+          0.8,
+          0.22
+        ],
+        "flat": false,
+        "hingeEdge": null
+      }
+    }
+  ],
+  "machines": [
+    {
+      "id": "machine_espresso_button",
+      "component_id": "espresso_button",
+      "description": "Momentary push button. Its press (press_espresso) is offered to every machine: it turns the machine on (LEDs) and, once ready, brews an Espresso into the cup. The button itself keeps no state.",
+      "initial_state": "espresso_button__released",
+      "final_states": [
+        "espresso_button__released"
+      ],
+      "states": [
+        {
+          "id": "espresso_button__released",
+          "label": "released",
+          "dimension_values": {
+            "contact": "released"
+          },
+          "is_error": false,
+          "is_terminal": false,
+          "invariant": null,
+          "timeout": {
+            "after_ms": null,
+            "to_state": null,
+            "emit_signal": null
+          }
+        }
+      ],
+      "transitions": [
+        {
+          "id": "t_machine_espresso_button_1",
+          "action": "press_espresso",
+          "movement": "press",
+          "signals_emitted": [
+            "espresso_button_pressed"
+          ],
+          "guard": null,
+          "description": "Momentary press of the Espresso button (the action is offered to every machine).",
+          "dimension": "contact",
+          "from": "released",
+          "to": "released",
+          "emits": "espresso_button_pressed"
+        }
+      ]
+    },
+    {
+      "id": "machine_lungo_button",
+      "component_id": "lungo_button",
+      "description": "Momentary push button. Its press (press_lungo) is offered to every machine: it turns the machine on (LEDs) and, once ready, brews a Lungo into the cup. The button itself keeps no state.",
+      "initial_state": "lungo_button__released",
+      "final_states": [
+        "lungo_button__released"
+      ],
+      "states": [
+        {
+          "id": "lungo_button__released",
+          "label": "released",
+          "dimension_values": {
+            "contact": "released"
+          },
+          "is_error": false,
+          "is_terminal": false,
+          "invariant": null,
+          "timeout": {
+            "after_ms": null,
+            "to_state": null,
+            "emit_signal": null
+          }
+        }
+      ],
+      "transitions": [
+        {
+          "id": "t_machine_lungo_button_1",
+          "action": "press_lungo",
+          "movement": "press",
+          "signals_emitted": [
+            "lungo_button_pressed"
+          ],
+          "guard": null,
+          "description": "Momentary press of the Lungo button (the action is offered to every machine).",
+          "dimension": "contact",
+          "from": "released",
+          "to": "released",
+          "emits": "lungo_button_pressed"
+        }
+      ]
+    },
+    {
+      "id": "machine_leds",
+      "component_id": "leds",
+      "description": "Lights integrated in the Espresso and Lungo buttons; observable state of the machine (the internal heating is not modelled, the LEDs that show it are).",
+      "initial_state": "leds__off",
+      "final_states": [
+        "leds__ready"
+      ],
+      "states": [
+        {
+          "id": "leds__off",
+          "label": "Off (lights off)",
+          "dimension_values": {
+            "status": "off"
+          },
+          "is_error": false,
+          "is_terminal": false,
+          "invariant": null,
+          "timeout": {
+            "after_ms": null,
+            "to_state": null,
+            "emit_signal": null
+          }
+        },
+        {
+          "id": "leds__heating",
+          "label": "Heating up (lights blinking, 25 s)",
+          "dimension_values": {
+            "status": "heating"
+          },
+          "is_error": false,
+          "is_terminal": false,
+          "invariant": null,
+          "timeout": {
+            "after_ms": 25000,
+            "to_state": "leds__ready",
+            "emit_signal": "machine_ready"
+          }
+        },
+        {
+          "id": "leds__ready",
+          "label": "Ready (lights steady)",
+          "dimension_values": {
+            "status": "ready"
+          },
+          "is_error": false,
+          "is_terminal": false,
+          "invariant": null,
+          "timeout": {
+            "after_ms": null,
+            "to_state": null,
+            "emit_signal": null
+          }
+        }
+      ],
+      "transitions": [
+        {
+          "id": "t_machine_leds_1",
+          "action": "press_espresso",
+          "movement": "press",
+          "signals_emitted": [
+            "machine_heating"
+          ],
+          "guard": null,
+          "description": "Pressing the Espresso button turns the machine on; lights blink while heating up.",
+          "dimension": "status",
+          "from": "off",
+          "to": "heating",
+          "emits": "machine_heating"
+        },
+        {
+          "id": "t_machine_leds_2",
+          "action": "press_lungo",
+          "movement": "press",
+          "signals_emitted": [
+            "machine_heating"
+          ],
+          "guard": null,
+          "description": "Pressing the Lungo button turns the machine on; lights blink while heating up.",
+          "dimension": "status",
+          "from": "off",
+          "to": "heating",
+          "emits": "machine_heating"
+        },
+        {
+          "id": "t_machine_leds_3",
+          "action": "heat_up_complete",
+          "movement": "none",
+          "signals_emitted": [
+            "machine_ready"
+          ],
+          "guard": null,
+          "description": "Fired by the 25 s state timeout of heating: lights become steady (ready).",
+          "dimension": "status",
+          "from": "heating",
+          "to": "ready",
+          "emits": "machine_ready"
+        }
+      ]
+    },
+    {
+      "id": "machine_lever",
+      "component_id": "lever",
+      "description": "Opens the capsule compartment for capsule insertion; closing locks the system; a lift-and-close cycle after brewing ejects the capsule into the capsule container.",
+      "initial_state": "lever__closed",
+      "final_states": [
+        "lever__closed"
+      ],
+      "states": [
+        {
+          "id": "lever__closed",
+          "label": "closed",
+          "dimension_values": {
+            "position": "closed"
+          },
+          "is_error": false,
+          "is_terminal": false,
+          "invariant": null,
+          "timeout": {
+            "after_ms": null,
+            "to_state": null,
+            "emit_signal": null
+          }
+        },
+        {
+          "id": "lever__lifted",
+          "label": "lifted",
+          "dimension_values": {
+            "position": "lifted"
+          },
+          "is_error": false,
+          "is_terminal": false,
+          "invariant": null,
+          "timeout": {
+            "after_ms": null,
+            "to_state": null,
+            "emit_signal": null
+          }
+        }
+      ],
+      "transitions": [
+        {
+          "id": "t_machine_lever_1",
+          "action": "lift_lever",
+          "movement": "hinge_rotation",
+          "signals_emitted": [
+            "lever_lifted"
+          ],
+          "guard": null,
+          "description": "Lift the lever completely.",
+          "dimension": "position",
+          "from": "closed",
+          "to": "lifted",
+          "emits": "lever_lifted"
+        },
+        {
+          "id": "t_machine_lever_2",
+          "action": "close_lever",
+          "movement": "hinge_rotation",
+          "signals_emitted": [
+            "lever_closed"
+          ],
+          "guard": null,
+          "description": "Close the lever (locks the system; after brewing, the cycle ejects the capsule).",
+          "dimension": "position",
+          "from": "lifted",
+          "to": "closed",
+          "emits": "lever_closed"
+        }
+      ]
+    },
+    {
+      "id": "machine_capsule",
+      "component_id": "capsule",
+      "description": "Single-portion Nespresso coffee capsule inserted into the capsule compartment and ejected after brewing.",
+      "initial_state": "capsule__outside",
+      "final_states": [
+        "capsule__ejected"
+      ],
+      "states": [
+        {
+          "id": "capsule__outside",
+          "label": "outside",
+          "dimension_values": {
+            "position": "outside"
+          },
+          "is_error": false,
+          "is_terminal": false,
+          "invariant": null,
+          "timeout": {
+            "after_ms": null,
+            "to_state": null,
+            "emit_signal": null
+          }
+        },
+        {
+          "id": "capsule__in_compartment",
+          "label": "in compartment",
+          "dimension_values": {
+            "position": "in_compartment"
+          },
+          "is_error": false,
+          "is_terminal": false,
+          "invariant": null,
+          "timeout": {
+            "after_ms": null,
+            "to_state": null,
+            "emit_signal": null
+          }
+        },
+        {
+          "id": "capsule__ejected",
+          "label": "ejected",
+          "dimension_values": {
+            "position": "ejected"
+          },
+          "is_error": false,
+          "is_terminal": false,
+          "invariant": null,
+          "timeout": {
+            "after_ms": null,
+            "to_state": null,
+            "emit_signal": null
+          }
+        }
+      ],
+      "transitions": [
+        {
+          "id": "t_machine_capsule_1",
+          "action": "insert_capsule",
+          "movement": "insert",
+          "signals_emitted": [
+            "capsule_inserted"
+          ],
+          "guard": "machine_lever.position eq lifted",
+          "description": "Insert the capsule into the capsule compartment (lever lifted).",
+          "dimension": "position",
+          "from": "outside",
+          "to": "in_compartment",
+          "emits": "capsule_inserted"
+        },
+        {
+          "id": "t_machine_capsule_2",
+          "action": "close_lever",
+          "movement": "hinge_rotation",
+          "signals_emitted": [
+            "capsule_ejected"
+          ],
+          "guard": "machine_cup.content eq coffee",
+          "description": "Closing the lever after brewing ejects the used capsule into the capsule container (side effect of close_lever, offered to every machine).",
+          "dimension": "position",
+          "from": "in_compartment",
+          "to": "ejected",
+          "emits": "capsule_ejected"
+        }
+      ]
+    },
+    {
+      "id": "machine_cup",
+      "component_id": "cup",
+      "description": "Cup placed on the drip grid under the coffee outlet; receives the coffee.",
+      "initial_state": "cup__absent",
+      "final_states": [
+        "cup__absent",
+        "cup__coffee"
+      ],
+      "states": [
+        {
+          "id": "cup__absent",
+          "label": "absent",
+          "dimension_values": {
+            "position": "absent"
+          },
+          "is_error": false,
+          "is_terminal": false,
+          "invariant": null,
+          "timeout": {
+            "after_ms": null,
+            "to_state": null,
+            "emit_signal": null
+          }
+        },
+        {
+          "id": "cup__under_outlet",
+          "label": "under outlet",
+          "dimension_values": {
+            "position": "under_outlet"
+          },
+          "is_error": false,
+          "is_terminal": false,
+          "invariant": null,
+          "timeout": {
+            "after_ms": null,
+            "to_state": null,
+            "emit_signal": null
+          }
+        },
+        {
+          "id": "cup__empty",
+          "label": "empty",
+          "dimension_values": {
+            "content": "empty"
+          },
+          "is_error": false,
+          "is_terminal": false,
+          "invariant": null,
+          "timeout": {
+            "after_ms": null,
+            "to_state": null,
+            "emit_signal": null
+          }
+        },
+        {
+          "id": "cup__coffee",
+          "label": "coffee",
+          "dimension_values": {
+            "content": "coffee"
+          },
+          "is_error": false,
+          "is_terminal": false,
+          "invariant": null,
+          "timeout": {
+            "after_ms": null,
+            "to_state": null,
+            "emit_signal": null
+          }
+        }
+      ],
+      "transitions": [
+        {
+          "id": "t_machine_cup_1",
+          "action": "place_cup",
+          "movement": "lift_and_place",
+          "signals_emitted": [
+            "cup_placed"
+          ],
+          "guard": null,
+          "description": "Place a cup under the coffee outlet, on the drip grid.",
+          "dimension": "position",
+          "from": "absent",
+          "to": "under_outlet",
+          "emits": "cup_placed"
+        },
+        {
+          "id": "t_machine_cup_2",
+          "action": "remove_cup",
+          "movement": "lift_and_place",
+          "signals_emitted": [
+            "cup_removed"
+          ],
+          "guard": "machine_cup.content eq coffee",
+          "description": "Remove the cup with the coffee.",
+          "dimension": "position",
+          "from": "under_outlet",
+          "to": "absent",
+          "emits": "cup_removed"
+        },
+        {
+          "id": "t_machine_cup_3",
+          "action": "press_espresso",
+          "movement": "press",
+          "signals_emitted": [
+            "espresso_brewed"
+          ],
+          "guard": "machine_leds.status eq ready and machine_lever.position eq closed and machine_capsule.position eq in_compartment and machine_cup.position eq under_outlet and machine_drip_tray.position eq installed and machine_water_tank.content eq potable_water",
+          "description": "Press the Espresso button: an Espresso (40 ml) flows into the cup; preparation stops automatically.",
+          "dimension": "content",
+          "from": "empty",
+          "to": "coffee",
+          "emits": "espresso_brewed"
+        },
+        {
+          "id": "t_machine_cup_4",
+          "action": "press_lungo",
+          "movement": "press",
+          "signals_emitted": [
+            "lungo_brewed"
+          ],
+          "guard": "machine_leds.status eq ready and machine_lever.position eq closed and machine_capsule.position eq in_compartment and machine_cup.position eq under_outlet and machine_drip_tray.position eq installed and machine_water_tank.content eq potable_water",
+          "description": "Press the Lungo button: a Lungo (110 ml) flows into the cup; preparation stops automatically.",
+          "dimension": "content",
+          "from": "empty",
+          "to": "coffee",
+          "emits": "lungo_brewed"
+        }
+      ]
+    },
+    {
+      "id": "machine_water_tank",
+      "component_id": "water_tank",
+      "description": "Holds the water supply (0.6 L); must contain potable water for brewing (water use per cup not modelled).",
+      "initial_state": "water_tank__potable_water",
+      "final_states": [
+        "water_tank__potable_water"
+      ],
+      "states": [
+        {
+          "id": "water_tank__potable_water",
+          "label": "potable water",
+          "dimension_values": {
+            "content": "potable_water"
+          },
+          "is_error": false,
+          "is_terminal": false,
+          "invariant": null,
+          "timeout": {
+            "after_ms": null,
+            "to_state": null,
+            "emit_signal": null
+          }
+        },
+        {
+          "id": "water_tank__empty_clean",
+          "label": "empty clean",
+          "dimension_values": {
+            "content": "empty_clean"
+          },
+          "is_error": false,
+          "is_terminal": false,
+          "invariant": null,
+          "timeout": {
+            "after_ms": null,
+            "to_state": null,
+            "emit_signal": null
+          }
+        }
+      ],
+      "transitions": [
+        {
+          "id": "t_machine_water_tank_1",
+          "action": "empty_and_rinse_water_tank",
+          "movement": "lift_out",
+          "signals_emitted": [
+            "water_tank_emptied"
+          ],
+          "guard": null,
+          "description": "Empty and rinse the water tank.",
+          "dimension": "content",
+          "from": "potable_water",
+          "to": "empty_clean",
+          "emits": "water_tank_emptied"
+        },
+        {
+          "id": "t_machine_water_tank_2",
+          "action": "fill_water_tank",
+          "movement": "lift_out",
+          "signals_emitted": [
+            "water_tank_filled"
+          ],
+          "guard": null,
+          "description": "Fill the water tank with fresh potable water.",
+          "dimension": "content",
+          "from": "empty_clean",
+          "to": "potable_water",
+          "emits": "water_tank_filled"
+        }
+      ]
+    },
+    {
+      "id": "machine_drip_tray",
+      "component_id": "drip_tray",
+      "description": "Collects drips and spills under the coffee outlet; must be in place before brewing.",
+      "initial_state": "drip_tray__installed",
+      "final_states": [
+        "drip_tray__installed"
+      ],
+      "states": [
+        {
+          "id": "drip_tray__installed",
+          "label": "installed",
+          "dimension_values": {
+            "position": "installed"
+          },
+          "is_error": false,
+          "is_terminal": false,
+          "invariant": null,
+          "timeout": {
+            "after_ms": null,
+            "to_state": null,
+            "emit_signal": null
+          }
+        },
+        {
+          "id": "drip_tray__removed",
+          "label": "removed",
+          "dimension_values": {
+            "position": "removed"
+          },
+          "is_error": false,
+          "is_terminal": false,
+          "invariant": null,
+          "timeout": {
+            "after_ms": null,
+            "to_state": null,
+            "emit_signal": null
+          }
+        }
+      ],
+      "transitions": [
+        {
+          "id": "t_machine_drip_tray_1",
+          "action": "remove_drip_tray",
+          "movement": "remove",
+          "signals_emitted": [
+            "drip_tray_removed"
+          ],
+          "guard": null,
+          "description": "Remove the drip tray.",
+          "dimension": "position",
+          "from": "installed",
+          "to": "removed",
+          "emits": "drip_tray_removed"
+        },
+        {
+          "id": "t_machine_drip_tray_2",
+          "action": "insert_drip_tray",
+          "movement": "remove",
+          "signals_emitted": [
+            "drip_tray_installed"
+          ],
+          "guard": null,
+          "description": "Put the drip tray back in place.",
+          "dimension": "position",
+          "from": "removed",
+          "to": "installed",
+          "emits": "drip_tray_installed"
+        }
+      ]
+    }
+  ],
+  "procedures": [
+    {
+      "id": "coffee_preparation",
+      "name": "Coffee preparation",
+      "short_description": "Prepares an Espresso (40 ml) or a Lungo (110 ml) from a capsule and ejects the used capsule",
+      "category": "core_operation",
+      "frequent_causes": [],
+      "requires": [],
+      "preconditions": [
+        {
+          "machine_id": "machine_leds",
+          "dimension": "status",
+          "required_value": "off",
+          "resolver_procedure_id": null
+        },
+        {
+          "machine_id": "machine_lever",
+          "dimension": "position",
+          "required_value": "closed",
+          "resolver_procedure_id": null
+        },
+        {
+          "machine_id": "machine_capsule",
+          "dimension": "position",
+          "required_value": "outside",
+          "resolver_procedure_id": null
+        },
+        {
+          "machine_id": "machine_cup",
+          "dimension": "position",
+          "required_value": "absent",
+          "resolver_procedure_id": null
+        },
+        {
+          "machine_id": "machine_cup",
+          "dimension": "content",
+          "required_value": "empty",
+          "resolver_procedure_id": null
+        },
+        {
+          "machine_id": "machine_water_tank",
+          "dimension": "content",
+          "required_value": "potable_water",
+          "resolver_procedure_id": null
+        },
+        {
+          "machine_id": "machine_drip_tray",
+          "dimension": "position",
+          "required_value": "installed",
+          "resolver_procedure_id": null
+        }
+      ],
+      "postconditions": [
+        {
+          "machine_id": "machine_leds",
+          "dimension": "status",
+          "guaranteed_value": "ready"
+        },
+        {
+          "machine_id": "machine_lever",
+          "dimension": "position",
+          "guaranteed_value": "closed"
+        },
+        {
+          "machine_id": "machine_cup",
+          "dimension": "position",
+          "guaranteed_value": "absent"
+        },
+        {
+          "machine_id": "machine_cup",
+          "dimension": "content",
+          "guaranteed_value": "coffee"
+        },
+        {
+          "machine_id": "machine_drip_tray",
+          "dimension": "position",
+          "guaranteed_value": "installed"
+        }
+      ],
+      "unlocks": [],
+      "initial_component_states": [
+        {
+          "component_id": "espresso_button",
+          "machine_id": "machine_espresso_button",
+          "dimension_values": {
+            "contact": "released"
+          }
+        },
+        {
+          "component_id": "lungo_button",
+          "machine_id": "machine_lungo_button",
+          "dimension_values": {
+            "contact": "released"
+          }
+        },
+        {
+          "component_id": "leds",
+          "machine_id": "machine_leds",
+          "dimension_values": {
+            "status": "off"
+          }
+        },
+        {
+          "component_id": "lever",
+          "machine_id": "machine_lever",
+          "dimension_values": {
+            "position": "closed"
+          }
+        },
+        {
+          "component_id": "capsule",
+          "machine_id": "machine_capsule",
+          "dimension_values": {
+            "position": "outside"
+          }
+        },
+        {
+          "component_id": "cup",
+          "machine_id": "machine_cup",
+          "dimension_values": {
+            "position": "absent",
+            "content": "empty"
+          }
+        },
+        {
+          "component_id": "water_tank",
+          "machine_id": "machine_water_tank",
+          "dimension_values": {
+            "content": "potable_water"
+          }
+        },
+        {
+          "component_id": "drip_tray",
+          "machine_id": "machine_drip_tray",
+          "dimension_values": {
+            "position": "installed"
+          }
+        }
+      ],
+      "steps": [
+        {
+          "order": 1,
+          "description": "Press either the Espresso or the Lungo button to turn the machine ON (manual step 1).",
+          "simplified_description": "Press one of the two coffee buttons on top.",
+          "step_type": "action",
+          "transition_ref": null,
+          "accepted_transition_refs": [
+            "t_machine_leds_1",
+            "t_machine_leds_2"
+          ],
+          "external_step": false,
+          "branches": [],
+          "loop": {
+            "repeat_step_orders": [],
+            "times": null,
+            "until_guard": null
+          }
+        },
+        {
+          "order": 2,
+          "description": "Wait while the lights blink (heating up, 25 seconds) until they stay steady: the machine is ready (manual step 1).",
+          "simplified_description": "Wait until the lights stop blinking.",
+          "step_type": "action",
+          "transition_ref": "t_machine_leds_3",
+          "accepted_transition_refs": [],
+          "external_step": false,
+          "branches": [],
+          "loop": {
+            "repeat_step_orders": [],
+            "times": null,
+            "until_guard": null
+          }
+        },
+        {
+          "order": 3,
+          "description": "Lift the lever completely (manual step 2).",
+          "simplified_description": "Pull the lever on top all the way up.",
+          "step_type": "action",
+          "transition_ref": "t_machine_lever_1",
+          "accepted_transition_refs": [],
+          "external_step": false,
+          "branches": [],
+          "loop": {
+            "repeat_step_orders": [],
+            "times": null,
+            "until_guard": null
+          }
+        },
+        {
+          "order": 4,
+          "description": "Insert the capsule (manual step 2).",
+          "simplified_description": "Put the capsule into the hole under the lever.",
+          "step_type": "action",
+          "transition_ref": "t_machine_capsule_1",
+          "accepted_transition_refs": [],
+          "external_step": false,
+          "branches": [],
+          "loop": {
+            "repeat_step_orders": [],
+            "times": null,
+            "until_guard": null
+          }
+        },
+        {
+          "order": 5,
+          "description": "Close the lever (manual step 3).",
+          "simplified_description": "Push the lever down.",
+          "step_type": "action",
+          "transition_ref": "t_machine_lever_2",
+          "accepted_transition_refs": [],
+          "external_step": false,
+          "branches": [],
+          "loop": {
+            "repeat_step_orders": [],
+            "times": null,
+            "until_guard": null
+          }
+        },
+        {
+          "order": 6,
+          "description": "Place a cup under the coffee outlet (manual step 3).",
+          "simplified_description": "Put the cup under the coffee spout.",
+          "step_type": "action",
+          "transition_ref": "t_machine_cup_1",
+          "accepted_transition_refs": [],
+          "external_step": false,
+          "branches": [],
+          "loop": {
+            "repeat_step_orders": [],
+            "times": null,
+            "until_guard": null
+          }
+        },
+        {
+          "order": 7,
+          "description": "Press the Espresso (40 ml) or the Lungo (110 ml) button to start; preparation stops automatically (manual step 4).",
+          "simplified_description": "Press the small-cup or the big-cup button and wait for the coffee.",
+          "step_type": "action",
+          "transition_ref": null,
+          "accepted_transition_refs": [
+            "t_machine_cup_3",
+            "t_machine_cup_4"
+          ],
+          "external_step": false,
+          "branches": [],
+          "loop": {
+            "repeat_step_orders": [],
+            "times": null,
+            "until_guard": null
+          }
+        },
+        {
+          "order": 8,
+          "description": "Remove the cup (manual step 5).",
+          "simplified_description": "Take your cup of coffee.",
+          "step_type": "action",
+          "transition_ref": "t_machine_cup_2",
+          "accepted_transition_refs": [],
+          "external_step": false,
+          "branches": [],
+          "loop": {
+            "repeat_step_orders": [],
+            "times": null,
+            "until_guard": null
+          }
+        },
+        {
+          "order": 9,
+          "description": "Lift the lever to eject the capsule (manual step 5).",
+          "simplified_description": "Pull the lever up again.",
+          "step_type": "action",
+          "transition_ref": "t_machine_lever_1",
+          "accepted_transition_refs": [],
+          "external_step": false,
+          "branches": [],
+          "loop": {
+            "repeat_step_orders": [],
+            "times": null,
+            "until_guard": null
+          }
+        },
+        {
+          "order": 10,
+          "description": "Close the lever: the used capsule drops into the used capsule container (manual step 5).",
+          "simplified_description": "Push the lever down to throw away the capsule.",
+          "step_type": "action",
+          "transition_ref": "t_machine_lever_2",
+          "accepted_transition_refs": [],
+          "external_step": false,
+          "branches": [],
+          "loop": {
+            "repeat_step_orders": [],
+            "times": null,
+            "until_guard": null
+          }
+        }
+      ],
+      "guard": "machine_leds.status eq off and machine_lever.position eq closed and machine_capsule.position eq outside and machine_cup.position eq absent and machine_cup.content eq empty and machine_water_tank.content eq potable_water and machine_drip_tray.position eq installed"
+    }
+  ],
+  "new_elements": [],
+  "excluded_components": [
+    {
+      "id": "blades",
+      "name": "Blades",
+      "reason": "Internal part that pierces the capsule; not shown in figures and not acted on by the user.",
+      "location": "Inside the capsule compartment",
+      "layout_hint": {
+        "anchor": null,
+        "rel": null,
+        "size": null,
+        "flat": false,
+        "hingeEdge": null
+      }
+    },
+    {
+      "id": "extraction_system",
+      "name": "Extraction system",
+      "reason": "Internal pressurised system; not shown in figures and not acted on by the user.",
+      "location": "Internal",
+      "layout_hint": {
+        "anchor": null,
+        "rel": null,
+        "size": null,
+        "flat": false,
+        "hingeEdge": null
+      }
+    },
+    {
+      "id": "water_tank_lid",
+      "name": "Water tank lid",
+      "reason": "Not used in coffee preparation.",
+      "location": "Top of the water tank, rear of machine",
+      "layout_hint": {
+        "anchor": "rear",
+        "rel": [
+          0.0,
+          0.97,
+          -0.38
+        ],
+        "size": [
+          1.0,
+          0.03,
+          0.25
+        ],
+        "flat": false,
+        "hingeEdge": "front"
+      }
+    },
+    {
+      "id": "06_l_line",
+      "name": "0.6 L line",
+      "reason": "Fill mark used in descaling.",
+      "location": "On the water tank wall",
+      "layout_hint": {
+        "anchor": "rear",
+        "rel": [
+          0.5,
+          0.6,
+          -0.38
+        ],
+        "size": [
+          0.0,
+          0.005,
+          0.1
+        ],
+        "flat": true,
+        "hingeEdge": null
+      }
+    },
+    {
+      "id": "drip_base",
+      "name": "Drip base",
+      "reason": "Emptied in cleaning and descaling.",
+      "location": "Front lower part of the machine, within the drip area",
+      "layout_hint": {
+        "anchor": "front",
+        "rel": [
+          0.0,
+          0.08,
+          0.3
+        ],
+        "size": [
+          0.9,
+          0.12,
+          0.2
+        ],
+        "flat": false,
+        "hingeEdge": null
+      }
+    },
+    {
+      "id": "power_cord",
+      "name": "Power cord",
+      "reason": "Not exercised by coffee preparation.",
+      "location": "Exits the machine housing (exit point not specified in manual)",
+      "layout_hint": {
+        "anchor": null,
+        "rel": null,
+        "size": null,
+        "flat": false,
+        "hingeEdge": null
+      }
+    },
+    {
+      "id": "plug",
+      "name": "Plug",
+      "reason": "Machine assumed plugged in; plugging in belongs to First use (low ecological validity for MR).",
+      "location": "End of the power cord",
+      "layout_hint": {
+        "anchor": null,
+        "rel": null,
+        "size": null,
+        "flat": false,
+        "hingeEdge": null
+      }
+    },
+    {
+      "id": "rating_plate",
+      "name": "Rating plate",
+      "reason": "Label; not exercised by coffee preparation.",
+      "location": "not specified in manual",
+      "layout_hint": {
+        "anchor": null,
+        "rel": null,
+        "size": null,
+        "flat": false,
+        "hingeEdge": null
+      }
+    },
+    {
+      "id": "container",
+      "name": "Container",
+      "reason": "Used in first use, descaling and emptying the system.",
+      "location": "Under the coffee outlet when placed",
+      "layout_hint": {
+        "anchor": "front",
+        "rel": [
+          0.0,
+          0.15,
+          0.42
+        ],
+        "size": [
+          0.9,
+          0.25,
+          0.25
+        ],
+        "flat": false,
+        "hingeEdge": null
+      }
+    },
+    {
+      "id": "descaling_agent",
+      "name": "Descaling agent",
+      "reason": "Used in descaling.",
+      "location": "Sachet, then inside the water tank",
+      "layout_hint": {
+        "anchor": null,
+        "rel": null,
+        "size": null,
+        "flat": false,
+        "hingeEdge": null
+      }
+    },
+    {
+      "id": "detergent",
+      "name": "Detergent",
+      "reason": "Used in cleaning.",
+      "location": "Applied to removable parts",
+      "layout_hint": {
+        "anchor": null,
+        "rel": null,
+        "size": null,
+        "flat": false,
+        "hingeEdge": null
+      }
+    },
+    {
+      "id": "coffee_grounds",
+      "name": "Coffee grounds",
+      "reason": "Stay inside the capsule; only relevant to the safety rule on forcing the machine open.",
+      "location": "Capsule compartment",
+      "layout_hint": {
+        "anchor": null,
+        "rel": null,
+        "size": null,
+        "flat": false,
+        "hingeEdge": null
+      }
+    }
+  ],
+  "rules": [
+    {
+      "id": "r_drip_tray_in_place",
+      "name": "Drip tray in place before brewing",
+      "description": "Do not use the machine without the drip tray (and grid) to avoid spilling liquid.",
+      "expr": "machine_drip_tray.position eq installed",
+      "priority": 2,
+      "applies_to": [
+        "t_machine_cup_3",
+        "t_machine_cup_4"
+      ]
+    },
+    {
+      "id": "r_cup_under_outlet",
+      "name": "Cup under the coffee outlet before brewing",
+      "description": "Do not use the appliance without a cup placed at the suitable level.",
+      "expr": "machine_cup.position eq under_outlet",
+      "priority": 1,
+      "applies_to": [
+        "t_machine_cup_3",
+        "t_machine_cup_4"
+      ]
+    },
+    {
+      "id": "r_lock_system",
+      "name": "Lock the system completely before brewing",
+      "description": "Always lock the system completely (lever closed).",
+      "expr": "machine_lever.position eq closed",
+      "priority": 1,
+      "applies_to": [
+        "t_machine_cup_3",
+        "t_machine_cup_4"
+      ]
+    },
+    {
+      "id": "r_lift_lever_to_insert",
+      "name": "Lift the lever completely to insert the capsule",
+      "description": "Lift the lever completely and insert the capsule.",
+      "expr": "machine_lever.position eq lifted",
+      "priority": 2,
+      "applies_to": [
+        "t_machine_capsule_1"
+      ]
+    },
+    {
+      "id": "r_machine_ready",
+      "name": "Brew when the machine is ready",
+      "description": "Steady lights mean ready (pressing while blinking queues the brew; not modelled).",
+      "expr": "machine_leds.status eq ready",
+      "priority": 3,
+      "applies_to": [
+        "t_machine_cup_3",
+        "t_machine_cup_4"
+      ]
+    },
+    {
+      "id": "r_water_tank_filled",
+      "name": "Water tank filled with potable water",
+      "description": "Always fill the water tank with fresh potable water.",
+      "expr": "machine_water_tank.content eq potable_water",
+      "priority": 2,
+      "applies_to": [
+        "t_machine_cup_3",
+        "t_machine_cup_4"
+      ]
+    },
+    {
+      "id": "r_never_lift_lever_during_operation",
+      "name": "Never lift the lever during operation",
+      "description": "Risk of scalding by hot liquids and coffee grounds.",
+      "expr": null,
+      "priority": 1,
+      "applies_to": [
+        "t_machine_lever_1"
+      ]
+    },
+    {
+      "id": "r_no_used_capsule",
+      "name": "Never use a used, damaged or deformed capsule",
+      "description": "Only intact Nespresso capsules.",
+      "expr": null,
+      "priority": 2,
+      "applies_to": [
+        "t_machine_capsule_1"
+      ]
+    },
+    {
+      "id": "r_hot_capsule",
+      "name": "Capsule is hot after use",
+      "description": "Risk of scalding; if a capsule is blocked, turn the machine off and unplug it.",
+      "expr": null,
+      "priority": 2,
+      "applies_to": [
+        "t_machine_capsule_2"
+      ]
+    },
+    {
+      "id": "r_fingers_outlet",
+      "name": "Do not put fingers under the coffee outlet",
+      "description": "Risk of scalding.",
+      "expr": null,
+      "priority": 2,
+      "applies_to": [
+        "coffee_preparation"
+      ]
+    },
+    {
+      "id": "r_fingers_compartment",
+      "name": "Do not put fingers into the capsule compartment",
+      "description": "Risk of injury.",
+      "expr": null,
+      "priority": 2,
+      "applies_to": [
+        "t_machine_capsule_1"
+      ]
+    }
+  ]
+}

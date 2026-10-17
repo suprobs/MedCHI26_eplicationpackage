@@ -1,0 +1,2792 @@
+{
+  "spec_version": "1.0",
+  "device": {
+    "id": "all_in_one_inkjet_printer",
+    "display_name": "all_in_one_inkjet_printer",
+    "source_manual": "[M01] e1b68e96-HPDeskJet___2720e_userGuide.pdf",
+    "efsm_ref": "(EFSM loaded in this session)",
+    "selection_ref": "design_selection.json"
+  },
+  "device_root": {
+    "world_position_hint": [
+      0,
+      0.9,
+      0.7
+    ],
+    "note": "Table height, ~70 cm in front of the user. DeviceRoot with no scale."
+  },
+  "scene_integrity": {
+    "build_from_manual": true,
+    "policy": "Represent the full device. Every component in the manual is instantiated as geometry; procedure scope only decides interactivity, never presence.",
+    "total_known_components": 46,
+    "components_in_scene": 46,
+    "interactive_count": 5,
+    "static_count": 39,
+    "missing_from_scene": [],
+    "hidden_by_user": [
+      "ink_level_icons",
+      "flashlight"
+    ],
+    "user_created": [],
+    "provenance_archetype_fallback": [],
+    "figure_check": {
+      "required": true,
+      "status": "confirmed",
+      "reference": "manual overview figure",
+      "confirmed_by": "session_20261017",
+      "confirmed_at": "2026-10-17T16:53:51.951Z",
+      "note": "Expert must confirm the built roster matches the labelled figure in the manual before the spec is valid."
+    },
+    "roster": [
+      {
+        "id": "input_tray",
+        "name": "Input tray",
+        "in_scene": true,
+        "interactive": true,
+        "role": "interactive",
+        "hidden_by_user": false,
+        "existence_provenance": "target_manual:[M01]",
+        "placement_provenance": "user_decision",
+        "placement_rough": false
+      },
+      {
+        "id": "paper_width_guide",
+        "name": "Paper-width guide",
+        "in_scene": true,
+        "interactive": true,
+        "role": "interactive",
+        "hidden_by_user": false,
+        "existence_provenance": "target_manual:[M01]",
+        "placement_provenance": "user_decision",
+        "placement_rough": false
+      },
+      {
+        "id": "paper",
+        "name": "Paper",
+        "in_scene": true,
+        "interactive": true,
+        "role": "interactive",
+        "hidden_by_user": false,
+        "existence_provenance": "target_manual:[M01]",
+        "placement_provenance": "user_decision",
+        "placement_rough": false
+      },
+      {
+        "id": "output_tray",
+        "name": "Output tray",
+        "in_scene": true,
+        "interactive": true,
+        "role": "interactive",
+        "hidden_by_user": false,
+        "existence_provenance": "target_manual:[M01]",
+        "placement_provenance": "user_decision",
+        "placement_rough": false
+      },
+      {
+        "id": "output_tray_extender",
+        "name": "Output tray extender",
+        "in_scene": true,
+        "interactive": true,
+        "role": "interactive",
+        "hidden_by_user": false,
+        "existence_provenance": "target_manual:[M01]",
+        "placement_provenance": "user_decision",
+        "placement_rough": false
+      },
+      {
+        "id": "input_tray_shield",
+        "name": "input_tray_shield",
+        "in_scene": true,
+        "interactive": false,
+        "role": "device_roster_static",
+        "hidden_by_user": false,
+        "existence_provenance": "archetype_inference",
+        "placement_provenance": "user_decision",
+        "placement_rough": false
+      },
+      {
+        "id": "scanner_lid",
+        "name": "scanner_lid",
+        "in_scene": true,
+        "interactive": false,
+        "role": "device_roster_static",
+        "hidden_by_user": false,
+        "existence_provenance": "archetype_inference",
+        "placement_provenance": "user_decision",
+        "placement_rough": false
+      },
+      {
+        "id": "scanner_glass",
+        "name": "scanner_glass",
+        "in_scene": true,
+        "interactive": false,
+        "role": "device_roster_static",
+        "hidden_by_user": false,
+        "existence_provenance": "archetype_inference",
+        "placement_provenance": "user_decision",
+        "placement_rough": false
+      },
+      {
+        "id": "cartridge_access_door",
+        "name": "cartridge_access_door",
+        "in_scene": true,
+        "interactive": false,
+        "role": "device_roster_static",
+        "hidden_by_user": false,
+        "existence_provenance": "archetype_inference",
+        "placement_provenance": "user_decision",
+        "placement_rough": false
+      },
+      {
+        "id": "print_carriage",
+        "name": "print_carriage",
+        "in_scene": true,
+        "interactive": false,
+        "role": "device_roster_static",
+        "hidden_by_user": false,
+        "existence_provenance": "archetype_inference",
+        "placement_provenance": "user_decision",
+        "placement_rough": false
+      },
+      {
+        "id": "cartridge_slot",
+        "name": "cartridge_slot",
+        "in_scene": true,
+        "interactive": false,
+        "role": "device_roster_static",
+        "hidden_by_user": false,
+        "existence_provenance": "archetype_inference",
+        "placement_provenance": "user_decision",
+        "placement_rough": false
+      },
+      {
+        "id": "cartridge_latch",
+        "name": "cartridge_latch",
+        "in_scene": true,
+        "interactive": false,
+        "role": "device_roster_static",
+        "hidden_by_user": false,
+        "existence_provenance": "archetype_inference",
+        "placement_provenance": "user_decision",
+        "placement_rough": false
+      },
+      {
+        "id": "printer_contacts",
+        "name": "printer_contacts",
+        "in_scene": true,
+        "interactive": false,
+        "role": "device_roster_static",
+        "hidden_by_user": false,
+        "existence_provenance": "archetype_inference",
+        "placement_provenance": "user_decision",
+        "placement_rough": false
+      },
+      {
+        "id": "printhead",
+        "name": "printhead",
+        "in_scene": true,
+        "interactive": false,
+        "role": "device_roster_static",
+        "hidden_by_user": false,
+        "existence_provenance": "archetype_inference",
+        "placement_provenance": "user_decision",
+        "placement_rough": false
+      },
+      {
+        "id": "paper_feed_mechanism",
+        "name": "paper_feed_mechanism",
+        "in_scene": true,
+        "interactive": false,
+        "role": "device_roster_static",
+        "hidden_by_user": false,
+        "existence_provenance": "archetype_inference",
+        "placement_provenance": "user_decision",
+        "placement_rough": false
+      },
+      {
+        "id": "cleanout_door",
+        "name": "cleanout_door",
+        "in_scene": true,
+        "interactive": false,
+        "role": "device_roster_static",
+        "hidden_by_user": false,
+        "existence_provenance": "archetype_inference",
+        "placement_provenance": "user_decision",
+        "placement_rough": false
+      },
+      {
+        "id": "control_panel",
+        "name": "control_panel",
+        "in_scene": true,
+        "interactive": false,
+        "role": "device_roster_static",
+        "hidden_by_user": false,
+        "existence_provenance": "archetype_inference",
+        "placement_provenance": "user_decision",
+        "placement_rough": false
+      },
+      {
+        "id": "power_button",
+        "name": "power_button",
+        "in_scene": true,
+        "interactive": false,
+        "role": "device_roster_static",
+        "hidden_by_user": false,
+        "existence_provenance": "archetype_inference",
+        "placement_provenance": "user_decision",
+        "placement_rough": false
+      },
+      {
+        "id": "power_button_light",
+        "name": "power_button_light",
+        "in_scene": true,
+        "interactive": false,
+        "role": "device_roster_static",
+        "hidden_by_user": false,
+        "existence_provenance": "archetype_inference",
+        "placement_provenance": "user_decision",
+        "placement_rough": false
+      },
+      {
+        "id": "control_panel_display",
+        "name": "control_panel_display",
+        "in_scene": true,
+        "interactive": false,
+        "role": "device_roster_static",
+        "hidden_by_user": false,
+        "existence_provenance": "archetype_inference",
+        "placement_provenance": "user_decision",
+        "placement_rough": false
+      },
+      {
+        "id": "number_of_copies_icon",
+        "name": "number_of_copies_icon",
+        "in_scene": true,
+        "interactive": false,
+        "role": "device_roster_static",
+        "hidden_by_user": false,
+        "existence_provenance": "archetype_inference",
+        "placement_provenance": "user_decision",
+        "placement_rough": false
+      },
+      {
+        "id": "error_icon",
+        "name": "error_icon",
+        "in_scene": true,
+        "interactive": false,
+        "role": "device_roster_static",
+        "hidden_by_user": false,
+        "existence_provenance": "archetype_inference",
+        "placement_provenance": "user_decision",
+        "placement_rough": false
+      },
+      {
+        "id": "paper_error_icon",
+        "name": "paper_error_icon",
+        "in_scene": true,
+        "interactive": false,
+        "role": "device_roster_static",
+        "hidden_by_user": false,
+        "existence_provenance": "archetype_inference",
+        "placement_provenance": "user_decision",
+        "placement_rough": false
+      },
+      {
+        "id": "wireless_attention_icon",
+        "name": "wireless_attention_icon",
+        "in_scene": true,
+        "interactive": false,
+        "role": "device_roster_static",
+        "hidden_by_user": false,
+        "existence_provenance": "archetype_inference",
+        "placement_provenance": "user_decision",
+        "placement_rough": false
+      },
+      {
+        "id": "wi_fi_direct_icon",
+        "name": "wi_fi_direct_icon",
+        "in_scene": true,
+        "interactive": false,
+        "role": "device_roster_static",
+        "hidden_by_user": false,
+        "existence_provenance": "archetype_inference",
+        "placement_provenance": "user_decision",
+        "placement_rough": false
+      },
+      {
+        "id": "ink_level_icons",
+        "name": "ink_level_icons",
+        "in_scene": false,
+        "interactive": false,
+        "role": "HIDDEN_BY_USER",
+        "hidden_by_user": true,
+        "existence_provenance": null,
+        "placement_provenance": null,
+        "placement_rough": false
+      },
+      {
+        "id": "ink_alert_light",
+        "name": "ink_alert_light",
+        "in_scene": true,
+        "interactive": false,
+        "role": "device_roster_static",
+        "hidden_by_user": false,
+        "existence_provenance": "archetype_inference",
+        "placement_provenance": "user_decision",
+        "placement_rough": false
+      },
+      {
+        "id": "cancel_button",
+        "name": "cancel_button",
+        "in_scene": true,
+        "interactive": false,
+        "role": "device_roster_static",
+        "hidden_by_user": false,
+        "existence_provenance": "archetype_inference",
+        "placement_provenance": "user_decision",
+        "placement_rough": false
+      },
+      {
+        "id": "resume_button",
+        "name": "resume_button",
+        "in_scene": true,
+        "interactive": false,
+        "role": "device_roster_static",
+        "hidden_by_user": false,
+        "existence_provenance": "archetype_inference",
+        "placement_provenance": "user_decision",
+        "placement_rough": false
+      },
+      {
+        "id": "resume_light",
+        "name": "resume_light",
+        "in_scene": true,
+        "interactive": false,
+        "role": "device_roster_static",
+        "hidden_by_user": false,
+        "existence_provenance": "archetype_inference",
+        "placement_provenance": "user_decision",
+        "placement_rough": false
+      },
+      {
+        "id": "wireless_button",
+        "name": "wireless_button",
+        "in_scene": true,
+        "interactive": false,
+        "role": "device_roster_static",
+        "hidden_by_user": false,
+        "existence_provenance": "archetype_inference",
+        "placement_provenance": "user_decision",
+        "placement_rough": false
+      },
+      {
+        "id": "wireless_light",
+        "name": "wireless_light",
+        "in_scene": true,
+        "interactive": false,
+        "role": "device_roster_static",
+        "hidden_by_user": false,
+        "existence_provenance": "archetype_inference",
+        "placement_provenance": "user_decision",
+        "placement_rough": false
+      },
+      {
+        "id": "information_button",
+        "name": "information_button",
+        "in_scene": true,
+        "interactive": false,
+        "role": "device_roster_static",
+        "hidden_by_user": false,
+        "existence_provenance": "archetype_inference",
+        "placement_provenance": "user_decision",
+        "placement_rough": false
+      },
+      {
+        "id": "information_light",
+        "name": "information_light",
+        "in_scene": true,
+        "interactive": false,
+        "role": "device_roster_static",
+        "hidden_by_user": false,
+        "existence_provenance": "archetype_inference",
+        "placement_provenance": "user_decision",
+        "placement_rough": false
+      },
+      {
+        "id": "start_copy_color_button",
+        "name": "start_copy_color_button",
+        "in_scene": true,
+        "interactive": false,
+        "role": "device_roster_static",
+        "hidden_by_user": false,
+        "existence_provenance": "archetype_inference",
+        "placement_provenance": "user_decision",
+        "placement_rough": false
+      },
+      {
+        "id": "start_copy_black_button",
+        "name": "start_copy_black_button",
+        "in_scene": true,
+        "interactive": false,
+        "role": "device_roster_static",
+        "hidden_by_user": false,
+        "existence_provenance": "archetype_inference",
+        "placement_provenance": "user_decision",
+        "placement_rough": false
+      },
+      {
+        "id": "power_connection",
+        "name": "power_connection",
+        "in_scene": true,
+        "interactive": false,
+        "role": "device_roster_static",
+        "hidden_by_user": false,
+        "existence_provenance": "archetype_inference",
+        "placement_provenance": "user_decision",
+        "placement_rough": false
+      },
+      {
+        "id": "usb_port",
+        "name": "usb_port",
+        "in_scene": true,
+        "interactive": false,
+        "role": "device_roster_static",
+        "hidden_by_user": false,
+        "existence_provenance": "archetype_inference",
+        "placement_provenance": "user_decision",
+        "placement_rough": false
+      },
+      {
+        "id": "power_cord",
+        "name": "power_cord",
+        "in_scene": true,
+        "interactive": false,
+        "role": "device_roster_static",
+        "hidden_by_user": false,
+        "existence_provenance": "archetype_inference",
+        "placement_provenance": "user_decision",
+        "placement_rough": false
+      },
+      {
+        "id": "printer_label",
+        "name": "printer_label",
+        "in_scene": true,
+        "interactive": false,
+        "role": "device_roster_static",
+        "hidden_by_user": false,
+        "existence_provenance": "archetype_inference",
+        "placement_provenance": "user_decision",
+        "placement_rough": false
+      },
+      {
+        "id": "cartridges",
+        "name": "cartridges",
+        "in_scene": true,
+        "interactive": false,
+        "role": "device_roster_static",
+        "hidden_by_user": false,
+        "existence_provenance": "archetype_inference",
+        "placement_provenance": "user_decision",
+        "placement_rough": false
+      },
+      {
+        "id": "envelopes",
+        "name": "envelopes",
+        "in_scene": true,
+        "interactive": false,
+        "role": "device_roster_static",
+        "hidden_by_user": false,
+        "existence_provenance": "archetype_inference",
+        "placement_provenance": "user_decision",
+        "placement_rough": false
+      },
+      {
+        "id": "original",
+        "name": "original",
+        "in_scene": true,
+        "interactive": false,
+        "role": "device_roster_static",
+        "hidden_by_user": false,
+        "existence_provenance": "archetype_inference",
+        "placement_provenance": "user_decision",
+        "placement_rough": false
+      },
+      {
+        "id": "ink",
+        "name": "ink",
+        "in_scene": true,
+        "interactive": false,
+        "role": "device_roster_static",
+        "hidden_by_user": false,
+        "existence_provenance": "archetype_inference",
+        "placement_provenance": "user_decision",
+        "placement_rough": false
+      },
+      {
+        "id": "usb_cable",
+        "name": "usb_cable",
+        "in_scene": true,
+        "interactive": false,
+        "role": "device_roster_static",
+        "hidden_by_user": false,
+        "existence_provenance": "archetype_inference",
+        "placement_provenance": "user_decision",
+        "placement_rough": false
+      },
+      {
+        "id": "flashlight",
+        "name": "flashlight",
+        "in_scene": false,
+        "interactive": false,
+        "role": "HIDDEN_BY_USER",
+        "hidden_by_user": true,
+        "existence_provenance": null,
+        "placement_provenance": null,
+        "placement_rough": false
+      }
+    ]
+  },
+  "components": [
+    {
+      "id": "chassis",
+      "machine_id": null,
+      "interactive": false,
+      "representation": {
+        "kind": "primitive",
+        "primitive": "cube",
+        "dimensions_m": [
+          0.42,
+          0.2,
+          0.3
+        ],
+        "mesh_override": null,
+        "flat_icon": false,
+        "color_hint": [
+          0.25,
+          0.25,
+          0.27
+        ]
+      },
+      "placement": {
+        "local_position": [
+          -0.004,
+          0.102,
+          -0.001
+        ],
+        "local_rotation_euler": [
+          0,
+          0,
+          0
+        ],
+        "pivot": {
+          "mode": "center"
+        }
+      },
+      "movement": {
+        "type": "static"
+      },
+      "provenance": {
+        "existence": "target_manual:[M01]",
+        "placement": "user_decision",
+        "movement": "inferred_from_efsm",
+        "inclusion": "user_decision"
+      }
+    },
+    {
+      "id": "input_tray",
+      "machine_id": "machine_input_tray",
+      "interactive": true,
+      "representation": {
+        "kind": "primitive",
+        "primitive": "cube",
+        "dimensions_m": [
+          0.165,
+          0.1,
+          0.012
+        ],
+        "mesh_override": null,
+        "flat_icon": false,
+        "color_hint": [
+          0.7,
+          0.82,
+          0.92
+        ]
+      },
+      "placement": {
+        "local_position": [
+          0,
+          0.226,
+          -0.155
+        ],
+        "local_rotation_euler": [
+          -3,
+          0,
+          0
+        ],
+        "pivot": {
+          "mode": "explicit",
+          "local_position": [
+            0,
+            0.195,
+            -0.134
+          ]
+        }
+      },
+      "movement": {
+        "type": "hinge",
+        "axis": "right",
+        "range": {
+          "min": 0,
+          "max": 92,
+          "units": "degrees"
+        },
+        "invert": true
+      },
+      "provenance": {
+        "existence": "target_manual:[M01]",
+        "placement": "user_decision",
+        "movement": "user_decision",
+        "inclusion": "target_manual"
+      },
+      "trajectory": {
+        "view_plane": "side_ZY",
+        "start_pose": {
+          "local_position": [
+            0,
+            0.226,
+            -0.155
+          ],
+          "angle_deg": 3
+        },
+        "end_pose": {
+          "local_position": [
+            0,
+            0.215,
+            -0.103
+          ],
+          "angle_deg": -89
+        },
+        "provenance": "user_decision"
+      },
+      "xr_recipe": {
+        "transformer": "OneGrabRotateTransformer",
+        "constraints": {
+          "min": 0,
+          "max": 92
+        },
+        "movement_provider": "MoveFromTargetProvider",
+        "rigidbody": {
+          "is_kinematic": true,
+          "use_gravity": false
+        }
+      },
+      "efsm_binding": {
+        "dimension": "position",
+        "open_threshold": 0.85,
+        "closed_threshold": 0.15,
+        "action_at_max": "raise_input_tray",
+        "action_at_min": "lower_input_tray"
+      }
+    },
+    {
+      "id": "paper_width_guide",
+      "machine_id": "machine_paper_width_guide",
+      "interactive": true,
+      "representation": {
+        "kind": "primitive",
+        "primitive": "cube",
+        "dimensions_m": [
+          0.012,
+          0.03,
+          0.009
+        ],
+        "mesh_override": null,
+        "flat_icon": false,
+        "color_hint": [
+          0.7,
+          0.82,
+          0.92
+        ]
+      },
+      "placement": {
+        "local_position": [
+          -0.036,
+          0.285,
+          -0.145
+        ],
+        "local_rotation_euler": [
+          0,
+          0,
+          0
+        ],
+        "pivot": {
+          "mode": "center"
+        }
+      },
+      "movement": {
+        "type": "slide_linear",
+        "axis": "right",
+        "range": {
+          "min": 0,
+          "max": 0.036,
+          "units": "meters"
+        },
+        "invert": false
+      },
+      "provenance": {
+        "existence": "target_manual:[M01]",
+        "placement": "user_decision",
+        "movement": "user_decision",
+        "inclusion": "target_manual"
+      },
+      "trajectory": {
+        "view_plane": "side_ZY",
+        "start_pose": {
+          "local_position": [
+            -0.036,
+            0.285,
+            -0.145
+          ],
+          "angle_deg": 0
+        },
+        "end_pose": {
+          "local_position": [
+            0,
+            0.28,
+            -0.146
+          ],
+          "angle_deg": 0
+        },
+        "provenance": "user_decision"
+      },
+      "xr_recipe": {
+        "transformer": "OneGrabTranslateTransformer",
+        "constraints": {
+          "axis": "right",
+          "min": 0,
+          "max": 0.036,
+          "units": "meters"
+        },
+        "movement_provider": "MoveFromTargetProvider",
+        "rigidbody": {
+          "is_kinematic": true,
+          "use_gravity": false
+        }
+      },
+      "efsm_binding": {
+        "dimension": "position",
+        "open_threshold": 0.85,
+        "closed_threshold": 0.15,
+        "action_at_max": "slide_paper_width_guide_left",
+        "action_at_min": "slide_paper_width_guide_right",
+        "movement_type": "SlideHorizontal"
+      },
+      "attach_on_complete": {
+        "target_id": "input_tray",
+        "snap_to_end_pose": true,
+        "provenance": "user_decision"
+      }
+    },
+    {
+      "id": "paper",
+      "machine_id": "machine_paper",
+      "interactive": true,
+      "representation": {
+        "kind": "primitive",
+        "primitive": "cube",
+        "dimensions_m": [
+          0.15,
+          0.088,
+          0.005
+        ],
+        "mesh_override": null,
+        "flat_icon": false,
+        "color_hint": [
+          0.7,
+          0.82,
+          0.92
+        ]
+      },
+      "placement": {
+        "local_position": [
+          0.319,
+          0.272,
+          0.071
+        ],
+        "local_rotation_euler": [
+          0,
+          0,
+          0
+        ],
+        "pivot": {
+          "mode": "center"
+        }
+      },
+      "movement": {
+        "type": "press"
+      },
+      "provenance": {
+        "existence": "target_manual:[M01]",
+        "placement": "user_decision",
+        "movement": "library_match:insert_consumable",
+        "inclusion": "target_manual"
+      },
+      "xr_recipe": {
+        "interaction": "EfsmPressTrigger"
+      },
+      "efsm_binding": {
+        "dimension": "location",
+        "press_action": "insert_paper"
+      }
+    },
+    {
+      "id": "output_tray",
+      "machine_id": "machine_output_tray",
+      "interactive": true,
+      "representation": {
+        "kind": "primitive",
+        "primitive": "cube",
+        "dimensions_m": [
+          0.135,
+          0.008,
+          0.06
+        ],
+        "mesh_override": null,
+        "flat_icon": false,
+        "color_hint": [
+          0.7,
+          0.82,
+          0.92
+        ]
+      },
+      "placement": {
+        "local_position": [
+          0.036,
+          0.032,
+          0.151
+        ],
+        "local_rotation_euler": [
+          -80,
+          0,
+          0
+        ],
+        "pivot": {
+          "mode": "explicit",
+          "local_position": [
+            0.036,
+            0.008,
+            0.145
+          ]
+        }
+      },
+      "movement": {
+        "type": "hinge",
+        "axis": "right",
+        "range": {
+          "min": 0,
+          "max": 80,
+          "units": "degrees"
+        },
+        "invert": true
+      },
+      "provenance": {
+        "existence": "target_manual:[M01]",
+        "placement": "user_decision",
+        "movement": "user_decision",
+        "inclusion": "target_manual"
+      },
+      "trajectory": {
+        "view_plane": "side_ZY",
+        "start_pose": {
+          "local_position": [
+            0.036,
+            0.032,
+            0.151
+          ],
+          "angle_deg": 80
+        },
+        "end_pose": {
+          "local_position": [
+            0.036,
+            0.006,
+            0.17
+          ],
+          "angle_deg": 0
+        },
+        "provenance": "user_decision"
+      },
+      "xr_recipe": {
+        "transformer": "OneGrabRotateTransformer",
+        "constraints": {
+          "min": 0,
+          "max": 80
+        },
+        "movement_provider": "MoveFromTargetProvider",
+        "rigidbody": {
+          "is_kinematic": true,
+          "use_gravity": false
+        }
+      },
+      "efsm_binding": {
+        "dimension": "position",
+        "open_threshold": 0.85,
+        "closed_threshold": 0.15,
+        "action_at_max": "lower_output_tray",
+        "action_at_min": "push_in_output_tray"
+      }
+    },
+    {
+      "id": "output_tray_extender",
+      "machine_id": "machine_output_tray_extender",
+      "interactive": true,
+      "representation": {
+        "kind": "primitive",
+        "primitive": "cube",
+        "dimensions_m": [
+          0.12,
+          0.005,
+          0.054
+        ],
+        "mesh_override": null,
+        "flat_icon": false,
+        "color_hint": [
+          0.7,
+          0.82,
+          0.92
+        ]
+      },
+      "placement": {
+        "local_position": [
+          0.036,
+          0.041,
+          0.148
+        ],
+        "local_rotation_euler": [
+          -80,
+          0,
+          0
+        ],
+        "pivot": {
+          "mode": "explicit",
+          "local_position": [
+            0.036,
+            -0.003,
+            0.167
+          ]
+        }
+      },
+      "movement": {
+        "type": "hinge",
+        "axis": "right",
+        "range": {
+          "min": 0,
+          "max": 80,
+          "units": "degrees"
+        },
+        "invert": true
+      },
+      "provenance": {
+        "existence": "target_manual:[M01]",
+        "placement": "user_decision",
+        "movement": "user_decision",
+        "inclusion": "target_manual"
+      },
+      "trajectory": {
+        "view_plane": "side_ZY",
+        "start_pose": {
+          "local_position": [
+            0.036,
+            0.041,
+            0.148
+          ],
+          "angle_deg": 80
+        },
+        "end_pose": {
+          "local_position": [
+            0.036,
+            0.023,
+            0.207
+          ],
+          "angle_deg": 0
+        },
+        "provenance": "user_decision"
+      },
+      "xr_recipe": {
+        "transformer": "OneGrabRotateTransformer",
+        "constraints": {
+          "min": 0,
+          "max": 80
+        },
+        "movement_provider": "MoveFromTargetProvider",
+        "rigidbody": {
+          "is_kinematic": true,
+          "use_gravity": false
+        }
+      },
+      "efsm_binding": {
+        "dimension": "position",
+        "open_threshold": 0.85,
+        "closed_threshold": 0.15,
+        "action_at_max": "pull_out_output_tray_extender",
+        "action_at_min": "close_output_tray_extender"
+      }
+    },
+    {
+      "id": "input_tray_shield",
+      "machine_id": null,
+      "interactive": false,
+      "representation": {
+        "kind": "primitive",
+        "primitive": "cube",
+        "dimensions_m": [
+          0.165,
+          0.008,
+          0.024
+        ],
+        "mesh_override": null,
+        "flat_icon": false,
+        "color_hint": [
+          0.62,
+          0.6,
+          0.55
+        ]
+      },
+      "placement": {
+        "local_position": [
+          -0.002,
+          0.213,
+          -0.09
+        ],
+        "local_rotation_euler": [
+          0,
+          0,
+          0
+        ],
+        "pivot": {
+          "mode": "edge",
+          "edge": "back"
+        }
+      },
+      "movement": {
+        "type": "static"
+      },
+      "provenance": {
+        "existence": "archetype_inference",
+        "placement": "user_decision",
+        "inclusion": "device_roster_static",
+        "excluded_from_procedure": "Not exercised by Load paper; injected as static geometry so the whole device is rendered."
+      }
+    },
+    {
+      "id": "scanner_lid",
+      "machine_id": null,
+      "interactive": false,
+      "representation": {
+        "kind": "primitive",
+        "primitive": "cube",
+        "dimensions_m": [
+          0.3,
+          0.01,
+          0.27
+        ],
+        "mesh_override": null,
+        "flat_icon": false,
+        "color_hint": [
+          0.62,
+          0.6,
+          0.55
+        ]
+      },
+      "placement": {
+        "local_position": [
+          -0.002,
+          0.201,
+          0.006
+        ],
+        "local_rotation_euler": [
+          0,
+          0,
+          0
+        ],
+        "pivot": {
+          "mode": "edge",
+          "edge": "back"
+        }
+      },
+      "movement": {
+        "type": "static"
+      },
+      "provenance": {
+        "existence": "archetype_inference",
+        "placement": "user_decision",
+        "inclusion": "device_roster_static",
+        "excluded_from_procedure": "Not exercised by Load paper; injected as static geometry so the whole device is rendered."
+      }
+    },
+    {
+      "id": "scanner_glass",
+      "machine_id": null,
+      "interactive": false,
+      "representation": {
+        "kind": "trigger_volume",
+        "primitive": "cube",
+        "dimensions_m": [
+          0.24,
+          0.003,
+          0.225
+        ],
+        "mesh_override": null,
+        "flat_icon": true,
+        "color_hint": [
+          0.62,
+          0.6,
+          0.55
+        ]
+      },
+      "placement": {
+        "local_position": [
+          0,
+          0.201,
+          0.012
+        ],
+        "local_rotation_euler": [
+          0,
+          0,
+          0
+        ],
+        "pivot": {
+          "mode": "center"
+        }
+      },
+      "movement": {
+        "type": "static"
+      },
+      "provenance": {
+        "existence": "archetype_inference",
+        "placement": "user_decision",
+        "inclusion": "device_roster_static",
+        "excluded_from_procedure": "Not exercised by Load paper; injected as static geometry so the whole device is rendered."
+      }
+    },
+    {
+      "id": "cartridge_access_door",
+      "machine_id": null,
+      "interactive": false,
+      "representation": {
+        "kind": "primitive",
+        "primitive": "cube",
+        "dimensions_m": [
+          0.135,
+          0.075,
+          0.006
+        ],
+        "mesh_override": null,
+        "flat_icon": false,
+        "color_hint": [
+          0.62,
+          0.6,
+          0.55
+        ]
+      },
+      "placement": {
+        "local_position": [
+          0.003,
+          0.059,
+          0.155
+        ],
+        "local_rotation_euler": [
+          0,
+          0,
+          0
+        ],
+        "pivot": {
+          "mode": "center"
+        }
+      },
+      "movement": {
+        "type": "static"
+      },
+      "provenance": {
+        "existence": "archetype_inference",
+        "placement": "user_decision",
+        "inclusion": "device_roster_static",
+        "excluded_from_procedure": "Not exercised by Load paper; injected as static geometry so the whole device is rendered."
+      }
+    },
+    {
+      "id": "print_carriage",
+      "machine_id": null,
+      "interactive": false,
+      "representation": {
+        "kind": "primitive",
+        "primitive": "cube",
+        "dimensions_m": [
+          0.075,
+          0.045,
+          0.075
+        ],
+        "mesh_override": null,
+        "flat_icon": false,
+        "color_hint": [
+          0.62,
+          0.6,
+          0.55
+        ]
+      },
+      "placement": {
+        "local_position": [
+          -0.001,
+          0.111,
+          0.075
+        ],
+        "local_rotation_euler": [
+          0,
+          0,
+          0
+        ],
+        "pivot": {
+          "mode": "center"
+        }
+      },
+      "movement": {
+        "type": "static"
+      },
+      "provenance": {
+        "existence": "archetype_inference",
+        "placement": "user_decision",
+        "inclusion": "device_roster_static",
+        "excluded_from_procedure": "Not exercised by Load paper; injected as static geometry so the whole device is rendered."
+      }
+    },
+    {
+      "id": "cartridge_slot",
+      "machine_id": null,
+      "interactive": false,
+      "representation": {
+        "kind": "primitive",
+        "primitive": "cube",
+        "dimensions_m": [
+          0.06,
+          0.03,
+          0.045
+        ],
+        "mesh_override": null,
+        "flat_icon": false,
+        "color_hint": [
+          0.62,
+          0.6,
+          0.55
+        ]
+      },
+      "placement": {
+        "local_position": [
+          0.143,
+          0.126,
+          0.088
+        ],
+        "local_rotation_euler": [
+          0,
+          0,
+          0
+        ],
+        "pivot": {
+          "mode": "center"
+        }
+      },
+      "movement": {
+        "type": "static"
+      },
+      "provenance": {
+        "existence": "archetype_inference",
+        "placement": "user_decision",
+        "inclusion": "device_roster_static",
+        "excluded_from_procedure": "Not exercised by Load paper; injected as static geometry so the whole device is rendered."
+      }
+    },
+    {
+      "id": "cartridge_latch",
+      "machine_id": null,
+      "interactive": false,
+      "representation": {
+        "kind": "primitive",
+        "primitive": "cube",
+        "dimensions_m": [
+          0.06,
+          0.008,
+          0.03
+        ],
+        "mesh_override": null,
+        "flat_icon": false,
+        "color_hint": [
+          0.62,
+          0.6,
+          0.55
+        ]
+      },
+      "placement": {
+        "local_position": [
+          0.167,
+          0.161,
+          0.09
+        ],
+        "local_rotation_euler": [
+          0,
+          0,
+          0
+        ],
+        "pivot": {
+          "mode": "center"
+        }
+      },
+      "movement": {
+        "type": "static"
+      },
+      "provenance": {
+        "existence": "archetype_inference",
+        "placement": "user_decision",
+        "inclusion": "device_roster_static",
+        "excluded_from_procedure": "Not exercised by Load paper; injected as static geometry so the whole device is rendered."
+      }
+    },
+    {
+      "id": "printer_contacts",
+      "machine_id": null,
+      "interactive": false,
+      "representation": {
+        "kind": "trigger_volume",
+        "primitive": "cube",
+        "dimensions_m": [
+          0.045,
+          0.003,
+          0.003
+        ],
+        "mesh_override": null,
+        "flat_icon": true,
+        "color_hint": [
+          0.62,
+          0.6,
+          0.55
+        ]
+      },
+      "placement": {
+        "local_position": [
+          -0.003,
+          0.136,
+          0.06
+        ],
+        "local_rotation_euler": [
+          0,
+          0,
+          0
+        ],
+        "pivot": {
+          "mode": "center"
+        }
+      },
+      "movement": {
+        "type": "static"
+      },
+      "provenance": {
+        "existence": "archetype_inference",
+        "placement": "user_decision",
+        "inclusion": "device_roster_static",
+        "excluded_from_procedure": "Not exercised by Load paper; injected as static geometry so the whole device is rendered."
+      }
+    },
+    {
+      "id": "printhead",
+      "machine_id": null,
+      "interactive": false,
+      "representation": {
+        "kind": "primitive",
+        "primitive": "cube",
+        "dimensions_m": [
+          0.09,
+          0.038,
+          0.045
+        ],
+        "mesh_override": null,
+        "flat_icon": false,
+        "color_hint": [
+          0.62,
+          0.6,
+          0.55
+        ]
+      },
+      "placement": {
+        "local_position": [
+          0.004,
+          0.073,
+          -0.002
+        ],
+        "local_rotation_euler": [
+          0,
+          0,
+          0
+        ],
+        "pivot": {
+          "mode": "center"
+        }
+      },
+      "movement": {
+        "type": "static"
+      },
+      "provenance": {
+        "existence": "archetype_inference",
+        "placement": "user_decision",
+        "inclusion": "device_roster_static",
+        "excluded_from_procedure": "Not exercised by Load paper; injected as static geometry so the whole device is rendered. Not shown in overview figure."
+      }
+    },
+    {
+      "id": "paper_feed_mechanism",
+      "machine_id": null,
+      "interactive": false,
+      "representation": {
+        "kind": "primitive",
+        "primitive": "cube",
+        "dimensions_m": [
+          0.09,
+          0.038,
+          0.045
+        ],
+        "mesh_override": null,
+        "flat_icon": false,
+        "color_hint": [
+          0.62,
+          0.6,
+          0.55
+        ]
+      },
+      "placement": {
+        "local_position": [
+          0.002,
+          0.159,
+          0.002
+        ],
+        "local_rotation_euler": [
+          0,
+          0,
+          0
+        ],
+        "pivot": {
+          "mode": "center"
+        }
+      },
+      "movement": {
+        "type": "static"
+      },
+      "provenance": {
+        "existence": "archetype_inference",
+        "placement": "user_decision",
+        "inclusion": "device_roster_static",
+        "excluded_from_procedure": "Not exercised by Load paper; injected as static geometry so the whole device is rendered. Internal; not shown in overview figure."
+      }
+    },
+    {
+      "id": "cleanout_door",
+      "machine_id": null,
+      "interactive": false,
+      "representation": {
+        "kind": "primitive",
+        "primitive": "cube",
+        "dimensions_m": [
+          0.09,
+          0.038,
+          0.045
+        ],
+        "mesh_override": null,
+        "flat_icon": false,
+        "color_hint": [
+          0.62,
+          0.6,
+          0.55
+        ]
+      },
+      "placement": {
+        "local_position": [
+          0,
+          0.071,
+          -0.134
+        ],
+        "local_rotation_euler": [
+          0,
+          0,
+          0
+        ],
+        "pivot": {
+          "mode": "center"
+        }
+      },
+      "movement": {
+        "type": "static"
+      },
+      "provenance": {
+        "existence": "archetype_inference",
+        "placement": "user_decision",
+        "inclusion": "device_roster_static",
+        "excluded_from_procedure": "Not exercised by Load paper; injected as static geometry so the whole device is rendered. Not shown in overview figure."
+      }
+    },
+    {
+      "id": "control_panel",
+      "machine_id": null,
+      "interactive": false,
+      "representation": {
+        "kind": "trigger_volume",
+        "primitive": "cube",
+        "dimensions_m": [
+          0.03,
+          0.003,
+          0.006
+        ],
+        "mesh_override": null,
+        "flat_icon": true,
+        "color_hint": [
+          0.62,
+          0.6,
+          0.55
+        ]
+      },
+      "placement": {
+        "local_position": [
+          -0.126,
+          0.201,
+          0.058
+        ],
+        "local_rotation_euler": [
+          0,
+          0,
+          0
+        ],
+        "pivot": {
+          "mode": "center"
+        }
+      },
+      "movement": {
+        "type": "static"
+      },
+      "provenance": {
+        "existence": "archetype_inference",
+        "placement": "user_decision",
+        "inclusion": "device_roster_static",
+        "excluded_from_procedure": "Not exercised by Load paper; injected as static geometry so the whole device is rendered."
+      }
+    },
+    {
+      "id": "power_button",
+      "machine_id": null,
+      "interactive": false,
+      "representation": {
+        "kind": "trigger_volume",
+        "primitive": "cube",
+        "dimensions_m": [
+          0.015,
+          0.003,
+          0.003
+        ],
+        "mesh_override": null,
+        "flat_icon": true,
+        "color_hint": [
+          0.62,
+          0.6,
+          0.55
+        ]
+      },
+      "placement": {
+        "local_position": [
+          -0.126,
+          0.201,
+          0.107
+        ],
+        "local_rotation_euler": [
+          0,
+          0,
+          0
+        ],
+        "pivot": {
+          "mode": "center"
+        }
+      },
+      "movement": {
+        "type": "static"
+      },
+      "provenance": {
+        "existence": "archetype_inference",
+        "placement": "user_decision",
+        "inclusion": "device_roster_static",
+        "excluded_from_procedure": "Not exercised by Load paper; injected as static geometry so the whole device is rendered."
+      }
+    },
+    {
+      "id": "power_button_light",
+      "machine_id": null,
+      "interactive": false,
+      "representation": {
+        "kind": "trigger_volume",
+        "primitive": "cube",
+        "dimensions_m": [
+          0.015,
+          0.003,
+          0.002
+        ],
+        "mesh_override": null,
+        "flat_icon": true,
+        "color_hint": [
+          0.62,
+          0.6,
+          0.55
+        ]
+      },
+      "placement": {
+        "local_position": [
+          -0.126,
+          0.201,
+          0.102
+        ],
+        "local_rotation_euler": [
+          0,
+          0,
+          0
+        ],
+        "pivot": {
+          "mode": "center"
+        }
+      },
+      "movement": {
+        "type": "static"
+      },
+      "provenance": {
+        "existence": "archetype_inference",
+        "placement": "user_decision",
+        "inclusion": "device_roster_static",
+        "excluded_from_procedure": "Not exercised by Load paper; injected as static geometry so the whole device is rendered."
+      }
+    },
+    {
+      "id": "control_panel_display",
+      "machine_id": null,
+      "interactive": false,
+      "representation": {
+        "kind": "trigger_volume",
+        "primitive": "cube",
+        "dimensions_m": [
+          0.021,
+          0.003,
+          0.003
+        ],
+        "mesh_override": null,
+        "flat_icon": true,
+        "color_hint": [
+          0.62,
+          0.6,
+          0.55
+        ]
+      },
+      "placement": {
+        "local_position": [
+          -0.126,
+          0.198,
+          0.111
+        ],
+        "local_rotation_euler": [
+          0,
+          0,
+          0
+        ],
+        "pivot": {
+          "mode": "center"
+        }
+      },
+      "movement": {
+        "type": "static"
+      },
+      "provenance": {
+        "existence": "archetype_inference",
+        "placement": "user_decision",
+        "inclusion": "device_roster_static",
+        "excluded_from_procedure": "Not exercised by Load paper; injected as static geometry so the whole device is rendered."
+      }
+    },
+    {
+      "id": "number_of_copies_icon",
+      "machine_id": null,
+      "interactive": false,
+      "representation": {
+        "kind": "trigger_volume",
+        "primitive": "cube",
+        "dimensions_m": [
+          0.009,
+          0.003,
+          0.002
+        ],
+        "mesh_override": null,
+        "flat_icon": true,
+        "color_hint": [
+          0.62,
+          0.6,
+          0.55
+        ]
+      },
+      "placement": {
+        "local_position": [
+          -0.123,
+          0.201,
+          -0.074
+        ],
+        "local_rotation_euler": [
+          0,
+          0,
+          0
+        ],
+        "pivot": {
+          "mode": "center"
+        }
+      },
+      "movement": {
+        "type": "static"
+      },
+      "provenance": {
+        "existence": "archetype_inference",
+        "placement": "user_decision",
+        "inclusion": "device_roster_static",
+        "excluded_from_procedure": "Not exercised by Load paper; injected as static geometry so the whole device is rendered."
+      }
+    },
+    {
+      "id": "error_icon",
+      "machine_id": null,
+      "interactive": false,
+      "representation": {
+        "kind": "trigger_volume",
+        "primitive": "cube",
+        "dimensions_m": [
+          0.003,
+          0.003,
+          0.002
+        ],
+        "mesh_override": null,
+        "flat_icon": true,
+        "color_hint": [
+          0.62,
+          0.6,
+          0.55
+        ]
+      },
+      "placement": {
+        "local_position": [
+          -0.132,
+          0.2,
+          -0.083
+        ],
+        "local_rotation_euler": [
+          0,
+          0,
+          0
+        ],
+        "pivot": {
+          "mode": "center"
+        }
+      },
+      "movement": {
+        "type": "static"
+      },
+      "provenance": {
+        "existence": "archetype_inference",
+        "placement": "user_decision",
+        "inclusion": "device_roster_static",
+        "excluded_from_procedure": "Not exercised by Load paper; injected as static geometry so the whole device is rendered."
+      }
+    },
+    {
+      "id": "paper_error_icon",
+      "machine_id": null,
+      "interactive": false,
+      "representation": {
+        "kind": "trigger_volume",
+        "primitive": "cube",
+        "dimensions_m": [
+          0.003,
+          0.003,
+          0.002
+        ],
+        "mesh_override": null,
+        "flat_icon": true,
+        "color_hint": [
+          0.62,
+          0.6,
+          0.55
+        ]
+      },
+      "placement": {
+        "local_position": [
+          -0.132,
+          0.199,
+          -0.059
+        ],
+        "local_rotation_euler": [
+          0,
+          0,
+          0
+        ],
+        "pivot": {
+          "mode": "center"
+        }
+      },
+      "movement": {
+        "type": "static"
+      },
+      "provenance": {
+        "existence": "archetype_inference",
+        "placement": "user_decision",
+        "inclusion": "device_roster_static",
+        "excluded_from_procedure": "Not exercised by Load paper; injected as static geometry so the whole device is rendered."
+      }
+    },
+    {
+      "id": "wireless_attention_icon",
+      "machine_id": null,
+      "interactive": false,
+      "representation": {
+        "kind": "trigger_volume",
+        "primitive": "cube",
+        "dimensions_m": [
+          0.003,
+          0.003,
+          0.002
+        ],
+        "mesh_override": null,
+        "flat_icon": true,
+        "color_hint": [
+          0.62,
+          0.6,
+          0.55
+        ]
+      },
+      "placement": {
+        "local_position": [
+          -0.129,
+          0.201,
+          0.093
+        ],
+        "local_rotation_euler": [
+          0,
+          0,
+          0
+        ],
+        "pivot": {
+          "mode": "center"
+        }
+      },
+      "movement": {
+        "type": "static"
+      },
+      "provenance": {
+        "existence": "archetype_inference",
+        "placement": "user_decision",
+        "inclusion": "device_roster_static",
+        "excluded_from_procedure": "Not exercised by Load paper; injected as static geometry so the whole device is rendered."
+      }
+    },
+    {
+      "id": "wi_fi_direct_icon",
+      "machine_id": null,
+      "interactive": false,
+      "representation": {
+        "kind": "trigger_volume",
+        "primitive": "cube",
+        "dimensions_m": [
+          0.003,
+          0.003,
+          0.002
+        ],
+        "mesh_override": null,
+        "flat_icon": true,
+        "color_hint": [
+          0.62,
+          0.6,
+          0.55
+        ]
+      },
+      "placement": {
+        "local_position": [
+          -0.123,
+          0.198,
+          0.123
+        ],
+        "local_rotation_euler": [
+          0,
+          0,
+          0
+        ],
+        "pivot": {
+          "mode": "center"
+        }
+      },
+      "movement": {
+        "type": "static"
+      },
+      "provenance": {
+        "existence": "archetype_inference",
+        "placement": "user_decision",
+        "inclusion": "device_roster_static",
+        "excluded_from_procedure": "Not exercised by Load paper; injected as static geometry so the whole device is rendered."
+      }
+    },
+    {
+      "id": "ink_alert_light",
+      "machine_id": null,
+      "interactive": false,
+      "representation": {
+        "kind": "trigger_volume",
+        "primitive": "cube",
+        "dimensions_m": [
+          0.006,
+          0.003,
+          0.002
+        ],
+        "mesh_override": null,
+        "flat_icon": true,
+        "color_hint": [
+          0.62,
+          0.6,
+          0.55
+        ]
+      },
+      "placement": {
+        "local_position": [
+          -0.126,
+          0.205,
+          0.147
+        ],
+        "local_rotation_euler": [
+          0,
+          0,
+          0
+        ],
+        "pivot": {
+          "mode": "center"
+        }
+      },
+      "movement": {
+        "type": "static"
+      },
+      "provenance": {
+        "existence": "archetype_inference",
+        "placement": "user_decision",
+        "inclusion": "device_roster_static",
+        "excluded_from_procedure": "Not exercised by Load paper; injected as static geometry so the whole device is rendered."
+      }
+    },
+    {
+      "id": "cancel_button",
+      "machine_id": null,
+      "interactive": false,
+      "representation": {
+        "kind": "trigger_volume",
+        "primitive": "cube",
+        "dimensions_m": [
+          0.015,
+          0.003,
+          0.003
+        ],
+        "mesh_override": null,
+        "flat_icon": true,
+        "color_hint": [
+          0.62,
+          0.6,
+          0.55
+        ]
+      },
+      "placement": {
+        "local_position": [
+          -0.126,
+          0.197,
+          -0.076
+        ],
+        "local_rotation_euler": [
+          0,
+          0,
+          0
+        ],
+        "pivot": {
+          "mode": "center"
+        }
+      },
+      "movement": {
+        "type": "static"
+      },
+      "provenance": {
+        "existence": "archetype_inference",
+        "placement": "user_decision",
+        "inclusion": "device_roster_static",
+        "excluded_from_procedure": "Not exercised by Load paper; injected as static geometry so the whole device is rendered."
+      }
+    },
+    {
+      "id": "resume_button",
+      "machine_id": null,
+      "interactive": false,
+      "representation": {
+        "kind": "trigger_volume",
+        "primitive": "cube",
+        "dimensions_m": [
+          0.015,
+          0.003,
+          0.003
+        ],
+        "mesh_override": null,
+        "flat_icon": true,
+        "color_hint": [
+          0.62,
+          0.6,
+          0.55
+        ]
+      },
+      "placement": {
+        "local_position": [
+          -0.126,
+          0.2,
+          0.044
+        ],
+        "local_rotation_euler": [
+          0,
+          0,
+          0
+        ],
+        "pivot": {
+          "mode": "center"
+        }
+      },
+      "movement": {
+        "type": "static"
+      },
+      "provenance": {
+        "existence": "archetype_inference",
+        "placement": "user_decision",
+        "inclusion": "device_roster_static",
+        "excluded_from_procedure": "Not exercised by Load paper; injected as static geometry so the whole device is rendered."
+      }
+    },
+    {
+      "id": "resume_light",
+      "machine_id": null,
+      "interactive": false,
+      "representation": {
+        "kind": "trigger_volume",
+        "primitive": "cube",
+        "dimensions_m": [
+          0.003,
+          0.003,
+          0.002
+        ],
+        "mesh_override": null,
+        "flat_icon": true,
+        "color_hint": [
+          0.62,
+          0.6,
+          0.55
+        ]
+      },
+      "placement": {
+        "local_position": [
+          -0.136,
+          0.194,
+          -0.061
+        ],
+        "local_rotation_euler": [
+          0,
+          0,
+          0
+        ],
+        "pivot": {
+          "mode": "center"
+        }
+      },
+      "movement": {
+        "type": "static"
+      },
+      "provenance": {
+        "existence": "archetype_inference",
+        "placement": "user_decision",
+        "inclusion": "device_roster_static",
+        "excluded_from_procedure": "Not exercised by Load paper; injected as static geometry so the whole device is rendered."
+      }
+    },
+    {
+      "id": "wireless_button",
+      "machine_id": null,
+      "interactive": false,
+      "representation": {
+        "kind": "trigger_volume",
+        "primitive": "cube",
+        "dimensions_m": [
+          0.015,
+          0.003,
+          0.003
+        ],
+        "mesh_override": null,
+        "flat_icon": true,
+        "color_hint": [
+          0.62,
+          0.6,
+          0.55
+        ]
+      },
+      "placement": {
+        "local_position": [
+          -0.126,
+          0.206,
+          -0.087
+        ],
+        "local_rotation_euler": [
+          0,
+          0,
+          0
+        ],
+        "pivot": {
+          "mode": "center"
+        }
+      },
+      "movement": {
+        "type": "static"
+      },
+      "provenance": {
+        "existence": "archetype_inference",
+        "placement": "user_decision",
+        "inclusion": "device_roster_static",
+        "excluded_from_procedure": "Not exercised by Load paper; injected as static geometry so the whole device is rendered."
+      }
+    },
+    {
+      "id": "wireless_light",
+      "machine_id": null,
+      "interactive": false,
+      "representation": {
+        "kind": "trigger_volume",
+        "primitive": "cube",
+        "dimensions_m": [
+          0.003,
+          0.003,
+          0.002
+        ],
+        "mesh_override": null,
+        "flat_icon": true,
+        "color_hint": [
+          0.62,
+          0.6,
+          0.55
+        ]
+      },
+      "placement": {
+        "local_position": [
+          -0.136,
+          0.204,
+          -0.076
+        ],
+        "local_rotation_euler": [
+          0,
+          0,
+          0
+        ],
+        "pivot": {
+          "mode": "center"
+        }
+      },
+      "movement": {
+        "type": "static"
+      },
+      "provenance": {
+        "existence": "archetype_inference",
+        "placement": "user_decision",
+        "inclusion": "device_roster_static",
+        "excluded_from_procedure": "Not exercised by Load paper; injected as static geometry so the whole device is rendered."
+      }
+    },
+    {
+      "id": "information_button",
+      "machine_id": null,
+      "interactive": false,
+      "representation": {
+        "kind": "trigger_volume",
+        "primitive": "cube",
+        "dimensions_m": [
+          0.015,
+          0.003,
+          0.003
+        ],
+        "mesh_override": null,
+        "flat_icon": true,
+        "color_hint": [
+          0.62,
+          0.6,
+          0.55
+        ]
+      },
+      "placement": {
+        "local_position": [
+          -0.126,
+          0.199,
+          -0.051
+        ],
+        "local_rotation_euler": [
+          0,
+          0,
+          0
+        ],
+        "pivot": {
+          "mode": "center"
+        }
+      },
+      "movement": {
+        "type": "static"
+      },
+      "provenance": {
+        "existence": "archetype_inference",
+        "placement": "user_decision",
+        "inclusion": "device_roster_static",
+        "excluded_from_procedure": "Not exercised by Load paper; injected as static geometry so the whole device is rendered."
+      }
+    },
+    {
+      "id": "information_light",
+      "machine_id": null,
+      "interactive": false,
+      "representation": {
+        "kind": "trigger_volume",
+        "primitive": "cube",
+        "dimensions_m": [
+          0.003,
+          0.003,
+          0.002
+        ],
+        "mesh_override": null,
+        "flat_icon": true,
+        "color_hint": [
+          0.62,
+          0.6,
+          0.55
+        ]
+      },
+      "placement": {
+        "local_position": [
+          -0.136,
+          0.203,
+          -0.122
+        ],
+        "local_rotation_euler": [
+          0,
+          0,
+          0
+        ],
+        "pivot": {
+          "mode": "center"
+        }
+      },
+      "movement": {
+        "type": "static"
+      },
+      "provenance": {
+        "existence": "archetype_inference",
+        "placement": "user_decision",
+        "inclusion": "device_roster_static",
+        "excluded_from_procedure": "Not exercised by Load paper; injected as static geometry so the whole device is rendered."
+      }
+    },
+    {
+      "id": "start_copy_color_button",
+      "machine_id": null,
+      "interactive": false,
+      "representation": {
+        "kind": "trigger_volume",
+        "primitive": "cube",
+        "dimensions_m": [
+          0.015,
+          0.003,
+          0.003
+        ],
+        "mesh_override": null,
+        "flat_icon": true,
+        "color_hint": [
+          0.62,
+          0.6,
+          0.55
+        ]
+      },
+      "placement": {
+        "local_position": [
+          -0.126,
+          0.197,
+          0.128
+        ],
+        "local_rotation_euler": [
+          0,
+          0,
+          0
+        ],
+        "pivot": {
+          "mode": "center"
+        }
+      },
+      "movement": {
+        "type": "static"
+      },
+      "provenance": {
+        "existence": "archetype_inference",
+        "placement": "user_decision",
+        "inclusion": "device_roster_static",
+        "excluded_from_procedure": "Not exercised by Load paper; injected as static geometry so the whole device is rendered."
+      }
+    },
+    {
+      "id": "start_copy_black_button",
+      "machine_id": null,
+      "interactive": false,
+      "representation": {
+        "kind": "trigger_volume",
+        "primitive": "cube",
+        "dimensions_m": [
+          0.015,
+          0.003,
+          0.003
+        ],
+        "mesh_override": null,
+        "flat_icon": true,
+        "color_hint": [
+          0.62,
+          0.6,
+          0.55
+        ]
+      },
+      "placement": {
+        "local_position": [
+          -0.126,
+          0.202,
+          0.128
+        ],
+        "local_rotation_euler": [
+          0,
+          0,
+          0
+        ],
+        "pivot": {
+          "mode": "center"
+        }
+      },
+      "movement": {
+        "type": "static"
+      },
+      "provenance": {
+        "existence": "archetype_inference",
+        "placement": "user_decision",
+        "inclusion": "device_roster_static",
+        "excluded_from_procedure": "Not exercised by Load paper; injected as static geometry so the whole device is rendered."
+      }
+    },
+    {
+      "id": "power_connection",
+      "machine_id": null,
+      "interactive": false,
+      "representation": {
+        "kind": "primitive",
+        "primitive": "cube",
+        "dimensions_m": [
+          0.012,
+          0.025,
+          0.006
+        ],
+        "mesh_override": null,
+        "flat_icon": false,
+        "color_hint": [
+          0.62,
+          0.6,
+          0.55
+        ]
+      },
+      "placement": {
+        "local_position": [
+          0.03,
+          0.063,
+          -0.151
+        ],
+        "local_rotation_euler": [
+          0,
+          0,
+          0
+        ],
+        "pivot": {
+          "mode": "center"
+        }
+      },
+      "movement": {
+        "type": "static"
+      },
+      "provenance": {
+        "existence": "archetype_inference",
+        "placement": "user_decision",
+        "inclusion": "device_roster_static",
+        "excluded_from_procedure": "Not exercised by Load paper; injected as static geometry so the whole device is rendered."
+      }
+    },
+    {
+      "id": "usb_port",
+      "machine_id": null,
+      "interactive": false,
+      "representation": {
+        "kind": "primitive",
+        "primitive": "cube",
+        "dimensions_m": [
+          0.009,
+          0.015,
+          0.006
+        ],
+        "mesh_override": null,
+        "flat_icon": false,
+        "color_hint": [
+          0.62,
+          0.6,
+          0.55
+        ]
+      },
+      "placement": {
+        "local_position": [
+          -0.018,
+          0.086,
+          -0.151
+        ],
+        "local_rotation_euler": [
+          0,
+          0,
+          0
+        ],
+        "pivot": {
+          "mode": "center"
+        }
+      },
+      "movement": {
+        "type": "static"
+      },
+      "provenance": {
+        "existence": "archetype_inference",
+        "placement": "user_decision",
+        "inclusion": "device_roster_static",
+        "excluded_from_procedure": "Not exercised by Load paper; injected as static geometry so the whole device is rendered."
+      }
+    },
+    {
+      "id": "power_cord",
+      "machine_id": null,
+      "interactive": false,
+      "representation": {
+        "kind": "primitive",
+        "primitive": "cube",
+        "dimensions_m": [
+          0.09,
+          0.038,
+          0.045
+        ],
+        "mesh_override": null,
+        "flat_icon": false,
+        "color_hint": [
+          0.62,
+          0.6,
+          0.55
+        ]
+      },
+      "placement": {
+        "local_position": [
+          0,
+          0.055,
+          -0.093
+        ],
+        "local_rotation_euler": [
+          0,
+          0,
+          0
+        ],
+        "pivot": {
+          "mode": "center"
+        }
+      },
+      "movement": {
+        "type": "static"
+      },
+      "provenance": {
+        "existence": "archetype_inference",
+        "placement": "user_decision",
+        "inclusion": "device_roster_static",
+        "excluded_from_procedure": "Not exercised by Load paper; injected as static geometry so the whole device is rendered. Not shown in overview figure."
+      }
+    },
+    {
+      "id": "printer_label",
+      "machine_id": null,
+      "interactive": false,
+      "representation": {
+        "kind": "primitive",
+        "primitive": "cube",
+        "dimensions_m": [
+          0.09,
+          0.038,
+          0.045
+        ],
+        "mesh_override": null,
+        "flat_icon": false,
+        "color_hint": [
+          0.62,
+          0.6,
+          0.55
+        ]
+      },
+      "placement": {
+        "local_position": [
+          -0.144,
+          0.028,
+          0
+        ],
+        "local_rotation_euler": [
+          0,
+          0,
+          0
+        ],
+        "pivot": {
+          "mode": "center"
+        }
+      },
+      "movement": {
+        "type": "static"
+      },
+      "provenance": {
+        "existence": "archetype_inference",
+        "placement": "user_decision",
+        "inclusion": "device_roster_static",
+        "excluded_from_procedure": "Not exercised by Load paper; injected as static geometry so the whole device is rendered. Not shown in overview figure."
+      }
+    },
+    {
+      "id": "cartridges",
+      "machine_id": null,
+      "interactive": false,
+      "representation": {
+        "kind": "primitive",
+        "primitive": "cube",
+        "dimensions_m": [
+          0.06,
+          0.025,
+          0.036
+        ],
+        "mesh_override": null,
+        "flat_icon": false,
+        "color_hint": [
+          0.62,
+          0.6,
+          0.55
+        ]
+      },
+      "placement": {
+        "local_position": [
+          0.108,
+          0.145,
+          0.09
+        ],
+        "local_rotation_euler": [
+          0,
+          0,
+          0
+        ],
+        "pivot": {
+          "mode": "center"
+        }
+      },
+      "movement": {
+        "type": "static"
+      },
+      "provenance": {
+        "existence": "archetype_inference",
+        "placement": "user_decision",
+        "inclusion": "device_roster_static",
+        "excluded_from_procedure": "Material not exercised by Load paper; shown installed in the overview figure, rendered as static geometry."
+      }
+    },
+    {
+      "id": "envelopes",
+      "machine_id": null,
+      "interactive": false,
+      "representation": {
+        "kind": "primitive",
+        "primitive": "cube",
+        "dimensions_m": [
+          0.09,
+          0.038,
+          0.045
+        ],
+        "mesh_override": null,
+        "flat_icon": false,
+        "color_hint": [
+          0.62,
+          0.6,
+          0.55
+        ]
+      },
+      "placement": {
+        "local_position": [
+          -0.138,
+          0.14,
+          0
+        ],
+        "local_rotation_euler": [
+          0,
+          0,
+          0
+        ],
+        "pivot": {
+          "mode": "center"
+        }
+      },
+      "movement": {
+        "type": "static"
+      },
+      "provenance": {
+        "existence": "archetype_inference",
+        "placement": "user_decision",
+        "inclusion": "device_roster_static",
+        "excluded_from_procedure": "External material not used by Load paper; not part of the device body."
+      }
+    },
+    {
+      "id": "original",
+      "machine_id": null,
+      "interactive": false,
+      "representation": {
+        "kind": "primitive",
+        "primitive": "cube",
+        "dimensions_m": [
+          0.15,
+          0.088,
+          0.004
+        ],
+        "mesh_override": null,
+        "flat_icon": false,
+        "color_hint": [
+          0.62,
+          0.6,
+          0.55
+        ]
+      },
+      "placement": {
+        "local_position": [
+          0.323,
+          0.173,
+          0.072
+        ],
+        "local_rotation_euler": [
+          0,
+          0,
+          0
+        ],
+        "pivot": {
+          "mode": "center"
+        }
+      },
+      "movement": {
+        "type": "static"
+      },
+      "provenance": {
+        "existence": "archetype_inference",
+        "placement": "user_decision",
+        "inclusion": "device_roster_static",
+        "excluded_from_procedure": "External material not used by Load paper; not part of the device body."
+      }
+    },
+    {
+      "id": "ink",
+      "machine_id": null,
+      "interactive": false,
+      "representation": {
+        "kind": "primitive",
+        "primitive": "cube",
+        "dimensions_m": [
+          0.09,
+          0.038,
+          0.045
+        ],
+        "mesh_override": null,
+        "flat_icon": false,
+        "color_hint": [
+          0.62,
+          0.6,
+          0.55
+        ]
+      },
+      "placement": {
+        "local_position": [
+          0.131,
+          0.111,
+          0
+        ],
+        "local_rotation_euler": [
+          0,
+          0,
+          0
+        ],
+        "pivot": {
+          "mode": "center"
+        }
+      },
+      "movement": {
+        "type": "static"
+      },
+      "provenance": {
+        "existence": "archetype_inference",
+        "placement": "user_decision",
+        "inclusion": "device_roster_static",
+        "excluded_from_procedure": "Abstract material inside the cartridges; not used by Load paper."
+      }
+    },
+    {
+      "id": "usb_cable",
+      "machine_id": null,
+      "interactive": false,
+      "representation": {
+        "kind": "primitive",
+        "primitive": "cube",
+        "dimensions_m": [
+          0.09,
+          0.038,
+          0.045
+        ],
+        "mesh_override": null,
+        "flat_icon": false,
+        "color_hint": [
+          0.62,
+          0.6,
+          0.55
+        ]
+      },
+      "placement": {
+        "local_position": [
+          -0.156,
+          0.02,
+          -0.144
+        ],
+        "local_rotation_euler": [
+          0,
+          0,
+          0
+        ],
+        "pivot": {
+          "mode": "center"
+        }
+      },
+      "movement": {
+        "type": "static"
+      },
+      "provenance": {
+        "existence": "archetype_inference",
+        "placement": "user_decision",
+        "inclusion": "device_roster_static",
+        "excluded_from_procedure": "External material not used by Load paper; not part of the device body."
+      }
+    }
+  ]
+}

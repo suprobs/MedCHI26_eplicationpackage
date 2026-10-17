@@ -1,0 +1,2581 @@
+{
+  "meta": {
+    "version": "2.1.0-runtime",
+    "efsm_id": "nespresso_essenza_mini_c30_descaling",
+    "device_type": "capsule_coffee_machine",
+    "description": "Nespresso Essenza Mini C30: linked chain Turn machine ON -> Descaling.",
+    "created_at": "2026-10-17",
+    "source_manuals": [
+      "[M01] UM_NESPRESSO_ESSENZA_MINI_Z1_C_PROD_WEB_2017_02_20.pdf"
+    ]
+  },
+  "device_meta": {
+    "version": "2.1.0-runtime",
+    "efsm_id": "nespresso_essenza_mini_c30_descaling",
+    "device_type": "capsule_coffee_machine",
+    "description": "Nespresso Essenza Mini C30: linked chain Turn machine ON -> Descaling.",
+    "created_at": "2026-10-17",
+    "source_manuals": [
+      "[M01] UM_NESPRESSO_ESSENZA_MINI_Z1_C_PROD_WEB_2017_02_20.pdf"
+    ],
+    "device_name": "Nespresso Essenza Mini C30",
+    "source_manual": "UM_NESPRESSO_ESSENZA_MINI_Z1_C_PROD_WEB_2017_02_20.pdf",
+    "target_procedures": [
+      "turn_machine_on",
+      "descaling"
+    ]
+  },
+  "enums": {
+    "dimensions": [
+      "contact",
+      "mode",
+      "status",
+      "position",
+      "content",
+      "connection",
+      "location"
+    ],
+    "actions": [
+      "press_espresso",
+      "press_lungo",
+      "hold_both_buttons",
+      "lift_lever",
+      "close_lever",
+      "empty_drip_tray",
+      "empty_drip_base",
+      "empty_capsule_container",
+      "empty_and_rinse_water_tank",
+      "fill_water_tank",
+      "unplug",
+      "plug_in",
+      "place_container",
+      "remove_container",
+      "pour_descaling_agent"
+    ],
+    "movements": [
+      "press",
+      "hinge_rotation",
+      "remove",
+      "lift_out",
+      "plug",
+      "lift_and_place",
+      "pour"
+    ],
+    "state_values": [
+      "released",
+      "normal",
+      "descaling_mode",
+      "off",
+      "heating",
+      "ready",
+      "closed",
+      "lifted",
+      "contains_liquid",
+      "empty",
+      "empty_after_descaling",
+      "used_capsules",
+      "potable_water",
+      "descaling_solution",
+      "drained_solution",
+      "empty_clean",
+      "plugged_in",
+      "unplugged",
+      "absent",
+      "under_outlet",
+      "sachet",
+      "poured"
+    ],
+    "signals": [
+      "espresso_button_pressed",
+      "lungo_button_pressed",
+      "descaling_mode_entered",
+      "descaling_mode_exited",
+      "machine_heating",
+      "lever_lifted",
+      "capsule_ejected",
+      "drip_tray_emptied",
+      "drip_base_emptied",
+      "capsule_container_emptied",
+      "water_tank_emptied",
+      "water_tank_filled",
+      "descaling_solution_prepared",
+      "descaling_solution_flushed",
+      "used_solution_returned",
+      "rinse_flushed",
+      "plug_disconnected",
+      "plug_connected",
+      "container_placed",
+      "container_removed",
+      "descaling_agent_poured",
+      "machine_ready"
+    ],
+    "guard_ops": [
+      "eq",
+      "neq",
+      "and",
+      "or"
+    ],
+    "ports": [],
+    "categories": [
+      "device_component",
+      "material"
+    ]
+  },
+  "components_catalog": [
+    {
+      "id": "espresso_button",
+      "machine_id": "machine_espresso_button",
+      "name": "Espresso button",
+      "category": "device_component",
+      "synonyms": [
+        "Coffee Buttons (Espresso & Lungo)",
+        "Bouton Espresso",
+        "Botón de Espresso"
+      ],
+      "description": "Momentary push button. Its press (press_espresso) is offered to every machine: it turns the machine on through the LEDs machine. The button itself keeps no state.",
+      "location": "Top surface, next to the lever (left/right order not specified in manual)",
+      "layout_hint": {
+        "anchor": "top",
+        "rel": [
+          0.0,
+          1.0,
+          0.18
+        ],
+        "size": [
+          0.15,
+          0.01,
+          0.06
+        ],
+        "flat": true,
+        "hingeEdge": null
+      },
+      "appearance_frequency": "1/1",
+      "dimensions": [
+        {
+          "name": "contact",
+          "type": "enum",
+          "values": [
+            "released"
+          ],
+          "initial_value": "released",
+          "initial": "released",
+          "description": "Momentary contact: returns to released immediately after each press."
+        }
+      ],
+      "movements": [
+        "press"
+      ],
+      "interactions": [
+        "press_espresso"
+      ]
+    },
+    {
+      "id": "lungo_button",
+      "machine_id": "machine_lungo_button",
+      "name": "Lungo button",
+      "category": "device_component",
+      "synonyms": [
+        "Coffee Buttons (Espresso & Lungo)",
+        "Bouton Lungo",
+        "Botón de Lungo"
+      ],
+      "description": "Momentary push button. Its press (press_lungo) is offered to every machine: it turns the machine on (LEDs) and, in descaling mode, starts each flush (Water tank).",
+      "location": "Top surface, next to the lever (left/right order not specified in manual)",
+      "layout_hint": {
+        "anchor": "top",
+        "rel": [
+          0.0,
+          1.0,
+          0.08
+        ],
+        "size": [
+          0.15,
+          0.01,
+          0.06
+        ],
+        "flat": true,
+        "hingeEdge": null
+      },
+      "appearance_frequency": "1/1",
+      "dimensions": [
+        {
+          "name": "contact",
+          "type": "enum",
+          "values": [
+            "released"
+          ],
+          "initial_value": "released",
+          "initial": "released",
+          "description": "Momentary contact: returns to released immediately after each press."
+        }
+      ],
+      "movements": [
+        "press"
+      ],
+      "interactions": [
+        "press_lungo"
+      ]
+    },
+    {
+      "id": "leds",
+      "machine_id": "machine_leds",
+      "name": "LEDs",
+      "category": "device_component",
+      "synonyms": [
+        "Lights",
+        "Light indicator",
+        "Voyants",
+        "Luces",
+        "Luzes"
+      ],
+      "description": "Lights integrated in the Espresso and Lungo buttons; observable state of the machine (internal heating not modelled). Its flat volume spans both buttons and stands for pressing both buttons together for 5 s (hold_both_buttons).",
+      "location": "Integrated in the Espresso and Lungo buttons, top surface",
+      "layout_hint": {
+        "anchor": "top",
+        "rel": [
+          0.0,
+          1.0,
+          0.13
+        ],
+        "size": [
+          0.3,
+          0.01,
+          0.15
+        ],
+        "flat": true,
+        "hingeEdge": null
+      },
+      "appearance_frequency": "1/1",
+      "dimensions": [
+        {
+          "name": "mode",
+          "type": "enum",
+          "values": [
+            "normal",
+            "descaling_mode"
+          ],
+          "initial_value": "normal",
+          "initial": "normal",
+          "description": "normal; descaling_mode = both LEDs blinking."
+        },
+        {
+          "name": "status",
+          "type": "enum",
+          "values": [
+            "off",
+            "heating",
+            "ready"
+          ],
+          "initial_value": "off",
+          "initial": "off",
+          "description": "off; heating = lights blinking (25 s); ready = lights steady."
+        }
+      ],
+      "movements": [
+        "press"
+      ],
+      "interactions": [
+        "hold_both_buttons",
+        "press_espresso",
+        "press_lungo"
+      ]
+    },
+    {
+      "id": "lever",
+      "machine_id": "machine_lever",
+      "name": "Lever",
+      "category": "device_component",
+      "synonyms": [
+        "Levier",
+        "Palanca",
+        "Alavanca"
+      ],
+      "description": "Opens the capsule compartment; a lift-and-close cycle ejects the capsule into the capsule container.",
+      "location": "Top front of machine, above the coffee outlet",
+      "layout_hint": {
+        "anchor": "top",
+        "rel": [
+          0.0,
+          0.93,
+          0.3
+        ],
+        "size": [
+          0.6,
+          0.06,
+          0.3
+        ],
+        "flat": false,
+        "hingeEdge": "back"
+      },
+      "appearance_frequency": "1/1",
+      "dimensions": [
+        {
+          "name": "position",
+          "type": "enum",
+          "values": [
+            "closed",
+            "lifted"
+          ],
+          "initial_value": "closed",
+          "initial": "closed",
+          "description": "Lever position."
+        }
+      ],
+      "movements": [
+        "hinge_rotation"
+      ],
+      "interactions": [
+        "lift_lever",
+        "close_lever"
+      ]
+    },
+    {
+      "id": "drip_tray",
+      "machine_id": "machine_drip_tray",
+      "name": "Drip tray",
+      "category": "device_component",
+      "synonyms": [
+        "Drip Tray",
+        "Bac d'égouttage",
+        "Bandeja de goteo"
+      ],
+      "description": "Collects drips and spills under the coffee outlet.",
+      "location": "Front base, below the coffee outlet",
+      "layout_hint": {
+        "anchor": "front",
+        "rel": [
+          0.0,
+          0.04,
+          0.42
+        ],
+        "size": [
+          0.95,
+          0.08,
+          0.25
+        ],
+        "flat": false,
+        "hingeEdge": null
+      },
+      "appearance_frequency": "1/1",
+      "dimensions": [
+        {
+          "name": "content",
+          "type": "enum",
+          "values": [
+            "contains_liquid",
+            "empty"
+          ],
+          "initial_value": "contains_liquid",
+          "initial": "contains_liquid",
+          "description": "Whether the tray holds liquid."
+        }
+      ],
+      "movements": [
+        "remove"
+      ],
+      "interactions": [
+        "empty_drip_tray"
+      ]
+    },
+    {
+      "id": "drip_base",
+      "machine_id": "machine_drip_base",
+      "name": "Drip base",
+      "category": "device_component",
+      "synonyms": [
+        "Drip Base",
+        "Base d'égouttage",
+        "Base de goteo"
+      ],
+      "description": "Part of the drip assembly that collects liquid; emptied before and after descaling.",
+      "location": "Front lower part of the machine, within the drip area",
+      "layout_hint": {
+        "anchor": "front",
+        "rel": [
+          0.0,
+          0.08,
+          0.3
+        ],
+        "size": [
+          0.9,
+          0.12,
+          0.2
+        ],
+        "flat": false,
+        "hingeEdge": null
+      },
+      "appearance_frequency": "1/1",
+      "dimensions": [
+        {
+          "name": "content",
+          "type": "enum",
+          "values": [
+            "contains_liquid",
+            "empty",
+            "empty_after_descaling"
+          ],
+          "initial_value": "contains_liquid",
+          "initial": "contains_liquid",
+          "description": "contains_liquid before descaling; empty after the first emptying; empty_after_descaling after the final emptying (the liquid it collects during the flushes is not modelled)."
+        }
+      ],
+      "movements": [
+        "remove"
+      ],
+      "interactions": [
+        "empty_drip_base"
+      ]
+    },
+    {
+      "id": "capsule_container",
+      "machine_id": "machine_capsule_container",
+      "name": "Capsule container",
+      "category": "device_component",
+      "synonyms": [
+        "Capsule Container for 5-6 capsules",
+        "Used capsule container",
+        "Bac à capsules usagées"
+      ],
+      "description": "Collects used capsules ejected by the lever cycle.",
+      "location": "Inside the front of the machine, below the capsule compartment",
+      "layout_hint": {
+        "anchor": "front",
+        "rel": [
+          0.0,
+          0.3,
+          0.28
+        ],
+        "size": [
+          0.85,
+          0.35,
+          0.2
+        ],
+        "flat": false,
+        "hingeEdge": null
+      },
+      "appearance_frequency": "1/1",
+      "dimensions": [
+        {
+          "name": "content",
+          "type": "enum",
+          "values": [
+            "used_capsules",
+            "empty"
+          ],
+          "initial_value": "used_capsules",
+          "initial": "used_capsules",
+          "description": "Whether the container holds used capsules."
+        }
+      ],
+      "movements": [
+        "remove"
+      ],
+      "interactions": [
+        "empty_capsule_container"
+      ]
+    },
+    {
+      "id": "water_tank",
+      "machine_id": "machine_water_tank",
+      "name": "Water tank",
+      "category": "device_component",
+      "synonyms": [
+        "Water Tank",
+        "Réservoir d'eau",
+        "Tanque de agua"
+      ],
+      "description": "Holds the water supply (0.6 L). During descaling it holds the descaling solution; each flush (Lungo button in descaling mode) drains it.",
+      "location": "Rear of machine (vertical cylinder)",
+      "layout_hint": {
+        "anchor": "rear",
+        "rel": [
+          0.0,
+          0.45,
+          -0.38
+        ],
+        "size": [
+          1.0,
+          0.9,
+          0.25
+        ],
+        "flat": false,
+        "hingeEdge": null
+      },
+      "appearance_frequency": "1/1",
+      "dimensions": [
+        {
+          "name": "content",
+          "type": "enum",
+          "values": [
+            "potable_water",
+            "descaling_solution",
+            "drained_solution",
+            "empty_clean"
+          ],
+          "initial_value": "potable_water",
+          "initial": "potable_water",
+          "description": "potable_water; descaling_solution (agent + water up to the 0.6 L line, or used solution poured back); drained_solution (emptied by a solution flush); empty_clean (emptied and rinsed, or emptied by a rinse flush)."
+        }
+      ],
+      "movements": [
+        "lift_out"
+      ],
+      "interactions": [
+        "empty_and_rinse_water_tank",
+        "fill_water_tank",
+        "press_lungo"
+      ]
+    },
+    {
+      "id": "plug",
+      "machine_id": "machine_plug",
+      "name": "Plug",
+      "category": "device_component",
+      "synonyms": [
+        "Fiche",
+        "Enchufe",
+        "Plugue"
+      ],
+      "description": "Connects the appliance to a grounded power outlet.",
+      "location": "End of the power cord",
+      "layout_hint": {
+        "anchor": null,
+        "rel": null,
+        "size": null,
+        "flat": false,
+        "hingeEdge": null
+      },
+      "appearance_frequency": "1/1",
+      "dimensions": [
+        {
+          "name": "connection",
+          "type": "enum",
+          "values": [
+            "plugged_in",
+            "unplugged"
+          ],
+          "initial_value": "plugged_in",
+          "initial": "plugged_in",
+          "description": "Mains connection."
+        }
+      ],
+      "movements": [
+        "plug"
+      ],
+      "interactions": [
+        "unplug",
+        "plug_in"
+      ]
+    },
+    {
+      "id": "container",
+      "machine_id": "machine_container",
+      "name": "Container",
+      "category": "material",
+      "synonyms": [
+        "Container (min. 1 L / 33.8 oz)",
+        "Récipient",
+        "Recipiente"
+      ],
+      "description": "Container of at least 1 L placed under the coffee outlet to collect the descaling solution and the rinse water.",
+      "location": "Under the coffee outlet when placed",
+      "layout_hint": {
+        "anchor": "front",
+        "rel": [
+          0.0,
+          0.15,
+          0.42
+        ],
+        "size": [
+          0.9,
+          0.25,
+          0.25
+        ],
+        "flat": false,
+        "hingeEdge": null
+      },
+      "appearance_frequency": "1/1",
+      "dimensions": [
+        {
+          "name": "position",
+          "type": "enum",
+          "values": [
+            "absent",
+            "under_outlet"
+          ],
+          "initial_value": "absent",
+          "initial": "absent",
+          "description": "Whether the container is under the coffee outlet."
+        }
+      ],
+      "movements": [
+        "lift_and_place"
+      ],
+      "interactions": [
+        "place_container",
+        "remove_container"
+      ]
+    },
+    {
+      "id": "descaling_agent",
+      "machine_id": "machine_descaling_agent",
+      "name": "Descaling agent",
+      "category": "material",
+      "synonyms": [
+        "Nespresso descaling liquid sachet",
+        "Descaling solution",
+        "Détartrant",
+        "Descalcificador"
+      ],
+      "description": "One Nespresso descaling liquid sachet poured into the water tank.",
+      "location": "Sachet, then inside the water tank",
+      "layout_hint": {
+        "anchor": null,
+        "rel": null,
+        "size": null,
+        "flat": false,
+        "hingeEdge": null
+      },
+      "appearance_frequency": "1/1",
+      "dimensions": [
+        {
+          "name": "location",
+          "type": "enum",
+          "values": [
+            "sachet",
+            "poured"
+          ],
+          "initial_value": "sachet",
+          "initial": "sachet",
+          "description": "Whether the sachet has been poured into the water tank."
+        }
+      ],
+      "movements": [
+        "pour"
+      ],
+      "interactions": [
+        "pour_descaling_agent"
+      ]
+    }
+  ],
+  "scene_props": [
+    {
+      "id": "coffee_machine",
+      "name": "Coffee machine",
+      "category": "device_component",
+      "role": "visual_anchor",
+      "description": "Machine body. Its internal heating and pump are not modelled; their effect is represented by the LEDs and the Water tank.",
+      "location": "Whole device (84 x 204 x 330 mm)",
+      "layout_hint": {
+        "anchor": "center",
+        "rel": [
+          0.0,
+          0.5,
+          0.0
+        ],
+        "size": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "flat": false,
+        "hingeEdge": null
+      }
+    },
+    {
+      "id": "coffee_outlet",
+      "name": "Coffee outlet",
+      "category": "device_component",
+      "role": "visual_anchor",
+      "description": "Spout under which the container is placed; descaling solution and rinse water flow through it.",
+      "location": "Front, under the top overhang, above the drip area",
+      "layout_hint": {
+        "anchor": "front",
+        "rel": [
+          0.0,
+          0.72,
+          0.42
+        ],
+        "size": [
+          0.25,
+          0.05,
+          0.08
+        ],
+        "flat": false,
+        "hingeEdge": null
+      }
+    },
+    {
+      "id": "capsule_compartment",
+      "name": "Capsule compartment",
+      "category": "device_component",
+      "role": "visual_anchor",
+      "description": "Cavity opened by the lever; the lever cycle of steps 1-2 ejects any capsule left in it.",
+      "location": "Top front, under the lever",
+      "layout_hint": {
+        "anchor": "top",
+        "rel": [
+          0.0,
+          0.88,
+          0.33
+        ],
+        "size": [
+          0.4,
+          0.08,
+          0.12
+        ],
+        "flat": false,
+        "hingeEdge": null
+      }
+    },
+    {
+      "id": "06_l_line",
+      "name": "0.6 L line",
+      "category": "device_component",
+      "role": "visual_anchor",
+      "description": "Fill mark on the water tank used in step 7 (fill up to the 0.6 L line).",
+      "location": "On the water tank wall",
+      "layout_hint": {
+        "anchor": "rear",
+        "rel": [
+          0.5,
+          0.6,
+          -0.38
+        ],
+        "size": [
+          0.0,
+          0.005,
+          0.1
+        ],
+        "flat": true,
+        "hingeEdge": null
+      }
+    },
+    {
+      "id": "capsule",
+      "name": "Capsule",
+      "category": "material",
+      "role": "abstract_material",
+      "description": "Used capsule possibly left in the capsule compartment; its ejection is represented by the lever cycle (signal capsule_ejected) and the capsule container.",
+      "location": "Capsule compartment, then capsule container",
+      "layout_hint": {
+        "anchor": "top",
+        "rel": [
+          0.0,
+          0.88,
+          0.33
+        ],
+        "size": [
+          0.3,
+          0.06,
+          0.1
+        ],
+        "flat": false,
+        "hingeEdge": null
+      }
+    },
+    {
+      "id": "water",
+      "name": "Water",
+      "category": "material",
+      "role": "abstract_material",
+      "description": "Potable water and rinse water; represented through machine_water_tank.content.",
+      "location": "Water tank",
+      "layout_hint": {
+        "anchor": "rear",
+        "rel": [
+          0.0,
+          0.45,
+          -0.38
+        ],
+        "size": [
+          0.9,
+          0.8,
+          0.22
+        ],
+        "flat": false,
+        "hingeEdge": null
+      }
+    }
+  ],
+  "machines": [
+    {
+      "id": "machine_espresso_button",
+      "component_id": "espresso_button",
+      "description": "Momentary push button. Its press (press_espresso) is offered to every machine: it turns the machine on through the LEDs machine. The button itself keeps no state.",
+      "initial_state": "espresso_button__released",
+      "final_states": [
+        "espresso_button__released"
+      ],
+      "states": [
+        {
+          "id": "espresso_button__released",
+          "label": "released",
+          "dimension_values": {
+            "contact": "released"
+          },
+          "is_error": false,
+          "is_terminal": false,
+          "invariant": null,
+          "timeout": {
+            "after_ms": null,
+            "to_state": null,
+            "emit_signal": null
+          }
+        }
+      ],
+      "transitions": [
+        {
+          "id": "t_machine_espresso_button_1",
+          "action": "press_espresso",
+          "movement": "press",
+          "signals_emitted": [
+            "espresso_button_pressed"
+          ],
+          "guard": null,
+          "description": "Momentary press of the Espresso button (the action is offered to every machine).",
+          "dimension": "contact",
+          "from": "released",
+          "to": "released",
+          "emits": "espresso_button_pressed"
+        }
+      ]
+    },
+    {
+      "id": "machine_lungo_button",
+      "component_id": "lungo_button",
+      "description": "Momentary push button. Its press (press_lungo) is offered to every machine: it turns the machine on (LEDs) and, in descaling mode, starts each flush (Water tank).",
+      "initial_state": "lungo_button__released",
+      "final_states": [
+        "lungo_button__released"
+      ],
+      "states": [
+        {
+          "id": "lungo_button__released",
+          "label": "released",
+          "dimension_values": {
+            "contact": "released"
+          },
+          "is_error": false,
+          "is_terminal": false,
+          "invariant": null,
+          "timeout": {
+            "after_ms": null,
+            "to_state": null,
+            "emit_signal": null
+          }
+        }
+      ],
+      "transitions": [
+        {
+          "id": "t_machine_lungo_button_1",
+          "action": "press_lungo",
+          "movement": "press",
+          "signals_emitted": [
+            "lungo_button_pressed"
+          ],
+          "guard": null,
+          "description": "Momentary press of the Lungo button (the action is offered to every machine).",
+          "dimension": "contact",
+          "from": "released",
+          "to": "released",
+          "emits": "lungo_button_pressed"
+        }
+      ]
+    },
+    {
+      "id": "machine_leds",
+      "component_id": "leds",
+      "description": "Lights integrated in the Espresso and Lungo buttons; observable state of the machine (internal heating not modelled). Its flat volume spans both buttons and stands for pressing both buttons together for 5 s (hold_both_buttons).",
+      "initial_state": "leds__off",
+      "final_states": [
+        "leds__ready",
+        "leds__normal"
+      ],
+      "states": [
+        {
+          "id": "leds__off",
+          "label": "Off (lights off)",
+          "dimension_values": {
+            "status": "off"
+          },
+          "is_error": false,
+          "is_terminal": false,
+          "invariant": null,
+          "timeout": {
+            "after_ms": null,
+            "to_state": null,
+            "emit_signal": null
+          }
+        },
+        {
+          "id": "leds__heating",
+          "label": "Heating up (lights blinking, 25 s)",
+          "dimension_values": {
+            "status": "heating"
+          },
+          "is_error": false,
+          "is_terminal": false,
+          "invariant": null,
+          "timeout": {
+            "after_ms": 25000,
+            "to_state": "leds__ready",
+            "emit_signal": "machine_ready"
+          }
+        },
+        {
+          "id": "leds__ready",
+          "label": "Ready (lights steady)",
+          "dimension_values": {
+            "status": "ready"
+          },
+          "is_error": false,
+          "is_terminal": false,
+          "invariant": null,
+          "timeout": {
+            "after_ms": null,
+            "to_state": null,
+            "emit_signal": null
+          }
+        },
+        {
+          "id": "leds__normal",
+          "label": "Normal mode",
+          "dimension_values": {
+            "mode": "normal"
+          },
+          "is_error": false,
+          "is_terminal": false,
+          "invariant": null,
+          "timeout": {
+            "after_ms": null,
+            "to_state": null,
+            "emit_signal": null
+          }
+        },
+        {
+          "id": "leds__descaling_mode",
+          "label": "Descaling mode (both LEDs blinking)",
+          "dimension_values": {
+            "mode": "descaling_mode"
+          },
+          "is_error": false,
+          "is_terminal": false,
+          "invariant": null,
+          "timeout": {
+            "after_ms": null,
+            "to_state": null,
+            "emit_signal": null
+          }
+        }
+      ],
+      "transitions": [
+        {
+          "id": "t_machine_leds_1",
+          "action": "hold_both_buttons",
+          "movement": "press",
+          "signals_emitted": [
+            "descaling_mode_entered"
+          ],
+          "guard": "machine_leds.status eq ready",
+          "description": "Press both the Espresso and Lungo buttons for 5 seconds while the machine is on; both LEDs blink.",
+          "dimension": "mode",
+          "from": "normal",
+          "to": "descaling_mode",
+          "emits": "descaling_mode_entered"
+        },
+        {
+          "id": "t_machine_leds_2",
+          "action": "hold_both_buttons",
+          "movement": "press",
+          "signals_emitted": [
+            "descaling_mode_exited"
+          ],
+          "guard": "machine_water_tank.content eq empty_clean",
+          "description": "Press both buttons for 5 seconds to exit descaling mode (after the rinse).",
+          "dimension": "mode",
+          "from": "descaling_mode",
+          "to": "normal",
+          "emits": "descaling_mode_exited"
+        },
+        {
+          "id": "t_machine_leds_3",
+          "action": "press_espresso",
+          "movement": "press",
+          "signals_emitted": [
+            "machine_heating"
+          ],
+          "guard": null,
+          "description": "Pressing the Espresso button turns the machine on; lights blink while heating up.",
+          "dimension": "status",
+          "from": "off",
+          "to": "heating",
+          "emits": "machine_heating"
+        },
+        {
+          "id": "t_machine_leds_4",
+          "action": "press_lungo",
+          "movement": "press",
+          "signals_emitted": [
+            "machine_heating"
+          ],
+          "guard": null,
+          "description": "Pressing the Lungo button turns the machine on; lights blink while heating up.",
+          "dimension": "status",
+          "from": "off",
+          "to": "heating",
+          "emits": "machine_heating"
+        }
+      ]
+    },
+    {
+      "id": "machine_lever",
+      "component_id": "lever",
+      "description": "Opens the capsule compartment; a lift-and-close cycle ejects the capsule into the capsule container.",
+      "initial_state": "lever__closed",
+      "final_states": [
+        "lever__closed"
+      ],
+      "states": [
+        {
+          "id": "lever__closed",
+          "label": "closed",
+          "dimension_values": {
+            "position": "closed"
+          },
+          "is_error": false,
+          "is_terminal": false,
+          "invariant": null,
+          "timeout": {
+            "after_ms": null,
+            "to_state": null,
+            "emit_signal": null
+          }
+        },
+        {
+          "id": "lever__lifted",
+          "label": "lifted",
+          "dimension_values": {
+            "position": "lifted"
+          },
+          "is_error": false,
+          "is_terminal": false,
+          "invariant": null,
+          "timeout": {
+            "after_ms": null,
+            "to_state": null,
+            "emit_signal": null
+          }
+        }
+      ],
+      "transitions": [
+        {
+          "id": "t_machine_lever_1",
+          "action": "lift_lever",
+          "movement": "hinge_rotation",
+          "signals_emitted": [
+            "lever_lifted"
+          ],
+          "guard": null,
+          "description": "Lift the lever completely.",
+          "dimension": "position",
+          "from": "closed",
+          "to": "lifted",
+          "emits": "lever_lifted"
+        },
+        {
+          "id": "t_machine_lever_2",
+          "action": "close_lever",
+          "movement": "hinge_rotation",
+          "signals_emitted": [
+            "capsule_ejected"
+          ],
+          "guard": null,
+          "description": "Close the lever; a capsule in the compartment is ejected into the capsule container.",
+          "dimension": "position",
+          "from": "lifted",
+          "to": "closed",
+          "emits": "capsule_ejected"
+        }
+      ]
+    },
+    {
+      "id": "machine_drip_tray",
+      "component_id": "drip_tray",
+      "description": "Collects drips and spills under the coffee outlet.",
+      "initial_state": "drip_tray__contains_liquid",
+      "final_states": [
+        "drip_tray__empty"
+      ],
+      "states": [
+        {
+          "id": "drip_tray__contains_liquid",
+          "label": "contains liquid",
+          "dimension_values": {
+            "content": "contains_liquid"
+          },
+          "is_error": false,
+          "is_terminal": false,
+          "invariant": null,
+          "timeout": {
+            "after_ms": null,
+            "to_state": null,
+            "emit_signal": null
+          }
+        },
+        {
+          "id": "drip_tray__empty",
+          "label": "empty",
+          "dimension_values": {
+            "content": "empty"
+          },
+          "is_error": false,
+          "is_terminal": false,
+          "invariant": null,
+          "timeout": {
+            "after_ms": null,
+            "to_state": null,
+            "emit_signal": null
+          }
+        }
+      ],
+      "transitions": [
+        {
+          "id": "t_machine_drip_tray_1",
+          "action": "empty_drip_tray",
+          "movement": "remove",
+          "signals_emitted": [
+            "drip_tray_emptied"
+          ],
+          "guard": null,
+          "description": "Empty the drip tray.",
+          "dimension": "content",
+          "from": "contains_liquid",
+          "to": "empty",
+          "emits": "drip_tray_emptied"
+        }
+      ]
+    },
+    {
+      "id": "machine_drip_base",
+      "component_id": "drip_base",
+      "description": "Part of the drip assembly that collects liquid; emptied before and after descaling.",
+      "initial_state": "drip_base__contains_liquid",
+      "final_states": [
+        "drip_base__empty_after_descaling"
+      ],
+      "states": [
+        {
+          "id": "drip_base__contains_liquid",
+          "label": "contains liquid",
+          "dimension_values": {
+            "content": "contains_liquid"
+          },
+          "is_error": false,
+          "is_terminal": false,
+          "invariant": null,
+          "timeout": {
+            "after_ms": null,
+            "to_state": null,
+            "emit_signal": null
+          }
+        },
+        {
+          "id": "drip_base__empty",
+          "label": "empty",
+          "dimension_values": {
+            "content": "empty"
+          },
+          "is_error": false,
+          "is_terminal": false,
+          "invariant": null,
+          "timeout": {
+            "after_ms": null,
+            "to_state": null,
+            "emit_signal": null
+          }
+        },
+        {
+          "id": "drip_base__empty_after_descaling",
+          "label": "empty after descaling",
+          "dimension_values": {
+            "content": "empty_after_descaling"
+          },
+          "is_error": false,
+          "is_terminal": false,
+          "invariant": null,
+          "timeout": {
+            "after_ms": null,
+            "to_state": null,
+            "emit_signal": null
+          }
+        }
+      ],
+      "transitions": [
+        {
+          "id": "t_machine_drip_base_1",
+          "action": "empty_drip_base",
+          "movement": "remove",
+          "signals_emitted": [
+            "drip_base_emptied"
+          ],
+          "guard": null,
+          "description": "Empty the drip base.",
+          "dimension": "content",
+          "from": "contains_liquid",
+          "to": "empty",
+          "emits": "drip_base_emptied"
+        },
+        {
+          "id": "t_machine_drip_base_2",
+          "action": "empty_drip_base",
+          "movement": "remove",
+          "signals_emitted": [
+            "drip_base_emptied"
+          ],
+          "guard": "machine_leds.mode eq normal and machine_water_tank.content eq empty_clean",
+          "description": "Empty the drip base after leaving descaling mode.",
+          "dimension": "content",
+          "from": "empty",
+          "to": "empty_after_descaling",
+          "emits": "drip_base_emptied"
+        }
+      ]
+    },
+    {
+      "id": "machine_capsule_container",
+      "component_id": "capsule_container",
+      "description": "Collects used capsules ejected by the lever cycle.",
+      "initial_state": "capsule_container__used_capsules",
+      "final_states": [
+        "capsule_container__empty"
+      ],
+      "states": [
+        {
+          "id": "capsule_container__used_capsules",
+          "label": "used capsules",
+          "dimension_values": {
+            "content": "used_capsules"
+          },
+          "is_error": false,
+          "is_terminal": false,
+          "invariant": null,
+          "timeout": {
+            "after_ms": null,
+            "to_state": null,
+            "emit_signal": null
+          }
+        },
+        {
+          "id": "capsule_container__empty",
+          "label": "empty",
+          "dimension_values": {
+            "content": "empty"
+          },
+          "is_error": false,
+          "is_terminal": false,
+          "invariant": null,
+          "timeout": {
+            "after_ms": null,
+            "to_state": null,
+            "emit_signal": null
+          }
+        }
+      ],
+      "transitions": [
+        {
+          "id": "t_machine_capsule_container_1",
+          "action": "empty_capsule_container",
+          "movement": "remove",
+          "signals_emitted": [
+            "capsule_container_emptied"
+          ],
+          "guard": null,
+          "description": "Empty the used capsule container.",
+          "dimension": "content",
+          "from": "used_capsules",
+          "to": "empty",
+          "emits": "capsule_container_emptied"
+        }
+      ]
+    },
+    {
+      "id": "machine_water_tank",
+      "component_id": "water_tank",
+      "description": "Holds the water supply (0.6 L). During descaling it holds the descaling solution; each flush (Lungo button in descaling mode) drains it.",
+      "initial_state": "water_tank__potable_water",
+      "final_states": [
+        "water_tank__empty_clean"
+      ],
+      "states": [
+        {
+          "id": "water_tank__potable_water",
+          "label": "potable water",
+          "dimension_values": {
+            "content": "potable_water"
+          },
+          "is_error": false,
+          "is_terminal": false,
+          "invariant": null,
+          "timeout": {
+            "after_ms": null,
+            "to_state": null,
+            "emit_signal": null
+          }
+        },
+        {
+          "id": "water_tank__descaling_solution",
+          "label": "descaling solution",
+          "dimension_values": {
+            "content": "descaling_solution"
+          },
+          "is_error": false,
+          "is_terminal": false,
+          "invariant": null,
+          "timeout": {
+            "after_ms": null,
+            "to_state": null,
+            "emit_signal": null
+          }
+        },
+        {
+          "id": "water_tank__drained_solution",
+          "label": "drained solution",
+          "dimension_values": {
+            "content": "drained_solution"
+          },
+          "is_error": false,
+          "is_terminal": false,
+          "invariant": null,
+          "timeout": {
+            "after_ms": null,
+            "to_state": null,
+            "emit_signal": null
+          }
+        },
+        {
+          "id": "water_tank__empty_clean",
+          "label": "empty clean",
+          "dimension_values": {
+            "content": "empty_clean"
+          },
+          "is_error": false,
+          "is_terminal": false,
+          "invariant": null,
+          "timeout": {
+            "after_ms": null,
+            "to_state": null,
+            "emit_signal": null
+          }
+        }
+      ],
+      "transitions": [
+        {
+          "id": "t_machine_water_tank_1",
+          "action": "empty_and_rinse_water_tank",
+          "movement": "lift_out",
+          "signals_emitted": [
+            "water_tank_emptied"
+          ],
+          "guard": "machine_descaling_agent.location eq sachet",
+          "description": "Empty and rinse the water tank (not once the descaling agent has been poured: the tank is then only topped up to the 0.6 L line).",
+          "dimension": "content",
+          "from": "potable_water",
+          "to": "empty_clean",
+          "emits": "water_tank_emptied"
+        },
+        {
+          "id": "t_machine_water_tank_2",
+          "action": "fill_water_tank",
+          "movement": "lift_out",
+          "signals_emitted": [
+            "water_tank_filled"
+          ],
+          "guard": null,
+          "description": "Fill the water tank with fresh potable water.",
+          "dimension": "content",
+          "from": "empty_clean",
+          "to": "potable_water",
+          "emits": "water_tank_filled"
+        },
+        {
+          "id": "t_machine_water_tank_3",
+          "action": "fill_water_tank",
+          "movement": "lift_out",
+          "signals_emitted": [
+            "descaling_solution_prepared"
+          ],
+          "guard": "machine_descaling_agent.location eq poured",
+          "description": "Fill the water tank up to the 0.6 L line with potable water (descaling agent already in the tank).",
+          "dimension": "content",
+          "from": "potable_water",
+          "to": "descaling_solution",
+          "emits": "descaling_solution_prepared"
+        },
+        {
+          "id": "t_machine_water_tank_4",
+          "action": "press_lungo",
+          "movement": "press",
+          "signals_emitted": [
+            "descaling_solution_flushed"
+          ],
+          "guard": "machine_leds.mode eq descaling_mode and machine_container.position eq under_outlet",
+          "description": "In descaling mode, the Lungo button flushes the descaling solution into the container until the tank is empty.",
+          "dimension": "content",
+          "from": "descaling_solution",
+          "to": "drained_solution",
+          "emits": "descaling_solution_flushed"
+        },
+        {
+          "id": "t_machine_water_tank_5",
+          "action": "fill_water_tank",
+          "movement": "lift_out",
+          "signals_emitted": [
+            "used_solution_returned"
+          ],
+          "guard": "machine_container.position eq absent",
+          "description": "Refill the water tank with the used descaling solution collected in the container.",
+          "dimension": "content",
+          "from": "drained_solution",
+          "to": "descaling_solution",
+          "emits": "used_solution_returned"
+        },
+        {
+          "id": "t_machine_water_tank_6",
+          "action": "empty_and_rinse_water_tank",
+          "movement": "lift_out",
+          "signals_emitted": [
+            "water_tank_emptied"
+          ],
+          "guard": "machine_container.position eq under_outlet",
+          "description": "Empty and rinse the water tank after the second solution flush (container still under the outlet; when the container has been taken to pour the used solution back, the tank is refilled instead).",
+          "dimension": "content",
+          "from": "drained_solution",
+          "to": "empty_clean",
+          "emits": "water_tank_emptied"
+        },
+        {
+          "id": "t_machine_water_tank_7",
+          "action": "press_lungo",
+          "movement": "press",
+          "signals_emitted": [
+            "rinse_flushed"
+          ],
+          "guard": "machine_leds.mode eq descaling_mode and machine_container.position eq under_outlet",
+          "description": "In descaling mode, the Lungo button flushes fresh water through the machine until the tank is empty (rinse).",
+          "dimension": "content",
+          "from": "potable_water",
+          "to": "empty_clean",
+          "emits": "rinse_flushed"
+        }
+      ]
+    },
+    {
+      "id": "machine_plug",
+      "component_id": "plug",
+      "description": "Connects the appliance to a grounded power outlet.",
+      "initial_state": "plug__plugged_in",
+      "final_states": [
+        "plug__plugged_in"
+      ],
+      "states": [
+        {
+          "id": "plug__plugged_in",
+          "label": "plugged in",
+          "dimension_values": {
+            "connection": "plugged_in"
+          },
+          "is_error": false,
+          "is_terminal": false,
+          "invariant": null,
+          "timeout": {
+            "after_ms": null,
+            "to_state": null,
+            "emit_signal": null
+          }
+        },
+        {
+          "id": "plug__unplugged",
+          "label": "unplugged",
+          "dimension_values": {
+            "connection": "unplugged"
+          },
+          "is_error": false,
+          "is_terminal": false,
+          "invariant": null,
+          "timeout": {
+            "after_ms": null,
+            "to_state": null,
+            "emit_signal": null
+          }
+        }
+      ],
+      "transitions": [
+        {
+          "id": "t_machine_plug_1",
+          "action": "unplug",
+          "movement": "plug",
+          "signals_emitted": [
+            "plug_disconnected"
+          ],
+          "guard": null,
+          "description": "Remove the plug from the outlet (turn the machine off first).",
+          "dimension": "connection",
+          "from": "plugged_in",
+          "to": "unplugged",
+          "emits": "plug_disconnected"
+        },
+        {
+          "id": "t_machine_plug_2",
+          "action": "plug_in",
+          "movement": "plug",
+          "signals_emitted": [
+            "plug_connected"
+          ],
+          "guard": null,
+          "description": "Plug the machine into the power outlet.",
+          "dimension": "connection",
+          "from": "unplugged",
+          "to": "plugged_in",
+          "emits": "plug_connected"
+        }
+      ]
+    },
+    {
+      "id": "machine_container",
+      "component_id": "container",
+      "description": "Container of at least 1 L placed under the coffee outlet to collect the descaling solution and the rinse water.",
+      "initial_state": "container__absent",
+      "final_states": [
+        "container__under_outlet"
+      ],
+      "states": [
+        {
+          "id": "container__absent",
+          "label": "absent",
+          "dimension_values": {
+            "position": "absent"
+          },
+          "is_error": false,
+          "is_terminal": false,
+          "invariant": null,
+          "timeout": {
+            "after_ms": null,
+            "to_state": null,
+            "emit_signal": null
+          }
+        },
+        {
+          "id": "container__under_outlet",
+          "label": "under outlet",
+          "dimension_values": {
+            "position": "under_outlet"
+          },
+          "is_error": false,
+          "is_terminal": false,
+          "invariant": null,
+          "timeout": {
+            "after_ms": null,
+            "to_state": null,
+            "emit_signal": null
+          }
+        }
+      ],
+      "transitions": [
+        {
+          "id": "t_machine_container_1",
+          "action": "place_container",
+          "movement": "lift_and_place",
+          "signals_emitted": [
+            "container_placed"
+          ],
+          "guard": null,
+          "description": "Place the container (min. 1 L) under the coffee outlet.",
+          "dimension": "position",
+          "from": "absent",
+          "to": "under_outlet",
+          "emits": "container_placed"
+        },
+        {
+          "id": "t_machine_container_2",
+          "action": "remove_container",
+          "movement": "lift_and_place",
+          "signals_emitted": [
+            "container_removed"
+          ],
+          "guard": null,
+          "description": "Take the container away from the coffee outlet (to pour its content back into the tank or to empty it).",
+          "dimension": "position",
+          "from": "under_outlet",
+          "to": "absent",
+          "emits": "container_removed"
+        }
+      ]
+    },
+    {
+      "id": "machine_descaling_agent",
+      "component_id": "descaling_agent",
+      "description": "One Nespresso descaling liquid sachet poured into the water tank.",
+      "initial_state": "descaling_agent__sachet",
+      "final_states": [
+        "descaling_agent__poured"
+      ],
+      "states": [
+        {
+          "id": "descaling_agent__sachet",
+          "label": "sachet",
+          "dimension_values": {
+            "location": "sachet"
+          },
+          "is_error": false,
+          "is_terminal": false,
+          "invariant": null,
+          "timeout": {
+            "after_ms": null,
+            "to_state": null,
+            "emit_signal": null
+          }
+        },
+        {
+          "id": "descaling_agent__poured",
+          "label": "poured",
+          "dimension_values": {
+            "location": "poured"
+          },
+          "is_error": false,
+          "is_terminal": false,
+          "invariant": null,
+          "timeout": {
+            "after_ms": null,
+            "to_state": null,
+            "emit_signal": null
+          }
+        }
+      ],
+      "transitions": [
+        {
+          "id": "t_machine_descaling_agent_1",
+          "action": "pour_descaling_agent",
+          "movement": "pour",
+          "signals_emitted": [
+            "descaling_agent_poured"
+          ],
+          "guard": null,
+          "description": "Pour one Nespresso descaling liquid sachet into the water tank.",
+          "dimension": "location",
+          "from": "sachet",
+          "to": "poured",
+          "emits": "descaling_agent_poured"
+        }
+      ]
+    }
+  ],
+  "procedures": [
+    {
+      "id": "turn_machine_on",
+      "name": "Turn machine ON",
+      "short_description": "Switches the machine on; it heats up (lights blinking, 25 s) and becomes ready (lights steady).",
+      "category": "power_control",
+      "frequent_causes": [
+        "Required before descaling, which is performed while the machine is turned on"
+      ],
+      "requires": [],
+      "preconditions": [
+        {
+          "machine_id": "machine_leds",
+          "dimension": "status",
+          "required_value": "off",
+          "resolver_procedure_id": null
+        },
+        {
+          "machine_id": "machine_plug",
+          "dimension": "connection",
+          "required_value": "plugged_in",
+          "resolver_procedure_id": null
+        }
+      ],
+      "postconditions": [
+        {
+          "machine_id": "machine_leds",
+          "dimension": "status",
+          "guaranteed_value": "ready"
+        },
+        {
+          "machine_id": "machine_plug",
+          "dimension": "connection",
+          "guaranteed_value": "plugged_in"
+        }
+      ],
+      "unlocks": [
+        "descaling"
+      ],
+      "initial_component_states": [
+        {
+          "component_id": "espresso_button",
+          "machine_id": "machine_espresso_button",
+          "dimension_values": {
+            "contact": "released"
+          }
+        },
+        {
+          "component_id": "lungo_button",
+          "machine_id": "machine_lungo_button",
+          "dimension_values": {
+            "contact": "released"
+          }
+        },
+        {
+          "component_id": "leds",
+          "machine_id": "machine_leds",
+          "dimension_values": {
+            "mode": "normal",
+            "status": "off"
+          }
+        },
+        {
+          "component_id": "lever",
+          "machine_id": "machine_lever",
+          "dimension_values": {
+            "position": "closed"
+          }
+        },
+        {
+          "component_id": "drip_tray",
+          "machine_id": "machine_drip_tray",
+          "dimension_values": {
+            "content": "contains_liquid"
+          }
+        },
+        {
+          "component_id": "drip_base",
+          "machine_id": "machine_drip_base",
+          "dimension_values": {
+            "content": "contains_liquid"
+          }
+        },
+        {
+          "component_id": "capsule_container",
+          "machine_id": "machine_capsule_container",
+          "dimension_values": {
+            "content": "used_capsules"
+          }
+        },
+        {
+          "component_id": "water_tank",
+          "machine_id": "machine_water_tank",
+          "dimension_values": {
+            "content": "potable_water"
+          }
+        },
+        {
+          "component_id": "plug",
+          "machine_id": "machine_plug",
+          "dimension_values": {
+            "connection": "plugged_in"
+          }
+        },
+        {
+          "component_id": "container",
+          "machine_id": "machine_container",
+          "dimension_values": {
+            "position": "absent"
+          }
+        },
+        {
+          "component_id": "descaling_agent",
+          "machine_id": "machine_descaling_agent",
+          "dimension_values": {
+            "location": "sachet"
+          }
+        }
+      ],
+      "steps": [
+        {
+          "order": 1,
+          "description": "Press either the Espresso or the Lungo button to turn the machine ON. The lights blink while heating up (25 seconds) and stay steady when the machine is ready.",
+          "simplified_description": "Press one of the two coffee buttons on top. Wait until the lights stop blinking.",
+          "step_type": "action",
+          "transition_ref": null,
+          "accepted_transition_refs": [
+            "t_machine_leds_3",
+            "t_machine_leds_4"
+          ],
+          "external_step": false,
+          "branches": [],
+          "loop": {
+            "repeat_step_orders": [],
+            "times": null,
+            "until_guard": null
+          }
+        }
+      ],
+      "guard": "machine_leds.status eq off and machine_plug.connection eq plugged_in"
+    },
+    {
+      "id": "descaling",
+      "name": "Descaling",
+      "short_description": "Removes scale with a Nespresso descaling solution circulated twice, followed by two rinse cycles (~15 minutes)",
+      "category": "maintenance",
+      "frequent_causes": [
+        "Water hardness schedule: descale after 300 (hard), 600 (medium) or 1200 (soft water) cups of 40 ml"
+      ],
+      "requires": [
+        "turn_machine_on"
+      ],
+      "preconditions": [
+        {
+          "machine_id": "machine_leds",
+          "dimension": "status",
+          "required_value": "ready",
+          "resolver_procedure_id": "turn_machine_on"
+        },
+        {
+          "machine_id": "machine_leds",
+          "dimension": "mode",
+          "required_value": "normal",
+          "resolver_procedure_id": null
+        },
+        {
+          "machine_id": "machine_plug",
+          "dimension": "connection",
+          "required_value": "plugged_in",
+          "resolver_procedure_id": null
+        },
+        {
+          "machine_id": "machine_lever",
+          "dimension": "position",
+          "required_value": "closed",
+          "resolver_procedure_id": null
+        },
+        {
+          "machine_id": "machine_water_tank",
+          "dimension": "content",
+          "required_value": "potable_water",
+          "resolver_procedure_id": null
+        },
+        {
+          "machine_id": "machine_descaling_agent",
+          "dimension": "location",
+          "required_value": "sachet",
+          "resolver_procedure_id": null
+        },
+        {
+          "machine_id": "machine_container",
+          "dimension": "position",
+          "required_value": "absent",
+          "resolver_procedure_id": null
+        }
+      ],
+      "postconditions": [
+        {
+          "machine_id": "machine_leds",
+          "dimension": "status",
+          "guaranteed_value": "ready"
+        },
+        {
+          "machine_id": "machine_leds",
+          "dimension": "mode",
+          "guaranteed_value": "normal"
+        },
+        {
+          "machine_id": "machine_lever",
+          "dimension": "position",
+          "guaranteed_value": "closed"
+        },
+        {
+          "machine_id": "machine_drip_tray",
+          "dimension": "content",
+          "guaranteed_value": "empty"
+        },
+        {
+          "machine_id": "machine_drip_base",
+          "dimension": "content",
+          "guaranteed_value": "empty_after_descaling"
+        },
+        {
+          "machine_id": "machine_capsule_container",
+          "dimension": "content",
+          "guaranteed_value": "empty"
+        },
+        {
+          "machine_id": "machine_water_tank",
+          "dimension": "content",
+          "guaranteed_value": "empty_clean"
+        },
+        {
+          "machine_id": "machine_container",
+          "dimension": "position",
+          "guaranteed_value": "under_outlet"
+        },
+        {
+          "machine_id": "machine_descaling_agent",
+          "dimension": "location",
+          "guaranteed_value": "poured"
+        }
+      ],
+      "unlocks": [],
+      "initial_component_states": [
+        {
+          "component_id": "espresso_button",
+          "machine_id": "machine_espresso_button",
+          "dimension_values": {
+            "contact": "released"
+          }
+        },
+        {
+          "component_id": "lungo_button",
+          "machine_id": "machine_lungo_button",
+          "dimension_values": {
+            "contact": "released"
+          }
+        },
+        {
+          "component_id": "leds",
+          "machine_id": "machine_leds",
+          "dimension_values": {
+            "mode": "normal",
+            "status": "ready"
+          }
+        },
+        {
+          "component_id": "lever",
+          "machine_id": "machine_lever",
+          "dimension_values": {
+            "position": "closed"
+          }
+        },
+        {
+          "component_id": "drip_tray",
+          "machine_id": "machine_drip_tray",
+          "dimension_values": {
+            "content": "contains_liquid"
+          }
+        },
+        {
+          "component_id": "drip_base",
+          "machine_id": "machine_drip_base",
+          "dimension_values": {
+            "content": "contains_liquid"
+          }
+        },
+        {
+          "component_id": "capsule_container",
+          "machine_id": "machine_capsule_container",
+          "dimension_values": {
+            "content": "used_capsules"
+          }
+        },
+        {
+          "component_id": "water_tank",
+          "machine_id": "machine_water_tank",
+          "dimension_values": {
+            "content": "potable_water"
+          }
+        },
+        {
+          "component_id": "plug",
+          "machine_id": "machine_plug",
+          "dimension_values": {
+            "connection": "plugged_in"
+          }
+        },
+        {
+          "component_id": "container",
+          "machine_id": "machine_container",
+          "dimension_values": {
+            "position": "absent"
+          }
+        },
+        {
+          "component_id": "descaling_agent",
+          "machine_id": "machine_descaling_agent",
+          "dimension_values": {
+            "location": "sachet"
+          }
+        }
+      ],
+      "steps": [
+        {
+          "order": 1,
+          "description": "Lift the lever completely (manual step 1).",
+          "simplified_description": "Pull the lever on top all the way up.",
+          "step_type": "action",
+          "transition_ref": "t_machine_lever_1",
+          "accepted_transition_refs": [],
+          "external_step": false,
+          "branches": [],
+          "loop": {
+            "repeat_step_orders": [],
+            "times": null,
+            "until_guard": null
+          }
+        },
+        {
+          "order": 2,
+          "description": "Close the lever to eject the capsule into the used capsule container (manual step 1).",
+          "simplified_description": "Push the lever down again.",
+          "step_type": "action",
+          "transition_ref": "t_machine_lever_2",
+          "accepted_transition_refs": [],
+          "external_step": false,
+          "branches": [],
+          "loop": {
+            "repeat_step_orders": [],
+            "times": null,
+            "until_guard": null
+          }
+        },
+        {
+          "order": 3,
+          "description": "Empty the drip tray (manual step 2).",
+          "simplified_description": "Empty the tray at the front.",
+          "step_type": "action",
+          "transition_ref": "t_machine_drip_tray_1",
+          "accepted_transition_refs": [],
+          "external_step": false,
+          "branches": [],
+          "loop": {
+            "repeat_step_orders": [],
+            "times": null,
+            "until_guard": null
+          }
+        },
+        {
+          "order": 4,
+          "description": "Empty the drip base (manual step 2).",
+          "simplified_description": "Empty the base under the tray.",
+          "step_type": "action",
+          "transition_ref": "t_machine_drip_base_1",
+          "accepted_transition_refs": [],
+          "external_step": false,
+          "branches": [],
+          "loop": {
+            "repeat_step_orders": [],
+            "times": null,
+            "until_guard": null
+          }
+        },
+        {
+          "order": 5,
+          "description": "Empty the used capsule container (manual step 2).",
+          "simplified_description": "Empty the box of used capsules.",
+          "step_type": "action",
+          "transition_ref": "t_machine_capsule_container_1",
+          "accepted_transition_refs": [],
+          "external_step": false,
+          "branches": [],
+          "loop": {
+            "repeat_step_orders": [],
+            "times": null,
+            "until_guard": null
+          }
+        },
+        {
+          "order": 6,
+          "description": "Pour 1 Nespresso descaling liquid sachet into the water tank (manual step 3).",
+          "simplified_description": "Pour the descaling sachet into the water tank.",
+          "step_type": "action",
+          "transition_ref": "t_machine_descaling_agent_1",
+          "accepted_transition_refs": [],
+          "external_step": false,
+          "branches": [],
+          "loop": {
+            "repeat_step_orders": [],
+            "times": null,
+            "until_guard": null
+          }
+        },
+        {
+          "order": 7,
+          "description": "Fill the water tank up to the 0.6 L / 20.3 oz line with potable water (manual step 3).",
+          "simplified_description": "Add tap water to the tank up to the 0.6 L line.",
+          "step_type": "action",
+          "transition_ref": "t_machine_water_tank_3",
+          "accepted_transition_refs": [],
+          "external_step": false,
+          "branches": [],
+          "loop": {
+            "repeat_step_orders": [],
+            "times": null,
+            "until_guard": null
+          }
+        },
+        {
+          "order": 8,
+          "description": "Place a container (min. 1 L / 33.8 oz) under the coffee outlet (manual step 4).",
+          "simplified_description": "Put the big container under the coffee spout.",
+          "step_type": "action",
+          "transition_ref": "t_machine_container_1",
+          "accepted_transition_refs": [],
+          "external_step": false,
+          "branches": [],
+          "loop": {
+            "repeat_step_orders": [],
+            "times": null,
+            "until_guard": null
+          }
+        },
+        {
+          "order": 9,
+          "description": "While the machine is turned on, press both the Espresso and Lungo buttons for 5 seconds to enter descaling mode; both LEDs blink (manual steps 5-6).",
+          "simplified_description": "Hold both coffee buttons for 5 seconds until both lights blink.",
+          "step_type": "action",
+          "transition_ref": "t_machine_leds_1",
+          "accepted_transition_refs": [],
+          "external_step": false,
+          "branches": [],
+          "loop": {
+            "repeat_step_orders": [],
+            "times": null,
+            "until_guard": null
+          }
+        },
+        {
+          "order": 10,
+          "description": "Press the Lungo button and wait until the water tank is empty (manual step 7).",
+          "simplified_description": "Press the big-cup button and wait until the tank is empty.",
+          "step_type": "action",
+          "transition_ref": "t_machine_water_tank_4",
+          "accepted_transition_refs": [],
+          "external_step": false,
+          "branches": [],
+          "loop": {
+            "repeat_step_orders": [],
+            "times": null,
+            "until_guard": null
+          }
+        },
+        {
+          "order": 11,
+          "description": "Take the container with the used descaling solution from under the coffee outlet (implied by manual step 8).",
+          "simplified_description": "Take the container out.",
+          "step_type": "action",
+          "transition_ref": "t_machine_container_2",
+          "accepted_transition_refs": [],
+          "external_step": false,
+          "branches": [],
+          "loop": {
+            "repeat_step_orders": [],
+            "times": null,
+            "until_guard": null
+          }
+        },
+        {
+          "order": 12,
+          "description": "Refill the water tank with the used descaling solution collected in the container (manual step 8).",
+          "simplified_description": "Pour the liquid from the container back into the water tank.",
+          "step_type": "action",
+          "transition_ref": "t_machine_water_tank_5",
+          "accepted_transition_refs": [],
+          "external_step": false,
+          "branches": [],
+          "loop": {
+            "repeat_step_orders": [],
+            "times": null,
+            "until_guard": null
+          }
+        },
+        {
+          "order": 13,
+          "description": "Place the container under the coffee outlet again (manual step 8: repeat step 4).",
+          "simplified_description": "Put the container back under the coffee spout.",
+          "step_type": "action",
+          "transition_ref": "t_machine_container_1",
+          "accepted_transition_refs": [],
+          "external_step": false,
+          "branches": [],
+          "loop": {
+            "repeat_step_orders": [],
+            "times": null,
+            "until_guard": null
+          }
+        },
+        {
+          "order": 14,
+          "description": "Press the Lungo button and wait until the water tank is empty (manual step 8: repeat step 7).",
+          "simplified_description": "Press the big-cup button again and wait until the tank is empty.",
+          "step_type": "action",
+          "transition_ref": "t_machine_water_tank_4",
+          "accepted_transition_refs": [],
+          "external_step": false,
+          "branches": [],
+          "loop": {
+            "repeat_step_orders": [],
+            "times": null,
+            "until_guard": null
+          }
+        },
+        {
+          "order": 15,
+          "description": "Empty and rinse the water tank (manual step 9).",
+          "simplified_description": "Empty the water tank and rinse it.",
+          "step_type": "action",
+          "transition_ref": "t_machine_water_tank_6",
+          "accepted_transition_refs": [],
+          "external_step": false,
+          "branches": [],
+          "loop": {
+            "repeat_step_orders": [],
+            "times": null,
+            "until_guard": null
+          }
+        },
+        {
+          "order": 16,
+          "description": "Take the container away and empty it before using it again (implied by manual step 10).",
+          "simplified_description": "Take the container out and empty it.",
+          "step_type": "action",
+          "transition_ref": "t_machine_container_2",
+          "accepted_transition_refs": [],
+          "external_step": false,
+          "branches": [],
+          "loop": {
+            "repeat_step_orders": [],
+            "times": null,
+            "until_guard": null
+          }
+        },
+        {
+          "order": 17,
+          "description": "Fill the water tank with fresh potable water (manual step 9; refilled before the second rinse).",
+          "simplified_description": "Fill the water tank with clean tap water.",
+          "step_type": "action",
+          "transition_ref": "t_machine_water_tank_2",
+          "accepted_transition_refs": [],
+          "external_step": false,
+          "branches": [],
+          "loop": {
+            "repeat_step_orders": [],
+            "times": null,
+            "until_guard": null
+          }
+        },
+        {
+          "order": 18,
+          "description": "Place the container under the coffee outlet (manual step 10: repeat step 4).",
+          "simplified_description": "Put the container under the coffee spout.",
+          "step_type": "action",
+          "transition_ref": "t_machine_container_1",
+          "accepted_transition_refs": [],
+          "external_step": false,
+          "branches": [],
+          "loop": {
+            "repeat_step_orders": [],
+            "times": null,
+            "until_guard": null
+          }
+        },
+        {
+          "order": 19,
+          "description": "Press the Lungo button and wait until the water tank is empty to rinse the machine (manual step 10: repeat step 7; done twice).",
+          "simplified_description": "Press the big-cup button and wait until the tank is empty.",
+          "step_type": "loop",
+          "transition_ref": "t_machine_water_tank_7",
+          "accepted_transition_refs": [],
+          "external_step": false,
+          "branches": [],
+          "loop": {
+            "repeat_step_orders": [
+              16,
+              17,
+              18,
+              19
+            ],
+            "times": 1,
+            "until_guard": null
+          }
+        },
+        {
+          "order": 20,
+          "description": "Press both the Espresso and Lungo buttons for 5 seconds to exit descaling mode (manual step 11).",
+          "simplified_description": "Hold both coffee buttons for 5 seconds until the lights stop blinking.",
+          "step_type": "action",
+          "transition_ref": "t_machine_leds_2",
+          "accepted_transition_refs": [],
+          "external_step": false,
+          "branches": [],
+          "loop": {
+            "repeat_step_orders": [],
+            "times": null,
+            "until_guard": null
+          }
+        },
+        {
+          "order": 21,
+          "description": "Empty the drip base (manual step 12).",
+          "simplified_description": "Empty the base under the tray.",
+          "step_type": "action",
+          "transition_ref": "t_machine_drip_base_2",
+          "accepted_transition_refs": [],
+          "external_step": false,
+          "branches": [],
+          "loop": {
+            "repeat_step_orders": [],
+            "times": null,
+            "until_guard": null
+          }
+        }
+      ],
+      "guard": "machine_leds.status eq ready and machine_leds.mode eq normal and machine_plug.connection eq plugged_in and machine_lever.position eq closed and machine_water_tank.content eq potable_water and machine_descaling_agent.location eq sachet and machine_container.position eq absent"
+    }
+  ],
+  "new_elements": [],
+  "excluded_components": [
+    {
+      "id": "blades",
+      "name": "Blades",
+      "reason": "Internal part, not shown in figures; not exercised by descaling.",
+      "location": "Inside the capsule compartment",
+      "layout_hint": {
+        "anchor": null,
+        "rel": null,
+        "size": null,
+        "flat": false,
+        "hingeEdge": null
+      }
+    },
+    {
+      "id": "extraction_system",
+      "name": "Extraction system",
+      "reason": "Internal part, not shown in figures; not exercised by descaling.",
+      "location": "Internal",
+      "layout_hint": {
+        "anchor": null,
+        "rel": null,
+        "size": null,
+        "flat": false,
+        "hingeEdge": null
+      }
+    },
+    {
+      "id": "water_tank_lid",
+      "name": "Water tank lid",
+      "reason": "Not mentioned in the descaling steps.",
+      "location": "Top of the water tank, rear of machine",
+      "layout_hint": {
+        "anchor": "rear",
+        "rel": [
+          0.0,
+          0.97,
+          -0.38
+        ],
+        "size": [
+          1.0,
+          0.03,
+          0.25
+        ],
+        "flat": false,
+        "hingeEdge": "front"
+      }
+    },
+    {
+      "id": "drip_grid",
+      "name": "Drip grid",
+      "reason": "Not mentioned in the descaling steps.",
+      "location": "Front base, on top of the drip tray",
+      "layout_hint": {
+        "anchor": "front",
+        "rel": [
+          0.0,
+          0.09,
+          0.42
+        ],
+        "size": [
+          0.9,
+          0.01,
+          0.22
+        ],
+        "flat": false,
+        "hingeEdge": null
+      }
+    },
+    {
+      "id": "power_cord",
+      "name": "Power cord",
+      "reason": "Not exercised by descaling (mains connection is represented by the Plug).",
+      "location": "Exits the machine housing (exit point not specified in manual)",
+      "layout_hint": {
+        "anchor": null,
+        "rel": null,
+        "size": null,
+        "flat": false,
+        "hingeEdge": null
+      }
+    },
+    {
+      "id": "rating_plate",
+      "name": "Rating plate",
+      "reason": "Label; not exercised by descaling.",
+      "location": "not specified in manual",
+      "layout_hint": {
+        "anchor": null,
+        "rel": null,
+        "size": null,
+        "flat": false,
+        "hingeEdge": null
+      }
+    },
+    {
+      "id": "cup",
+      "name": "Cup",
+      "reason": "Used in coffee preparation, not in descaling.",
+      "location": "On the drip grid under the coffee outlet",
+      "layout_hint": {
+        "anchor": "front",
+        "rel": [
+          0.0,
+          0.12,
+          0.42
+        ],
+        "size": [
+          0.6,
+          0.15,
+          0.2
+        ],
+        "flat": false,
+        "hingeEdge": null
+      }
+    },
+    {
+      "id": "coffee",
+      "name": "Coffee",
+      "reason": "Beverage produced in coffee preparation, not in descaling.",
+      "location": "Coffee outlet into cup",
+      "layout_hint": {
+        "anchor": null,
+        "rel": null,
+        "size": null,
+        "flat": false,
+        "hingeEdge": null
+      }
+    },
+    {
+      "id": "detergent",
+      "name": "Detergent",
+      "reason": "Used in cleaning, not in descaling.",
+      "location": "Applied to removable parts",
+      "layout_hint": {
+        "anchor": null,
+        "rel": null,
+        "size": null,
+        "flat": false,
+        "hingeEdge": null
+      }
+    }
+  ],
+  "rules": [
+    {
+      "id": "r_descaling_solution_harmful",
+      "name": "Descaling solution can be harmful",
+      "description": "Avoid contact with eyes, skin and surfaces.",
+      "expr": null,
+      "priority": 1,
+      "applies_to": [
+        "descaling"
+      ]
+    },
+    {
+      "id": "r_no_other_products",
+      "name": "Use only the Nespresso descaling agent",
+      "description": "Do not use other products such as vinegar (FR text); they leave a taste and may damage the machine.",
+      "expr": null,
+      "priority": 2,
+      "applies_to": [
+        "t_machine_descaling_agent_1"
+      ]
+    },
+    {
+      "id": "r_agent_before_fill",
+      "name": "Descaling agent in the tank before filling",
+      "description": "Pour the descaling sachet into the water tank, then fill up to the 0.6 L line.",
+      "expr": "machine_descaling_agent.location eq poured",
+      "priority": 2,
+      "applies_to": [
+        "t_machine_water_tank_3"
+      ]
+    },
+    {
+      "id": "r_container_under_outlet",
+      "name": "Container under the coffee outlet before flushing",
+      "description": "A container of min. 1 L must be under the coffee outlet before pressing the Lungo button in descaling mode.",
+      "expr": "machine_container.position eq under_outlet",
+      "priority": 1,
+      "applies_to": [
+        "t_machine_water_tank_4",
+        "t_machine_water_tank_7"
+      ]
+    },
+    {
+      "id": "r_machine_on_for_descaling",
+      "name": "Descaling mode only with the machine on",
+      "description": "Enter descaling mode while the machine is turned on (lights steady).",
+      "expr": "machine_leds.status eq ready",
+      "priority": 1,
+      "applies_to": [
+        "t_machine_leds_1"
+      ]
+    },
+    {
+      "id": "r_rinse_before_exit",
+      "name": "Rinse before leaving descaling mode",
+      "description": "Exit descaling mode only after rinsing the machine with fresh water.",
+      "expr": "machine_water_tank.content eq empty_clean",
+      "priority": 2,
+      "applies_to": [
+        "t_machine_leds_2"
+      ]
+    },
+    {
+      "id": "r_do_not_overfill",
+      "name": "Do not overfill the water tank",
+      "description": "Fill only up to the 0.6 L line.",
+      "expr": null,
+      "priority": 3,
+      "applies_to": [
+        "t_machine_water_tank_3",
+        "t_machine_water_tank_2"
+      ]
+    },
+    {
+      "id": "r_fresh_potable_water",
+      "name": "Fresh potable water only",
+      "description": "Always fill the water tank with fresh potable water.",
+      "expr": null,
+      "priority": 3,
+      "applies_to": [
+        "t_machine_water_tank_3",
+        "t_machine_water_tank_2"
+      ]
+    },
+    {
+      "id": "r_never_lift_lever_during_operation",
+      "name": "Never lift the lever during operation",
+      "description": "Risk of scalding by hot liquids.",
+      "expr": null,
+      "priority": 1,
+      "applies_to": [
+        "t_machine_lever_1"
+      ]
+    },
+    {
+      "id": "r_fingers_outlet",
+      "name": "Do not put fingers under the coffee outlet",
+      "description": "Risk of scalding.",
+      "expr": null,
+      "priority": 2,
+      "applies_to": [
+        "descaling"
+      ]
+    },
+    {
+      "id": "r_descaling_frequency",
+      "name": "Descaling frequency by water hardness",
+      "description": "Descale after 300 (hard), 600 (medium) or 1200 (soft water) cups of 40 ml.",
+      "expr": null,
+      "priority": 4,
+      "applies_to": [
+        "descaling"
+      ]
+    }
+  ]
+}

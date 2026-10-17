@@ -1,0 +1,136 @@
+{
+  "checks": {
+    "Schema (EFSM)": [
+      {
+        "level": "info",
+        "msg": "jsonschema not installed; schema check skipped (pip install jsonschema)."
+      }
+    ],
+    "Schema (device_spec)": [
+      {
+        "level": "info",
+        "msg": "jsonschema not installed; schema check skipped (pip install jsonschema)."
+      }
+    ],
+    "References": [
+      {
+        "level": "ok",
+        "msg": "All references resolve."
+      }
+    ],
+    "C1 steps perform transitions": [
+      {
+        "level": "ok",
+        "msg": "Every non-external step references existing transitions."
+      }
+    ],
+    "C2 procedure dependencies": [
+      {
+        "level": "ok",
+        "msg": "No dependencies between procedures (n/a)."
+      }
+    ],
+    "C3 initial values": [
+      {
+        "level": "ok",
+        "msg": "Initial values satisfy the preconditions of 'load_paper'."
+      }
+    ],
+    "C4 executability": [
+      {
+        "level": "ok",
+        "msg": "Simulated walk of load_paper completes with every step firing from the seeded snapshot."
+      }
+    ],
+    "C5 steps triggered by interactions": [
+      {
+        "level": "ok",
+        "msg": "Every step is triggered by an interaction of an interactive component; bindings and attach targets resolve."
+      }
+    ]
+  },
+  "competency_questions": {
+    "CQ1": "46 components; 5 with a StateMachine (1 materials: Paper)",
+    "CQ2": [
+      "input_tray: 165 x 100 x 12 mm, primitive, pivot explicit [0, 0.195, -0.134]",
+      "paper_width_guide: 12 x 30 x 9 mm, primitive, pivot center",
+      "paper: 150 x 88 x 5 mm, primitive, pivot center",
+      "output_tray: 135 x 8 x 60 mm, primitive, pivot explicit [0.036, 0.008, 0.145]",
+      "output_tray_extender: 120 x 5 x 54 mm, primitive, pivot explicit [0.036, -0.003, 0.167]"
+    ],
+    "CQ3": [
+      "machine_input_tray: position in ['lowered', 'raised'] (initial lowered) | states ['s_input_tray_lowered', 's_input_tray_raised']",
+      "machine_paper_width_guide: position in ['closed', 'open', 'snug'] (initial closed) | states ['s_paper_width_guide_closed', 's_paper_width_guide_open', 's_paper_width_guide_snug']",
+      "machine_paper: location in ['outside', 'in_input_tray'] (initial outside) | states ['s_paper_outside', 's_paper_in_input_tray']",
+      "machine_output_tray: position in ['closed', 'lowered'] (initial closed) | states ['s_output_tray_closed', 's_output_tray_lowered']",
+      "machine_output_tray_extender: position in ['closed', 'extended'] (initial closed) | states ['s_output_tray_extender_closed', 's_output_tray_extender_extended']"
+    ],
+    "CQ4": [
+      "s_input_tray_lowered: raise_input_tray",
+      "s_input_tray_raised: lower_input_tray [machine_paper.location eq outside]",
+      "s_paper_width_guide_closed: slide_paper_width_guide_left [machine_input_tray.position eq raised]",
+      "s_paper_width_guide_open: slide_paper_width_guide_right [machine_paper.location eq in_input_tray], slide_paper_width_guide_right [machine_paper.location eq outside]",
+      "s_paper_width_guide_snug: slide_paper_width_guide_left",
+      "s_paper_outside: insert_paper [machine_input_tray.position eq raised and machine_paper_width_guide.position eq open]",
+      "s_paper_in_input_tray: remove_paper [machine_paper_width_guide.position neq snug]",
+      "s_output_tray_closed: lower_output_tray",
+      "s_output_tray_lowered: push_in_output_tray [machine_output_tray_extender.position eq closed]",
+      "s_output_tray_extender_closed: pull_out_output_tray_extender [machine_output_tray.position eq lowered]",
+      "s_output_tray_extender_extended: close_output_tray_extender"
+    ],
+    "CQ5": [
+      "raise_input_tray: input_tray hinge (action_at_max)",
+      "lower_input_tray: input_tray hinge (action_at_min)",
+      "slide_paper_width_guide_left: paper_width_guide slide_linear (action_at_max)",
+      "slide_paper_width_guide_right: paper_width_guide slide_linear (action_at_min)",
+      "insert_paper: paper press (press_action)",
+      "lower_output_tray: output_tray hinge (action_at_max)",
+      "push_in_output_tray: output_tray hinge (action_at_min)",
+      "pull_out_output_tray_extender: output_tray_extender hinge (action_at_max)",
+      "close_output_tray_extender: output_tray_extender hinge (action_at_min)"
+    ],
+    "CQ6": "8 of 12 transitions cross-guarded: t_machine_input_tray_2, t_machine_paper_width_guide_1, t_machine_paper_width_guide_2, t_machine_paper_width_guide_4, t_machine_paper_1, t_machine_paper_2, t_machine_output_tray_2, t_machine_output_tray_extender_1 | signals: raise_input_tray emits input_tray_raised, lower_input_tray emits input_tray_lowered, slide_paper_width_guide_left emits paper_width_guide_opened, slide_paper_width_guide_right emits paper_width_guide_snug, slide_paper_width_guide_left emits paper_width_guide_opened, slide_paper_width_guide_right emits paper_width_guide_closed, insert_paper emits paper_loaded, remove_paper emits paper_removed, lower_output_tray emits output_tray_lowered, push_in_output_tray emits output_tray_closed, pull_out_output_tray_extender emits output_tray_extender_extended, close_output_tray_extender emits output_tray_extender_closed",
+    "CQ7": [
+      "load_paper (Load paper)"
+    ],
+    "CQ8": {
+      "load_paper": [
+        "1: raise_input_tray",
+        "2: slide_paper_width_guide_left",
+        "3: insert_paper",
+        "4: slide_paper_width_guide_right",
+        "5: lower_output_tray",
+        "6: pull_out_output_tray_extender"
+      ]
+    },
+    "CQ9": {
+      "load_paper": {
+        "pre": [
+          "machine_input_tray.position = lowered",
+          "machine_paper_width_guide.position = closed",
+          "machine_paper.location = outside",
+          "machine_output_tray.position = closed",
+          "machine_output_tray_extender.position = closed"
+        ],
+        "post": [
+          "machine_input_tray.position = raised",
+          "machine_paper_width_guide.position = snug",
+          "machine_paper.location = in_input_tray",
+          "machine_output_tray.position = lowered",
+          "machine_output_tray_extender.position = extended"
+        ]
+      }
+    },
+    "CQ10": {
+      "load_paper": "5 components (5 acted on: ['machine_input_tray', 'machine_output_tray', 'machine_output_tray_extender', 'machine_paper', 'machine_paper_width_guide']; 0 only in conditions: [])"
+    },
+    "CQ11": "5 rules, 1 evaluable",
+    "CQ12": "n/a (no procedure requires another)",
+    "CQ13": "2 state variables, 10 actions, 11 signals",
+    "CQ14": [
+      "Paper: location ['outside', 'in_input_tray']"
+    ]
+  },
+  "errors": 0,
+  "warnings": 0
+}
